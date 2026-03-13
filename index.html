@@ -371,6 +371,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <strong>🎙 Otter.ai</strong>
     <span>Intégration — Step 2</span>
   </div>
+
+  <div class="sb-divider"></div>
+  <div style="padding:8px 12px;">
+    <button onclick="exportCRM()" style="width:100%;margin:2px 0;padding:7px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">⬇ Exporter données</button>
+    <label style="width:100%;display:block;margin:2px 0;padding:7px;background:#059669;color:#fff;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;">⬆ Importer données<input type="file" accept=".json" style="display:none" onchange="importCRM(event)"></label>
+  </div>
 </nav>
 
 <!-- ═══════════════ QUICK LOG POPUP ═══════════════ -->
@@ -1871,6 +1877,35 @@ function updateDealFlowBadge(){
     b.textContent=unseen>0?unseen:'';
     if(unseen>0){b.classList.add('badge-red');}else{b.classList.remove('badge-red');}
   }
+}
+
+function exportCRM(){
+  const d = localStorage.getItem('reprise_crm_v1') || '{}';
+  const b = new Blob([d], {type:'application/json'});
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a');
+  a.href = u;
+  a.download = 'acquis-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(u);
+}
+function importCRM(e){
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = function(ev){
+    try {
+      const d = JSON.parse(ev.target.result);
+      localStorage.setItem('reprise_crm_v1', JSON.stringify(d));
+      alert('✅ Données restaurées ! La page va se recharger.');
+      location.reload();
+    } catch(err) {
+      alert('❌ Fichier invalide : ' + err.message);
+    }
+  };
+  r.readAsText(f);
 }
 </script>
 </body>
