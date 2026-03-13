@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Acquis</title>
+<style>
+/* ── Reset & base ── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sb:#16213e; --sb2:#1a2744; --acc:#6366f1; --acc2:#5254cc;
+  --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --red2:#dc2626;
+  --txt:#1c1c2e; --sub:#6b7280; --border:#e5e7eb; --bg:#f3f4f6;
+  --card:#fff; --sb-w:230px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;display:flex;height:100vh;overflow:hidden}
+
+/* ════════════════════ SIDEBAR ════════════════════ */
+.sb{width:var(--sb-w);min-width:var(--sb-w);background:var(--sb);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.sb-brand{padding:20px 18px 4px;display:flex;align-items:center;gap:8px}
+.sb-brand-icon{font-size:20px}
+.sb-brand-name{font-size:14px;font-weight:700;color:#fff;letter-spacing:.2px}
+.sb-date{padding:2px 18px 14px;font-size:11px;color:#4a5568}
+.sb-divider{height:1px;background:rgba(255,255,255,.06);margin:4px 14px}
+.sb-label{padding:10px 18px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#4a5568}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:#94a3b8;cursor:pointer;border-left:3px solid transparent;font-size:13px;transition:.12s}
+.sb-item:hover{background:rgba(255,255,255,.05);color:#e2e8f0}
+.sb-item.active{background:rgba(99,102,241,.18);color:#fff;border-left-color:var(--acc)}
+.sb-item .si{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:rgba(255,255,255,.1);color:#64748b;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;min-width:22px;text-align:center}
+.sb-item.active .sb-badge{background:var(--acc);color:#fff}
+.sb-moment{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.sb-mbtn{background:rgba(255,255,255,.05);border:none;color:#64748b;padding:7px 12px;border-radius:7px;font-size:12px;cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+.sb-mbtn:hover{background:rgba(255,255,255,.1);color:#cbd5e1}
+.sb-mbtn.active{background:rgba(99,102,241,.25);color:#a5b4fc;font-weight:600}
+.sb-otter{margin:auto 14px 16px;background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.25);border-radius:8px;padding:10px 12px;cursor:pointer;transition:.12s}
+.sb-otter:hover{background:rgba(255,107,53,.2)}
+.sb-otter strong{display:block;font-size:11px;color:#fb923c;margin-bottom:2px}
+.sb-otter span{font-size:10px;color:#4a5568}
+
+/* ════════════════════ MAIN ════════════════════ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.page{display:none;flex:1;flex-direction:column;overflow:hidden}
+.page.active{display:flex}
+
+/* Page header */
+.ph{padding:18px 28px 0;flex-shrink:0}
+.ph h2{font-size:17px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.ph p{font-size:12px;color:var(--sub)}
+.ph-divider{height:1px;background:var(--border);margin:14px 28px 0}
+
+/* ════════════════════ STATS BAR ════════════════════ */
+.stats-bar{display:flex;gap:0;padding:0 28px;flex-shrink:0;background:var(--card);border-bottom:1px solid var(--border)}
+.stat{padding:12px 20px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--border);cursor:pointer;transition:.12s}
+.stat:last-child{border-right:none}
+.stat:hover{background:#f9fafb}
+.stat.active-filter{background:#eef2ff}
+.stat-val{font-size:18px;font-weight:700;color:var(--txt)}
+.stat-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--sub)}
+.stat-sub{font-size:10px;color:#9ca3af}
+
+/* ════════════════════ PIPELINE PAGE ════════════════════ */
+.pipe-scroll{flex:1;overflow-y:auto;padding:20px 28px 28px}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+.k-col{background:var(--card);border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.k-col-head{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:#fafafa}
+.k-col-head-left{display:flex;align-items:center;gap:8px}
+.k-col-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-0{background:#94a3b8}.dot-1{background:#818cf8}.dot-2{background:#f59e0b}.dot-3{background:#10b981}
+.k-col-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub)}
+.k-col-count{background:#f0f0f0;color:#888;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+.k-cards{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:80px}
+
+/* ── Direct card ── */
+.dc{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;cursor:pointer;transition:.15s;position:relative}
+.dc:hover{border-color:var(--acc);box-shadow:0 2px 10px rgba(99,102,241,.12)}
+.dc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+.dc-name{font-size:13px;font-weight:700;color:var(--txt);line-height:1.3;flex:1;margin-right:8px}
+.aging-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.age-none{background:#d1d5db}.age-fresh{background:var(--green)}.age-ok{background:var(--amber)}.age-old{background:var(--red)}.age-dead{background:var(--red2);box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+.dc-contact{font-size:11px;color:var(--sub);margin-bottom:8px}
+.dc-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.chip{font-size:10px;padding:2px 7px;border-radius:7px;font-weight:500}
+.chip-gray{background:#f0f0f0;color:#666}
+.chip-blue{background:#dbeafe;color:#1d4ed8}
+.chip-green{background:#dcfce7;color:#166534}
+.chip-ca{background:#e0f2fe;color:#0369a1;font-weight:700}
+.chip-red{background:#fee2e2;color:#b91c1c;font-weight:700}
+.crm-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+.crm-0{background:#f0f0f0;color:#666}       /* À contacter */
+.crm-1{background:#dbeafe;color:#1d4ed8}    /* Contacté */
+.crm-2{background:#ede9fe;color:#6d28d9}    /* RDV fixé */
+.crm-3{background:#fef3c7;color:#b45309}    /* En cours / négociation */
+.crm-4{background:#d1fae5;color:#065f46}    /* LOI / Deal */
+.crm-x{background:#fee2e2;color:#b91c1c}    /* No go / Abandonné */
+.dc-footer{display:flex;align-items:center;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid #f5f5f5}
+.dc-age-label{font-size:10px;color:#9ca3af;flex:1}
+.dc-actions{display:flex;gap:3px}
+.btn-log{background:var(--acc);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;font-weight:600}
+.btn-log:hover{background:var(--acc2)}
+.btn-mv{background:none;border:1px solid var(--border);border-radius:5px;font-size:11px;color:#aaa;cursor:pointer;padding:2px 7px}
+.btn-mv:hover{background:#f0f4ff;border-color:var(--acc);color:var(--acc)}
+.btn-del{background:none;border:none;color:#d1d5db;cursor:pointer;font-size:13px;padding:2px 4px}
+.btn-del:hover{color:var(--red)}
+
+/* + add card */
+.k-add{width:calc(100% - 16px);margin:4px 8px 8px;background:none;border:1px dashed var(--border);border-radius:7px;padding:8px;font-size:12px;color:#9ca3af;cursor:pointer;font-family:inherit}
+.k-add:hover{border-color:var(--acc);color:var(--acc);background:#f5f5ff}
+
+/* ════════════════════ QUICK LOG POPUP ════════════════════ */
+.ql-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:300;display:none}
+.ql-overlay.open{display:flex;align-items:center;justify-content:center}
+.ql-box{background:#fff;border-radius:12px;padding:20px 24px;width:360px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.ql-title{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--txt)}
+.ql-types{display:flex;gap:6px;margin-bottom:12px}
+.ql-type{flex:1;border:1px solid var(--border);border-radius:7px;padding:7px 4px;font-size:12px;cursor:pointer;text-align:center;background:none;font-family:inherit;transition:.12s}
+.ql-type:hover,.ql-type.active{background:#eef2ff;border-color:var(--acc);color:var(--acc);font-weight:600}
+.ql-ta{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;resize:none;outline:none;min-height:64px;line-height:1.5}
+.ql-ta:focus{border-color:var(--acc)}
+.ql-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.ql-cancel{background:#f0f0f0;border:none;border-radius:7px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit}
+.ql-save{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.ql-save:hover{background:var(--acc2)}
+
+/* ════════════════════ DRAWER ════════════════════ */
+.dov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
+.dov.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;right:0;width:600px;max-width:95vw;height:100vh;background:#fff;z-index:201;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-6px 0 30px rgba(0,0,0,.12)}
+.drawer.open{transform:translateX(0)}
+.dh{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.dh-left{flex:1;min-width:0}
+.dh-title{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dh-sub{font-size:11px;color:var(--sub);margin-top:2px}
+.dh-close{background:#f0f0f0;border:none;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;color:#555;flex-shrink:0}
+.dh-close:hover{background:#e0e0e0}
+.dbody{flex:1;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column;gap:18px}
+.dsec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#aaa;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:2px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px}
+.fi{border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--txt);outline:none;background:#fafafa;width:100%;transition:.12s}
+.fi:focus{border-color:var(--acc);background:#fff}
+.fta{border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--txt);outline:none;background:#fafafa;width:100%;resize:vertical;min-height:72px;line-height:1.5;transition:.12s}
+.fta:focus{border-color:var(--acc);background:#fff}
+.fsel{border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--txt);outline:none;background:#fafafa;width:100%;cursor:pointer}
+.fsel:focus{border-color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.df{padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;gap:10px}
+.df-mvs{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.df-mv{background:#f0f0f0;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;color:#555;cursor:pointer;font-family:inherit}
+.df-mv:hover{background:#e0e0e0}
+.df-del{background:none;border:1px solid #fecaca;border-radius:7px;padding:6px 12px;font-size:12px;color:var(--red);cursor:pointer;font-family:inherit;flex-shrink:0}
+.df-del:hover{background:#fee2e2}
+
+/* ── Activity log ── */
+.act-log{display:flex;flex-direction:column;gap:0}
+.act-entry{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5}
+.act-entry:last-child{border-bottom:none}
+.act-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.act-body{flex:1}
+.act-text{font-size:12px;color:var(--txt);line-height:1.4}
+.act-date{font-size:10px;color:#9ca3af;margin-top:2px}
+.act-empty{font-size:12px;color:#d1d5db;text-align:center;padding:16px 0}
+/* Quick add activity in drawer */
+.act-add-form{background:#f9fafb;border-radius:9px;padding:12px;margin-top:4px}
+.act-types{display:flex;gap:5px;margin-bottom:8px}
+.act-type-btn{border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer;background:#fff;font-family:inherit}
+.act-type-btn.active{background:#eef2ff;border-color:var(--acc);color:var(--acc);font-weight:600}
+.act-input-row{display:flex;gap:6px}
+.act-ti{flex:1;border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none}
+.act-ti:focus{border-color:var(--acc)}
+.act-save-btn{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;cursor:pointer;font-weight:600}
+.act-save-btn:hover{background:var(--acc2)}
+
+/* ════════════════════ CONTACTS PAGE (indirect) ════════════════════ */
+.contacts-toolbar{padding:14px 28px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--card)}
+.search-input{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;width:280px}
+.search-input:focus{border-color:var(--acc)}
+.filter-select{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;font-family:inherit;outline:none;background:#fff;cursor:pointer;color:var(--txt)}
+.contacts-list{flex:1;overflow-y:auto;padding:0 28px 28px}
+.contact-table{width:100%;border-collapse:collapse;margin-top:14px}
+.contact-table th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;padding:8px 12px;border-bottom:2px solid var(--border);background:var(--card);position:sticky;top:0;z-index:1}
+.contact-table td{padding:10px 12px;border-bottom:1px solid #f7f7f7;font-size:13px;vertical-align:middle}
+.contact-table tr.irow{cursor:pointer}
+.contact-table tr.irow:hover td{background:#fafcff}
+.irow-name{font-weight:600;color:var(--txt)}
+.irow-sub{font-size:11px;color:var(--sub)}
+.ct-count{font-size:12px;color:var(--sub);margin-left:auto}
+.add-contact-btn{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.add-contact-btn:hover{background:var(--acc2)}
+
+/* ════════════════════ TODAY PAGE ════════════════════ */
+.today-scroll{flex:1;overflow-y:auto;padding:20px 28px 28px}
+.time-blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.tb{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tb.active-block{border-color:var(--acc);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+.tb label{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:8px}
+.tb textarea{width:100%;border:none;background:transparent;font-size:13px;color:#444;resize:none;outline:none;font-family:inherit;line-height:1.6;min-height:72px}
+.todo-panel{background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.todo-ph{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.todo-ph h3{font-size:13px;font-weight:700}
+.todo-ph span{font-size:11px;color:var(--sub)}
+.todo-row{display:flex;gap:8px;padding:10px 18px;border-bottom:1px solid #f7f7f7}
+.todo-in{flex:1;border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:13px;outline:none;font-family:inherit}
+.todo-in:focus{border-color:var(--acc)}
+.todo-add{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:7px 16px;font-size:13px;cursor:pointer;font-weight:600}
+.todo-add:hover{background:var(--acc2)}
+.todo-items{padding:4px 0}
+.ti{display:flex;align-items:center;gap:10px;padding:9px 18px;transition:.12s}
+.ti:hover{background:#fafcff}
+.ti input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--acc);flex-shrink:0}
+.ti-label{flex:1;font-size:13px;line-height:1.4;outline:none}
+.ti-label.done{text-decoration:line-through;color:#d1d5db}
+.ti-del{background:none;border:none;color:#d1d5db;cursor:pointer;font-size:13px}
+.ti-del:hover{color:var(--red)}
+.ti-empty{padding:20px;text-align:center;font-size:13px;color:#d1d5db}
+
+/* ════════════════════ ADVISORS TABLE ════════════════════ */
+.tbl-scroll{flex:1;overflow-y:auto;padding:20px 28px 28px}
+.pipe-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);border:1px solid var(--border)}
+.pipe-table th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;padding:11px 14px;background:#fafafa;border-bottom:2px solid var(--border)}
+.pipe-table td{padding:10px 14px;border-bottom:1px solid #f7f7f7;vertical-align:middle}
+.pipe-table tr:last-child td{border-bottom:none}
+.pipe-table tbody tr:hover td{background:#fafcff}
+.ce{border:none;background:transparent;font-size:13px;font-family:inherit;color:var(--txt);width:100%;outline:none}
+.ce:focus{background:#f0f4ff;border-radius:4px;padding:2px 6px;margin:-2px -6px}
+.ssel{border:none;outline:none;font-size:11px;font-weight:700;padding:3px 20px 3px 8px;border-radius:10px;cursor:pointer;appearance:none;background-repeat:no-repeat;background-position:right 6px center;background-size:8px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E")}
+.ss-todo{background:#f0f0f0;color:#666}.ss-ip{background:#dbeafe;color:#1d4ed8}.ss-wait{background:#fef3c7;color:#b45309}.ss-done{background:#dcfce7;color:#15803d}.ss-drop{background:#fee2e2;color:#b91c1c}
+.add-row{background:none;border:1px dashed var(--border);border-radius:8px;width:100%;padding:9px;font-size:12px;color:#9ca3af;cursor:pointer;margin-top:10px;font-family:inherit}
+.add-row:hover{border-color:var(--acc);color:var(--acc);background:#f5f5ff}
+
+/* ════════════════════ OTTER PAGE ════════════════════ */
+.otter-pg{flex:1;overflow-y:auto;padding:20px 28px}
+.otter-card{background:var(--card);border:1px solid #ffd4c2;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.otter-card-h{background:#fff7f3;padding:14px 20px;border-bottom:1px solid #ffd4c2;display:flex;align-items:center;gap:12px}
+.otter-card-h span{font-size:24px}
+.otter-card-h strong{display:block;font-size:13px}
+.otter-card-h p{font-size:11px;color:var(--sub)}
+.otter-ta{width:100%;border:none;padding:18px 20px;font-size:13px;font-family:inherit;resize:none;outline:none;line-height:1.7;min-height:260px;color:var(--txt)}
+.otter-ta::placeholder{color:#d1d5db}
+
+/* ════════════════════ PROJET PAGE ════════════════════ */
+.proj-scroll{flex:1;overflow-y:auto;padding:16px 28px 40px}
+.proj-toolbar{padding:11px 28px;display:flex;align-items:center;gap:8px;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--card)}
+.proj-filter-btn{border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;background:#fff;font-family:inherit;color:#6b7280;transition:.12s}
+.proj-filter-btn:hover{border-color:var(--acc);color:var(--acc)}
+.proj-filter-btn.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+.proj-search{border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:13px;font-family:inherit;outline:none;width:200px}
+.proj-search:focus{border-color:var(--acc)}
+.proj-stats-row{display:flex;gap:20px;padding:10px 28px 0;flex-shrink:0}
+.proj-stat{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:4px}
+.proj-stat strong{font-size:14px;font-weight:700;color:var(--txt)}
+.cat-block{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:12px}
+.cat-head{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;background:#fafafa;border-bottom:1px solid var(--border);transition:.12s}
+.cat-head:hover{background:#f5f5ff}
+.cat-head-name{font-size:12px;font-weight:700;color:var(--txt);flex:1}
+.cat-progress{font-size:11px;color:var(--sub)}
+.cat-count{background:#f0f0f0;color:#888;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+.cat-chevron{font-size:10px;color:#aaa;transition:.2s;flex-shrink:0}
+.cat-block.collapsed .cat-chevron{transform:rotate(-90deg)}
+.cat-block.collapsed .cat-body{display:none}
+.cat-body{padding:4px 0}
+.pt{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid #f9f9f9;transition:.12s}
+.pt:last-child{border-bottom:none}
+.pt:hover{background:#fafcff}
+.pt input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--acc);flex-shrink:0;margin-top:2px}
+.pt-body{flex:1;min-width:0}
+.pt-text{font-size:13px;color:var(--txt);line-height:1.4;outline:none;display:block;width:100%}
+.pt-text.done{text-decoration:line-through;color:#9ca3af}
+.pt-note{font-size:11px;color:#9ca3af;margin-top:2px;line-height:1.4;outline:none;display:block;width:100%;font-style:italic}
+.pt-del{background:none;border:none;color:#e5e7eb;cursor:pointer;font-size:12px;padding:2px 4px;flex-shrink:0;margin-top:1px}
+.pt-del:hover{color:var(--red)}
+.cat-add-task{width:calc(100% - 28px);margin:4px 14px 8px;background:none;border:1px dashed var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:#9ca3af;cursor:pointer;font-family:inherit;text-align:left}
+.cat-add-task:hover{border-color:var(--acc);color:var(--acc);background:#f5f5ff}
+
+/* ════════════════════ ARCHIVES ════════════════════ */
+.arch-btn{background:none;border:1px solid #fed7aa;border-radius:7px;padding:6px 12px;font-size:12px;color:#ea580c;cursor:pointer;font-family:inherit;flex-shrink:0}
+.arch-btn:hover{background:#fff7ed}
+.restore-btn{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:11px;color:#15803d;cursor:pointer;font-weight:600}
+.restore-btn:hover{background:#dcfce7}
+.arch-page-scroll{flex:1;overflow-y:auto;padding:20px 28px 28px;display:flex;flex-direction:column;gap:24px}
+.arch-section-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#9ca3af;padding:8px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.arch-section-h span{font-size:11px;font-weight:700;background:#f3f4f6;color:#6b7280;padding:1px 8px;border-radius:8px}
+.arch-empty{font-size:13px;color:#d1d5db;text-align:center;padding:20px}
+.arch-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+.arch-item-info{flex:1;min-width:0}
+.arch-item-name{font-size:13px;font-weight:600;color:#6b7280}
+.arch-item-sub{font-size:11px;color:#9ca3af;margin-top:2px}
+
+/* ════════════════════ DEAL FLOW PAGE ════════════════════ */
+.df-page-scroll{flex:1;overflow-y:auto;padding:0 28px 28px}
+.df-toolbar{padding:11px 28px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--card);flex-wrap:wrap}
+.df-table{width:100%;border-collapse:collapse;margin-top:14px}
+.df-table th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;padding:8px 12px;border-bottom:2px solid var(--border);background:var(--card);position:sticky;top:0;z-index:1}
+.df-table td{padding:9px 12px;border-bottom:1px solid #f7f7f7;font-size:13px;vertical-align:middle}
+.df-table tbody tr.deal-row:hover td{background:#fafcff;cursor:pointer}
+.df-table tbody tr.df-seen td{opacity:.6}
+.df-group-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#6366f1;padding:10px 12px 6px;background:#f8f8ff;border-bottom:1px solid var(--border)}
+.deal-src-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;white-space:nowrap}
+.deal-add-btn{background:var(--acc);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;font-family:inherit;margin-left:4px}
+.deal-add-btn:hover{background:var(--acc2)}
+.deal-link-btn{font-size:11px;color:var(--acc);text-decoration:none;padding:3px 7px;border:1px solid #ddd;border-radius:5px}
+.deal-link-btn:hover{background:#f0f4ff}
+.df-new-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
+.df-empty{padding:60px 40px;text-align:center;color:#9ca3af}
+.df-empty-icon{font-size:36px;margin-bottom:12px}
+.df-empty-title{font-size:14px;font-weight:600;color:#374151;margin-bottom:8px}
+.df-empty-sub{font-size:12px;color:#6b7280;line-height:1.6}
+.sb-badge.badge-red{background:#ef4444 !important;color:#fff !important}
+
+/* ════════════════════ SHARED UTILS ════════════════════ */
+.toast{position:fixed;bottom:20px;right:24px;background:var(--txt);color:#fff;padding:8px 18px;border-radius:8px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sb">
+  <div class="sb-brand"><span class="sb-brand-icon">🎯</span><span class="sb-brand-name">Acquis</span></div>
+  <div class="sb-date" id="sb-date"></div>
+
+  <div class="sb-moment">
+    <button class="sb-mbtn" id="mb-matin" onclick="setMoment('matin')">☀️ Matin</button>
+    <button class="sb-mbtn" id="mb-midi"  onclick="setMoment('midi')">🌤 Midi</button>
+    <button class="sb-mbtn" id="mb-soir"  onclick="setMoment('soir')">🌙 Soir</button>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-label">Pipeline</div>
+  <div class="sb-item active" id="nav-pipeline" onclick="goTo('pipeline')">
+    <span class="si">🎯</span> Acquisitions
+    <span class="sb-badge" id="badge-pipeline">0</span>
+  </div>
+  <div class="sb-item" id="nav-contacts" onclick="goTo('contacts')">
+    <span class="si">🔗</span> Contacts Indirects
+    <span class="sb-badge" id="badge-contacts">0</span>
+  </div>
+
+  <div class="sb-item" id="nav-project" onclick="goTo('project')">
+    <span class="si">📌</span> Projet
+    <span class="sb-badge" id="badge-project">0</span>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-label">Journée</div>
+  <div class="sb-item" id="nav-today" onclick="goTo('today')">
+    <span class="si">📋</span> Aujourd'hui
+    <span class="sb-badge" id="badge-today">-</span>
+  </div>
+  <div class="sb-item" id="nav-advisors" onclick="goTo('advisors')">
+    <span class="si">🤝</span> Advisors
+    <span class="sb-badge" id="badge-advisors">0</span>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-label">Sourcing</div>
+  <div class="sb-item" id="nav-dealflow" onclick="goTo('dealflow')">
+    <span class="si">🔍</span> Deal Flow
+    <span class="sb-badge" id="badge-dealflow"></span>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-item" id="nav-archives" onclick="goTo('archives')">
+    <span class="si">📦</span> Archives
+    <span class="sb-badge" id="badge-archives"></span>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-otter" onclick="goTo('otter')">
+    <strong>🎙 Otter.ai</strong>
+    <span>Intégration — Step 2</span>
+  </div>
+</nav>
+
+<!-- ═══════════════ QUICK LOG POPUP ═══════════════ -->
+<div class="ql-overlay" id="ql-overlay" onclick="closeQL()">
+  <div class="ql-box" onclick="event.stopPropagation()">
+    <div class="ql-title" id="ql-title">Logger une activité</div>
+    <div class="ql-types">
+      <button class="ql-type active" id="qlt-call"    onclick="selectQLType('call')">📞 Appel</button>
+      <button class="ql-type"        id="qlt-email"   onclick="selectQLType('email')">📧 Email</button>
+      <button class="ql-type"        id="qlt-meeting" onclick="selectQLType('meeting')">📅 RDV</button>
+      <button class="ql-type"        id="qlt-note"    onclick="selectQLType('note')">📝 Note</button>
+    </div>
+    <textarea class="ql-ta" id="ql-text" placeholder="Résumé rapide…"></textarea>
+    <div class="ql-footer">
+      <button class="ql-cancel" onclick="closeQL()">Annuler</button>
+      <button class="ql-save"   onclick="saveQL()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DRAWER — DIRECT ═══════════════ -->
+<div class="dov" id="dov-direct" onclick="closeDrawer('direct')"></div>
+<div class="drawer" id="drawer-direct">
+  <div class="dh">
+    <div class="dh-left">
+      <div class="dh-title" id="dh-direct-title">Fiche</div>
+      <div class="dh-sub"   id="dh-direct-sub"></div>
+    </div>
+    <button class="dh-close" onclick="closeDrawer('direct')">✕ Fermer</button>
+  </div>
+  <div class="dbody">
+    <!-- Identification -->
+    <div><div class="dsec">Identification</div>
+      <div class="grid2">
+        <div class="fg"><label>Société / Référence</label><input class="fi" id="dd-societe"  placeholder="Nom…" oninput="syncD()"/></div>
+        <div class="fg"><label>Contact</label>            <input class="fi" id="dd-contact"  placeholder="Contact…" oninput="syncD()"/></div>
+        <div class="fg"><label>Secteur</label>            <input class="fi" id="dd-secteur"  placeholder="Petfood…" oninput="syncD()"/></div>
+        <div class="fg"><label>Région</label>             <input class="fi" id="dd-region"   placeholder="Bretagne…" oninput="syncD()"/></div>
+      </div>
+    </div>
+    <!-- Financials -->
+    <div><div class="dsec">Financials</div>
+      <div class="grid4">
+        <div class="fg"><label>CA (€)</label>     <input class="fi" id="dd-ca"     placeholder="2 000 000" oninput="syncD()"/></div>
+        <div class="fg"><label>EBITDA (€)</label> <input class="fi" id="dd-ebitda" placeholder="300 000"   oninput="syncD()"/></div>
+        <div class="fg"><label>BFR</label>        <input class="fi" id="dd-bfr"    placeholder="120 000"   oninput="syncD()"/></div>
+        <div class="fg"><label>Pax</label>        <input class="fi" id="dd-pax"    placeholder="12"        oninput="syncD()"/></div>
+      </div>
+      <div class="fg" style="margin-top:10px"><label>Financials — détail</label>
+        <textarea class="fta" id="dd-financials" placeholder="Bilan, ratios…" oninput="syncD()"></textarea>
+      </div>
+    </div>
+    <!-- Historique -->
+    <div><div class="dsec">Historique</div>
+      <div class="grid2">
+        <div class="fg"><label>Premier contact</label><input class="fi" id="dd-pc" placeholder="jj/mm/aaaa" oninput="syncD()"/></div>
+        <div class="fg"><label>Premier appel</label>  <input class="fi" id="dd-pa" placeholder="jj/mm/aaaa" oninput="syncD()"/></div>
+      </div>
+      <div class="fg" style="margin-top:10px"><label>Mémo</label>
+        <textarea class="fta" id="dd-memo" placeholder="Contexte, impressions…" oninput="syncD()"></textarea>
+      </div>
+    </div>
+    <!-- CRM -->
+    <div><div class="dsec">CRM</div>
+      <div class="fg">
+        <label>Statut CRM</label>
+        <select class="fsel" id="dd-crm" onchange="syncD()">
+          <option>À contacter</option><option>Contacté</option><option>RDV fixé</option>
+          <option>En cours</option><option>En négociation</option><option>LOI signée</option>
+          <option>Deal clôturé</option><option>No go</option><option>Abandonné</option>
+        </select>
+      </div>
+      <div class="fg" style="margin-top:10px"><label>Notes CRM</label>
+        <textarea class="fta" id="dd-notes" placeholder="Prochaine étape…" oninput="syncD()"></textarea>
+      </div>
+    </div>
+    <!-- Activity log -->
+    <div><div class="dsec">Journal d'activités</div>
+      <div class="act-add-form">
+        <div class="act-types" id="act-types-row">
+          <button class="act-type-btn active" id="at-call"    onclick="selectActType('call')">📞 Appel</button>
+          <button class="act-type-btn"        id="at-email"   onclick="selectActType('email')">📧 Email</button>
+          <button class="act-type-btn"        id="at-meeting" onclick="selectActType('meeting')">📅 RDV</button>
+          <button class="act-type-btn"        id="at-note"    onclick="selectActType('note')">📝 Note</button>
+        </div>
+        <div class="act-input-row">
+          <input class="act-ti" id="act-input" placeholder="Résumé de l'activité…" onkeydown="if(event.key==='Enter')saveActivity()"/>
+          <button class="act-save-btn" onclick="saveActivity()">+ Log</button>
+        </div>
+      </div>
+      <div class="act-log" id="act-log"></div>
+    </div>
+  </div>
+  <div class="df">
+    <div class="df-mvs"><span style="font-size:11px;color:#aaa;margin-right:4px">Déplacer :</span><span id="df-mv-direct"></span></div>
+    <div style="display:flex;gap:8px">
+      <button class="arch-btn" onclick="archiveActive('direct')">📦 Archiver</button>
+      <button class="df-del" onclick="delActiveCard('direct')">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DRAWER — INDIRECT ═══════════════ -->
+<div class="dov" id="dov-indirect" onclick="closeDrawer('indirect')"></div>
+<div class="drawer" id="drawer-indirect">
+  <div class="dh">
+    <div class="dh-left">
+      <div class="dh-title" id="dh-indirect-title">Fiche contact</div>
+      <div class="dh-sub"   id="dh-indirect-sub"></div>
+    </div>
+    <button class="dh-close" onclick="closeDrawer('indirect')">✕ Fermer</button>
+  </div>
+  <div class="dbody">
+    <div><div class="dsec">Identification</div>
+      <div class="grid2">
+        <div class="fg"><label>Cabinet / Société</label><input class="fi" id="di-cabinet" placeholder="Nom…" oninput="syncI()"/></div>
+        <div class="fg"><label>Localisation</label>     <input class="fi" id="di-loc"     placeholder="Ville…" oninput="syncI()"/></div>
+        <div class="fg"><label>Prénom</label>           <input class="fi" id="di-prenom"  placeholder="Prénom…" oninput="syncI()"/></div>
+        <div class="fg"><label>Nom</label>              <input class="fi" id="di-nom"     placeholder="Nom…" oninput="syncI()"/></div>
+      </div>
+    </div>
+    <div><div class="dsec">Coordonnées</div>
+      <div class="grid2">
+        <div class="fg"><label>Téléphone</label><input class="fi" id="di-tel"   placeholder="06 xx xx xx xx" oninput="syncI()"/></div>
+        <div class="fg"><label>Email</label>    <input class="fi" id="di-email" placeholder="email@…" oninput="syncI()"/></div>
+      </div>
+    </div>
+    <div><div class="dsec">Suivi</div>
+      <div class="grid2">
+        <div class="fg"><label>Dernier contact</label><input class="fi" id="di-last" placeholder="jj/mm" oninput="syncI()"/></div>
+        <div class="fg"><label>Statut</label>
+          <select class="fsel" id="di-statut" onchange="syncI()">
+            <option>Prospect</option><option>À contacter</option><option>Contacté</option>
+            <option>À relancer</option><option>En cours</option><option>Converti</option><option>Abandonné</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:10px"><label>Prochaines étapes</label>
+        <textarea class="fta" id="di-next" placeholder="Actions, relances…" oninput="syncI()"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="df">
+    <div class="df-mvs"><span style="font-size:11px;color:#aaa;margin-right:4px">Déplacer :</span><span id="df-mv-indirect"></span></div>
+    <div style="display:flex;gap:8px">
+      <button class="arch-btn" onclick="archiveActive('indirect')">📦 Archiver</button>
+      <button class="df-del" onclick="delActiveCard('indirect')">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<div class="main">
+
+  <!-- PIPELINE PAGE -->
+  <div class="page active" id="page-pipeline">
+    <div class="stats-bar" id="stats-bar"></div>
+    <div class="pipe-scroll"><div class="kanban" id="kanban-direct"></div></div>
+  </div>
+
+  <!-- CONTACTS PAGE -->
+  <div class="page" id="page-contacts">
+    <div class="ph"><h2>🔗 Contacts Indirects</h2><p>Apporteurs d'affaires, cabinets, banques, associations</p></div>
+    <div class="ph-divider"></div>
+    <div class="contacts-toolbar">
+      <input class="search-input" id="contact-search" placeholder="🔍  Rechercher un cabinet, un contact…" oninput="filterContacts()"/>
+      <select class="filter-select" id="contact-filter" onchange="filterContacts()">
+        <option value="">Tous les statuts</option>
+        <option>Prospect</option><option>À contacter</option><option>Contacté</option>
+        <option>À relancer</option><option>En cours</option><option>Converti</option><option>Abandonné</option>
+      </select>
+      <span class="ct-count" id="ct-count"></span>
+      <button class="add-contact-btn" onclick="addIndirectCard(0)">+ Ajouter</button>
+    </div>
+    <div class="contacts-list"><table class="contact-table">
+      <thead><tr>
+        <th style="width:22%">Cabinet / Société</th>
+        <th style="width:18%">Contact</th>
+        <th style="width:15%">Localisation</th>
+        <th style="width:10%">Téléphone</th>
+        <th style="width:14%">Statut</th>
+        <th>Prochaines étapes</th>
+      </tr></thead>
+      <tbody id="contact-tbody"></tbody>
+    </table></div>
+  </div>
+
+  <!-- TODAY PAGE -->
+  <div class="page" id="page-today">
+    <div class="ph"><h2>📋 Aujourd'hui</h2><p id="ph-today-date"></p></div>
+    <div class="ph-divider"></div>
+    <div class="today-scroll">
+      <div class="time-blocks">
+        <div class="tb" id="tb-matin"><label>☀️ Matin — intentions</label><textarea id="block-matin" placeholder="Ce que je veux accomplir ce matin…" oninput="save()"></textarea></div>
+        <div class="tb" id="tb-midi"> <label>🌤 Midi — bilan</label>      <textarea id="block-midi"  placeholder="Où j'en suis, ajustements…" oninput="save()"></textarea></div>
+        <div class="tb" id="tb-soir"><label>🌙 Soir — clôture</label>     <textarea id="block-soir" placeholder="Ce qui est fait, demain…" oninput="save()"></textarea></div>
+      </div>
+      <div class="todo-panel">
+        <div class="todo-ph"><h3>Tâches du jour</h3><span id="todo-count">0 / 0</span></div>
+        <div class="todo-row">
+          <input class="todo-in" id="todo-in" placeholder="Ajouter une tâche…" onkeydown="if(event.key==='Enter')addTodo()"/>
+          <button class="todo-add" onclick="addTodo()">+ Ajouter</button>
+        </div>
+        <div class="todo-items" id="todo-items"><div class="ti-empty">Aucune tâche pour aujourd'hui</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADVISORS PAGE -->
+  <div class="page" id="page-advisors">
+    <div class="ph"><h2>🤝 Support & Advisors</h2><p>Avocats, expert-comptable, mentors, réseau de confiance</p></div>
+    <div class="ph-divider"></div>
+    <div class="tbl-scroll">
+      <table class="pipe-table">
+        <thead><tr>
+          <th style="width:18%">Nom</th><th style="width:24%">Rôle</th><th style="width:12%">Statut</th>
+          <th style="width:14%">Dernier contact</th><th style="width:16%">Prochaine action</th><th>Notes</th><th style="width:38px"></th>
+        </tr></thead>
+        <tbody id="tbody-advisors"></tbody>
+      </table>
+      <button class="add-row" onclick="addAdvisorRow()">+ Ajouter</button>
+    </div>
+  </div>
+
+  <!-- OTTER PAGE -->
+  <div class="page" id="page-otter">
+    <div class="ph"><h2>🎙 Otter.ai</h2><p>Résumés d'appels & extraits emails — intégration automatique Step 2</p></div>
+    <div class="ph-divider"></div>
+    <div class="otter-pg">
+      <div class="otter-card">
+        <div class="otter-card-h">
+          <span>🎙</span>
+          <div><strong>Otter — En attente d'intégration</strong><p>En attendant, coller ici les notes d'appels ou actions à logguer</p></div>
+        </div>
+        <textarea class="otter-ta" id="otter-notes" placeholder="Ex: Call avec X le 12/03 — intéressé, CA ~2M€, RDV à fixer début avril…" oninput="save()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJET PAGE -->
+  <div class="page" id="page-project">
+    <div class="ph"><h2>📌 Projet Reprise</h2><p>Backlog de toutes les actions — de la thèse au closing</p></div>
+    <div class="ph-divider"></div>
+    <div class="proj-toolbar">
+      <button class="proj-filter-btn active" id="pfilt-all"   onclick="setProjFilter('all')">Tout</button>
+      <button class="proj-filter-btn"        id="pfilt-todo"  onclick="setProjFilter('todo')">À faire</button>
+      <button class="proj-filter-btn"        id="pfilt-done"  onclick="setProjFilter('done')">Fait</button>
+      <input class="proj-search" id="proj-search" placeholder="🔍 Rechercher…" oninput="renderProject()"/>
+    </div>
+    <div class="proj-stats-row" id="proj-stats"></div>
+    <div class="proj-scroll" id="proj-scroll"></div>
+  </div>
+
+  <!-- DEAL FLOW PAGE -->
+  <div class="page" id="page-dealflow">
+    <div class="ph">
+      <h2>🔍 Deal Flow</h2>
+      <p>Opportunités détectées automatiquement — Petfood · Nutrition animale · Équin · NAC &nbsp;·&nbsp; <span id="df-last-upd" style="color:#9ca3af"></span></p>
+    </div>
+    <div class="ph-divider"></div>
+    <div class="df-toolbar">
+      <input class="search-input" id="df-search" placeholder="🔎 Rechercher..." oninput="renderDealFlow()" style="width:220px"/>
+      <select class="filter-select" id="df-source" onchange="renderDealFlow()">
+        <option value="">Toutes les sources</option>
+        <option>Transentreprise</option>
+        <option>BPI France</option>
+        <option>Fusacq</option>
+        <option>CRA</option>
+        <option>CessionPME</option>
+        <option>MaCession</option>
+      </select>
+      <button class="proj-filter-btn" id="df-new-btn" onclick="toggleDfNew()" style="flex-shrink:0">🆕 Nouvelles</button>
+      <span class="ct-count" id="df-count" style="margin-left:auto"></span>
+      <button class="add-contact-btn" onclick="loadDealsJson(true)" style="flex-shrink:0">🔄 Actualiser</button>
+    </div>
+    <div class="df-page-scroll">
+      <div id="df-list"><div class="df-empty"><div class="df-empty-icon">🔍</div><div class="df-empty-title">Chargement...</div></div></div>
+    </div>
+  </div>
+
+  <!-- ARCHIVES PAGE -->
+  <div class="page" id="page-archives">
+    <div class="ph"><h2>📦 Archives</h2><p>Contacts et cibles clôturés — plus rien à en tirer</p></div>
+    <div class="ph-divider"></div>
+    <div class="arch-page-scroll" id="arch-content"></div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="toast" id="toast">Sauvegardé ✓</div>
+
+<script>
+// ════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════
+const K_COLS   = ['À contacter','Contacté','En cours','Suivi'];
+const COL_DOTS = ['dot-0','dot-1','dot-2','dot-3'];
+const ACT_ICONS= {call:'📞',email:'📧',meeting:'📅',note:'📝'};
+const CRM_MAP  = {
+  'À contacter':'crm-0','Contacté':'crm-1','RDV fixé':'crm-2',
+  'En cours':'crm-3','En négociation':'crm-3','LOI signée':'crm-4','Deal clôturé':'crm-4',
+  'No go':'crm-x','Abandonné':'crm-x'
+};
+const ISC_MAP = {
+  'Prospect':'crm-0','À contacter':'crm-0','Contacté':'crm-1','À relancer':'crm-3',
+  'En cours':'crm-3','Converti':'crm-4','Abandonné':'crm-x'
+};
+
+let cardCtr=0, todoCtr=0, rowCtr=0;
+const directData  ={};  // id -> {...fields, activities:[{type,text,ts}]}
+const indirectData={};  // id -> {...fields}
+const activeCard  ={direct:null,indirect:null};
+let qlCardId=null, qlType='call', actType='call';
+let contactFilter={q:'',status:''};
+
+// ════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════
+function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function now(){return Date.now()}
+function today(){return new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function fmtTs(ts){
+  if(!ts)return'';
+  const d=new Date(ts),now_=new Date();
+  const diff=Math.floor((now_-d)/86400000);
+  if(diff===0)return"Aujourd'hui";
+  if(diff===1)return'Hier';
+  return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+}
+function agingInfo(activities){
+  if(!activities||!activities.length)return{cls:'age-none',label:'Jamais contacté'};
+  const last=Math.max(...activities.map(a=>a.ts||0));
+  const days=Math.floor((Date.now()-last)/86400000);
+  if(days<3) return{cls:'age-fresh',label:`il y a ${days===0?'aujourd\'hui':days+'j'}`};
+  if(days<7) return{cls:'age-ok',label:`il y a ${days}j`};
+  if(days<14)return{cls:'age-old',label:`⚠ il y a ${days}j`};
+  return{cls:'age-dead',label:`🔴 il y a ${days}j`};
+}
+function parseCA(s){
+  if(!s)return 0;
+  const n=parseFloat(s.replace(/[^\d.,]/g,'').replace(',','.'));
+  if(isNaN(n))return 0;
+  if(/M/i.test(s))return n*1000000;
+  return n;
+}
+function fmtNum(n){
+  if(n>=1000000)return(n/1000000).toFixed(1)+'M€';
+  if(n>=1000)return Math.round(n/1000)+'K€';
+  return n+'€';
+}
+let toastT;
+function showToast(){const t=document.getElementById('toast');t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1600)}
+
+// ════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════
+function goTo(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  const pg=document.getElementById('page-'+id),nav=document.getElementById('nav-'+id);
+  if(pg)pg.classList.add('active');
+  if(nav)nav.classList.add('active');
+  if(id==='contacts')renderContactTable();
+  if(id==='pipeline')renderStatsBar();
+  if(id==='archives')renderArchives();
+  if(id==='project')renderProject();
+  if(id==='dealflow')loadDealsJson();
+}
+
+// ════════════════════════════════════════════════════
+// STATS BAR
+// ════════════════════════════════════════════════════
+function renderStatsBar(){
+  const bar=document.getElementById('stats-bar'); if(!bar)return;
+  const nonArchived=Object.values(directData).filter(d=>!d.archived);
+  const active=nonArchived.filter(d=>!['No go','Abandonné'].includes(d.statutCRM));
+  let totalCA=0; active.forEach(d=>totalCA+=parseCA(d.ca));
+  const byCols=K_COLS.map((_,ci)=>nonArchived.filter(d=>d.col===ci).length);
+  bar.innerHTML=`
+    <div class="stat"><div class="stat-val">${active.length}</div><div class="stat-lbl">Deals actifs</div></div>
+    <div class="stat"><div class="stat-val">${totalCA?fmtNum(totalCA):'—'}</div><div class="stat-lbl">CA pipeline</div></div>
+    ${K_COLS.map((col,ci)=>`<div class="stat"><div class="stat-val">${byCols[ci]}</div><div class="stat-lbl">${col}</div></div>`).join('')}
+  `;
+}
+
+// ════════════════════════════════════════════════════
+// DIRECT CARDS
+// ════════════════════════════════════════════════════
+function emptyD(){return{col:0,societe:'',contact:'',secteur:'',region:'',ca:'',ebitda:'',bfr:'',pax:'',premierContact:'',premierAppel:'',memo:'',financials:'',statutCRM:'À contacter',notesCRM:'',activities:[]}}
+
+function buildDCard(id,d,ci){
+  const el=document.createElement('div');
+  el.className='dc';el.id=id;el.dataset.col=ci;
+  const age=agingInfo(d.activities);
+  const crmCls=CRM_MAP[d.statutCRM]||'crm-0';
+  const chips=[
+    d.secteur?`<span class="chip chip-gray">${escH(d.secteur)}</span>`:'',
+    d.region ?`<span class="chip chip-green">${escH(d.region)}</span>`:'',
+    d.ca     ?`<span class="chip chip-ca">CA: ${escH(d.ca)}</span>`:'',
+  ].join('');
+  const lA=ci>0              ?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',-1)">←</button>`:'';
+  const rA=ci<K_COLS.length-1?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',1)">→</button>`:'';
+  el.innerHTML=`
+    <div class="dc-top">
+      <div class="dc-name">${escH(d.societe)||'<span style="color:#d1d5db">Nouvelle cible</span>'}</div>
+      <div class="aging-dot ${age.cls}" title="${age.label}"></div>
+    </div>
+    <div class="dc-contact">${escH(d.contact)||''}</div>
+    <div class="dc-chips">${chips}<span class="crm-badge ${crmCls}">${escH(d.statutCRM)}</span></div>
+    <div class="dc-footer">
+      <span class="dc-age-label">${age.label}</span>
+      <div class="dc-actions">
+        <button class="btn-log" onclick="event.stopPropagation();openQL('${id}')">+ Log</button>
+        ${lA}${rA}
+        <button class="btn-del" onclick="event.stopPropagation();delDC('${id}')">✕</button>
+      </div>
+    </div>`;
+  el.addEventListener('click',()=>openDrawer('direct',id));
+  return el;
+}
+
+function addDCard(ci,data){
+  cardCtr++;
+  const id='dc-'+Date.now()+'-'+cardCtr;
+  directData[id]=Object.assign(emptyD(),data||{},{col:ci,activities:data?.activities||[]});
+  const c=document.getElementById('kcards-direct-'+ci);
+  if(c)c.appendChild(buildDCard(id,directData[id],ci));
+  updatePBadge();renderStatsBar();save();return id;
+}
+
+function refreshDCard(id){
+  const old=document.getElementById(id);if(!old)return;
+  const ci=parseInt(old.dataset.col);
+  const d=directData[id];if(!d)return;
+  old.replaceWith(buildDCard(id,d,ci));
+}
+
+function moveDC(id,dir){
+  const d=directData[id];if(!d)return;
+  const nc=d.col+dir;if(nc<0||nc>=K_COLS.length)return;
+  const old=document.getElementById(id);if(old)old.remove();
+  d.col=nc;
+  const c=document.getElementById('kcards-direct-'+nc);
+  if(c)c.appendChild(buildDCard(id,d,nc));
+  updatePBadge();renderStatsBar();sortAllColumns();
+  if(activeCard.direct===id)updateDMoveButtons(nc);
+  save();
+}
+
+function delDC(id){
+  delete directData[id];
+  const el=document.getElementById(id);if(el)el.remove();
+  if(activeCard.direct===id)closeDrawer('direct');
+  updatePBadge();renderStatsBar();save();
+}
+
+function delActiveCard(pipe){
+  const id=activeCard[pipe];if(id){pipe==='direct'?delDC(id):delIC(id);}
+}
+
+function updatePBadge(){
+  let t=0;K_COLS.forEach((_,ci)=>{const c=document.getElementById('kcards-direct-'+ci);const n=c?c.children.length:0;const cnt=document.getElementById('kc-direct-'+ci);if(cnt)cnt.textContent=n;t+=n;});
+  const b=document.getElementById('badge-pipeline');if(b)b.textContent=t;
+}
+
+// ════════════════════════════════════════════════════
+// KANBAN INIT
+// ════════════════════════════════════════════════════
+function initKanban(){
+  const el=document.getElementById('kanban-direct');if(!el)return;
+  el.innerHTML='';
+  K_COLS.forEach((col,ci)=>{
+    const d=document.createElement('div');d.className='k-col';
+    d.innerHTML=`
+      <div class="k-col-head">
+        <div class="k-col-head-left"><div class="k-col-dot ${COL_DOTS[ci]}"></div><span class="k-col-name">${col}</span></div>
+        <span class="k-col-count" id="kc-direct-${ci}">0</span>
+      </div>
+      <div class="k-cards" id="kcards-direct-${ci}"></div>
+      <button class="k-add" onclick="addDCard(${ci})">+ Ajouter une cible</button>`;
+    el.appendChild(d);
+  });
+}
+
+// ════════════════════════════════════════════════════
+// PIPELINE AUTO-SORT
+// ════════════════════════════════════════════════════
+function getSortScore(d){
+  // Higher score = more urgent = floats to top
+  const acts=d.activities||[];
+  if(!acts.length)return 9999; // never contacted = absolute top
+  const lastTs=Math.max(...acts.map(a=>a.ts||0));
+  const daysAgo=(Date.now()-lastTs)/86400000;
+  if(daysAgo>=7) return 1000+daysAgo;   // overdue this week+
+  if(daysAgo>=3) return  100+daysAgo;   // ageing but recent
+  return daysAgo;                        // freshly contacted = bottom
+}
+
+function sortAllColumns(){
+  K_COLS.forEach((_,ci)=>{
+    const container=document.getElementById('kcards-direct-'+ci);if(!container)return;
+    const cards=[...container.querySelectorAll('.dc')];if(cards.length<2)return;
+    cards.sort((a,b)=>{
+      const da=directData[a.id],db=directData[b.id];
+      if(!da||!db)return 0;
+      return getSortScore(db)-getSortScore(da); // wait: higher score = top → sort desc
+    });
+    // Re-insert in sorted order (add-button stays at bottom via CSS, it's outside k-cards)
+    cards.forEach(c=>container.appendChild(c));
+    // Refresh sort-priority chip on each card
+    cards.forEach(c=>{
+      const d=directData[c.id];if(!d)return;
+      const score=getSortScore(d);
+      let chip=c.querySelector('.sort-chip');
+      if(score>=1000){
+        if(!chip){chip=document.createElement('span');chip.className='chip chip-red sort-chip';c.querySelector('.dc-chips')?.prepend(chip);}
+        const daysAgo=Math.round(score-1000);
+        chip.textContent=daysAgo===0?'📅 Aujourd\'hui':'⚠️ '+(daysAgo>=7?'Semaine en cours':'Relancer');
+      } else if(chip){chip.remove();}
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════
+// QUICK LOG POPUP
+// ════════════════════════════════════════════════════
+function openQL(cardId){
+  qlCardId=cardId;
+  qlType='call';
+  ['call','email','meeting','note'].forEach(t=>{document.getElementById('qlt-'+t)?.classList.remove('active')});
+  document.getElementById('qlt-call')?.classList.add('active');
+  document.getElementById('ql-text').value='';
+  const d=directData[cardId];
+  document.getElementById('ql-title').textContent='Logger — '+(d?.societe||'Contact');
+  document.getElementById('ql-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('ql-text').focus(),50);
+}
+function closeQL(){document.getElementById('ql-overlay').classList.remove('open');qlCardId=null;}
+function selectQLType(t){
+  qlType=t;
+  ['call','email','meeting','note'].forEach(x=>{document.getElementById('qlt-'+x)?.classList.remove('active')});
+  document.getElementById('qlt-'+t)?.classList.add('active');
+}
+function saveQL(){
+  if(!qlCardId)return;
+  const text=document.getElementById('ql-text').value.trim();if(!text)return;
+  const d=directData[qlCardId];if(!d)return;
+  if(!d.activities)d.activities=[];
+  d.activities.unshift({type:qlType,text,ts:Date.now()});
+  refreshDCard(qlCardId);
+  sortAllColumns();
+  closeQL();save();showToast();
+}
+
+// ════════════════════════════════════════════════════
+// ACTIVITY LOG IN DRAWER
+// ════════════════════════════════════════════════════
+function selectActType(t){
+  actType=t;
+  ['call','email','meeting','note'].forEach(x=>{document.getElementById('at-'+x)?.classList.remove('active')});
+  document.getElementById('at-'+t)?.classList.add('active');
+}
+function saveActivity(){
+  const id=activeCard.direct;if(!id)return;
+  const d=directData[id];if(!d)return;
+  const text=document.getElementById('act-input')?.value.trim();if(!text)return;
+  if(!d.activities)d.activities=[];
+  d.activities.unshift({type:actType,text,ts:Date.now()});
+  document.getElementById('act-input').value='';
+  renderActivityLog(id);
+  refreshDCard(id);
+  sortAllColumns();
+  save();showToast();
+}
+function renderActivityLog(id){
+  const d=directData[id];
+  const log=document.getElementById('act-log');if(!log)return;
+  const acts=d?.activities||[];
+  if(!acts.length){log.innerHTML='<div class="act-empty">Aucune activité — logger votre premier échange</div>';return;}
+  log.innerHTML=acts.map(a=>`
+    <div class="act-entry">
+      <div class="act-icon">${ACT_ICONS[a.type]||'📝'}</div>
+      <div class="act-body">
+        <div class="act-text">${escH(a.text)}</div>
+        <div class="act-date">${fmtTs(a.ts)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════
+// DIRECT DRAWER
+// ════════════════════════════════════════════════════
+function openDrawer(pipe,id){
+  activeCard[pipe]=id;
+  if(pipe==='direct'){
+    const d=directData[id];if(!d)return;
+    document.getElementById('dd-societe').value  =d.societe||'';
+    document.getElementById('dd-contact').value  =d.contact||'';
+    document.getElementById('dd-secteur').value  =d.secteur||'';
+    document.getElementById('dd-region').value   =d.region||'';
+    document.getElementById('dd-ca').value       =d.ca||'';
+    document.getElementById('dd-ebitda').value   =d.ebitda||'';
+    document.getElementById('dd-bfr').value      =d.bfr||'';
+    document.getElementById('dd-pax').value      =d.pax||'';
+    document.getElementById('dd-pc').value       =d.premierContact||'';
+    document.getElementById('dd-pa').value       =d.premierAppel||'';
+    document.getElementById('dd-memo').value     =d.memo||'';
+    document.getElementById('dd-financials').value=d.financials||'';
+    document.getElementById('dd-crm').value      =d.statutCRM||'À contacter';
+    document.getElementById('dd-notes').value    =d.notesCRM||'';
+    document.getElementById('dh-direct-title').textContent=d.societe||'Nouvelle cible';
+    document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' · ');
+    actType='call';selectActType('call');
+    renderActivityLog(id);
+    updateDMoveButtons(d.col);
+  } else {
+    const d=indirectData[id];if(!d)return;
+    document.getElementById('di-cabinet').value=d.cabinet||'';
+    document.getElementById('di-prenom').value =d.prenom||'';
+    document.getElementById('di-nom').value    =d.nom||'';
+    document.getElementById('di-tel').value    =d.tel||'';
+    document.getElementById('di-email').value  =d.email||'';
+    document.getElementById('di-loc').value    =d.loc||'';
+    document.getElementById('di-last').value   =d.last||'';
+    document.getElementById('di-next').value   =d.next||'';
+    document.getElementById('di-statut').value =d.statut||'Prospect';
+    const fn=[d.prenom,d.nom].filter(Boolean).join(' ');
+    document.getElementById('dh-indirect-title').textContent=d.cabinet||'Nouveau contact';
+    document.getElementById('dh-indirect-sub').textContent=[fn,d.loc].filter(Boolean).join(' · ');
+    updateIMoveButtons(d.col);
+  }
+  document.getElementById('drawer-'+pipe).classList.add('open');
+  document.getElementById('dov-'+pipe).classList.add('open');
+}
+function closeDrawer(pipe){
+  if(activeCard[pipe]){pipe==='direct'?syncD():syncI();}
+  document.getElementById('drawer-'+pipe).classList.remove('open');
+  document.getElementById('dov-'+pipe).classList.remove('open');
+  activeCard[pipe]=null;
+}
+function syncD(){
+  const id=activeCard.direct;if(!id)return;
+  const d=directData[id];if(!d)return;
+  d.societe=document.getElementById('dd-societe').value;
+  d.contact=document.getElementById('dd-contact').value;
+  d.secteur=document.getElementById('dd-secteur').value;
+  d.region=document.getElementById('dd-region').value;
+  d.ca=document.getElementById('dd-ca').value;
+  d.ebitda=document.getElementById('dd-ebitda').value;
+  d.bfr=document.getElementById('dd-bfr').value;
+  d.pax=document.getElementById('dd-pax').value;
+  d.premierContact=document.getElementById('dd-pc').value;
+  d.premierAppel=document.getElementById('dd-pa').value;
+  d.memo=document.getElementById('dd-memo').value;
+  d.financials=document.getElementById('dd-financials').value;
+  d.statutCRM=document.getElementById('dd-crm').value;
+  d.notesCRM=document.getElementById('dd-notes').value;
+  document.getElementById('dh-direct-title').textContent=d.societe||'Nouvelle cible';
+  document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' · ');
+  refreshDCard(id);renderStatsBar();save();
+}
+function syncI(){
+  const id=activeCard.indirect;if(!id)return;
+  const d=indirectData[id];if(!d)return;
+  d.cabinet=document.getElementById('di-cabinet').value;
+  d.prenom=document.getElementById('di-prenom').value;
+  d.nom=document.getElementById('di-nom').value;
+  d.tel=document.getElementById('di-tel').value;
+  d.email=document.getElementById('di-email').value;
+  d.loc=document.getElementById('di-loc').value;
+  d.last=document.getElementById('di-last').value;
+  d.next=document.getElementById('di-next').value;
+  d.statut=document.getElementById('di-statut').value;
+  const fn=[d.prenom,d.nom].filter(Boolean).join(' ');
+  document.getElementById('dh-indirect-title').textContent=d.cabinet||'Nouveau contact';
+  document.getElementById('dh-indirect-sub').textContent=[fn,d.loc].filter(Boolean).join(' · ');
+  // Update table row if contacts page visible
+  const row=document.getElementById('irow-'+id);
+  if(row)updateContactRow(id,row);
+  save();
+}
+function updateDMoveButtons(ci){
+  const w=document.getElementById('df-mv-direct');if(!w)return;
+  let h='';
+  if(ci>0)h+=`<button class="df-mv" onclick="moveDC('${activeCard.direct}',-1)">← ${K_COLS[ci-1]}</button>`;
+  if(ci<K_COLS.length-1)h+=`<button class="df-mv" onclick="moveDC('${activeCard.direct}',1)">${K_COLS[ci+1]} →</button>`;
+  w.innerHTML=h||'<span style="font-size:11px;color:#d1d5db">Dernière colonne</span>';
+}
+function updateIMoveButtons(ci){
+  const w=document.getElementById('df-mv-indirect');if(!w)return;
+  let h='';
+  if(ci>0)h+=`<button class="df-mv" onclick="moveIC('${activeCard.indirect}',-1)">← ${K_COLS[ci-1]}</button>`;
+  if(ci<K_COLS.length-1)h+=`<button class="df-mv" onclick="moveIC('${activeCard.indirect}',1)">${K_COLS[ci+1]} →</button>`;
+  w.innerHTML=h||'';
+}
+
+// ════════════════════════════════════════════════════
+// INDIRECT CONTACTS
+// ════════════════════════════════════════════════════
+function emptyI(){return{col:0,cabinet:'',prenom:'',nom:'',tel:'',email:'',loc:'',last:'',next:'',statut:'Prospect'}}
+
+function addIndirectCard(ci,data){
+  cardCtr++;
+  const id='ic-'+Date.now()+'-'+cardCtr;
+  indirectData[id]=Object.assign(emptyI(),data||{},{col:ci});
+  const b=document.getElementById('badge-contacts');
+  if(b)b.textContent=Object.values(indirectData).filter(d=>!d.archived).length;
+  if(document.getElementById('page-contacts').classList.contains('active'))renderContactTable();
+  save();return id;
+}
+
+function delIC(id){
+  delete indirectData[id];
+  if(activeCard.indirect===id)closeDrawer('indirect');
+  const b=document.getElementById('badge-contacts');
+  if(b)b.textContent=Object.keys(indirectData).length;
+  renderContactTable();save();
+}
+
+function moveIC(id,dir){
+  const d=indirectData[id];if(!d)return;
+  const nc=d.col+dir;if(nc<0||nc>=K_COLS.length)return;
+  d.col=nc;
+  if(activeCard.indirect===id)updateIMoveButtons(nc);
+  save();
+}
+
+function renderContactTable(){
+  const tbody=document.getElementById('contact-tbody');if(!tbody)return;
+  const q=(contactFilter.q||'').toLowerCase();
+  const sf=contactFilter.status;
+  const all=Object.entries(indirectData);
+  const active=all.filter(([,d])=>!d.archived);
+  const filtered=active.filter(([id,d])=>{
+    const matchQ=!q||[d.cabinet,d.prenom,d.nom,d.loc,d.email].some(f=>(f||'').toLowerCase().includes(q));
+    const matchS=!sf||d.statut===sf;
+    return matchQ&&matchS;
+  });
+  const cnt=document.getElementById('ct-count');
+  if(cnt)cnt.textContent=filtered.length+' / '+active.length;
+  const b=document.getElementById('badge-contacts');
+  if(b)b.textContent=active.length;
+  // Sort: priority status first, then by last contact date (most recent first within same group)
+  const STATUS_PRIO={'À relancer':0,'À contacter':1,'Contacté':2,'En cours':3,'Prospect':4,'Converti':5,'Abandonné':6};
+  function parseLast(s){
+    if(!s)return 0;
+    // formats: "25-Feb", "01/03/2026", "jj/mm" etc.
+    const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+    const mFr={jan:0,fev:1,'fév':1,mar:2,avr:3,mai:4,juin:5,jui:6,jul:6,aou:7,'aoû':7,sep:8,oct:9,nov:10,dec:11};
+    const all={...months,...mFr};
+    const s2=s.toLowerCase().trim();
+    // "25-Feb" or "25-Mar"
+    const m1=s2.match(/^(\d{1,2})[\/\-]([a-zéû]+)$/);
+    if(m1){const mo=all[m1[2].substring(0,3)];if(mo!==undefined)return new Date(2026,mo,parseInt(m1[1])).getTime();}
+    // "01/03/2026" or "01/03"
+    const m2=s2.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?$/);
+    if(m2){const y=m2[3]?parseInt(m2[3]):2026;return new Date(y,parseInt(m2[2])-1,parseInt(m2[1])).getTime();}
+    return 0;
+  }
+  filtered.sort(([,a],[,b])=>{
+    const pa=STATUS_PRIO[a.statut]??99,pb=STATUS_PRIO[b.statut]??99;
+    if(pa!==pb)return pa-pb;
+    // Same status: most recently contacted first
+    return parseLast(b.last)-parseLast(a.last);
+  });
+
+  tbody.innerHTML='';
+  filtered.forEach(([id,d])=>{
+    const tr=document.createElement('tr');
+    tr.className='irow';tr.id='irow-'+id;
+    tr.innerHTML=`
+      <td><div class="irow-name">${escH(d.cabinet)||'—'}</div></td>
+      <td><div class="irow-name">${escH([d.prenom,d.nom].filter(Boolean).join(' '))||'—'}</div><div class="irow-sub">${escH(d.email)||''}</div></td>
+      <td>${escH(d.loc)||'—'}</td>
+      <td>${escH(d.tel)||'—'}</td>
+      <td><span class="crm-badge ${ISC_MAP[d.statut]||'crm-0'}">${escH(d.statut)}</span></td>
+      <td style="font-size:12px;color:#6b7280">${escH(d.next)||''}</td>`;
+    tr.addEventListener('click',()=>openDrawer('indirect',id));
+    tbody.appendChild(tr);
+  });
+}
+
+function updateContactRow(id,row){
+  const d=indirectData[id];if(!d||!row)return;
+  const cells=row.querySelectorAll('td');
+  if(cells[0])cells[0].innerHTML=`<div class="irow-name">${escH(d.cabinet)||'—'}</div>`;
+  if(cells[1])cells[1].innerHTML=`<div class="irow-name">${escH([d.prenom,d.nom].filter(Boolean).join(' '))||'—'}</div><div class="irow-sub">${escH(d.email)||''}</div>`;
+  if(cells[2])cells[2].textContent=d.loc||'—';
+  if(cells[3])cells[3].textContent=d.tel||'—';
+  if(cells[4])cells[4].innerHTML=`<span class="crm-badge ${ISC_MAP[d.statut]||'crm-0'}">${escH(d.statut)}</span>`;
+  if(cells[5])cells[5].textContent=d.next||'';
+}
+
+function filterContacts(){
+  contactFilter.q=document.getElementById('contact-search')?.value||'';
+  contactFilter.status=document.getElementById('contact-filter')?.value||'';
+  renderContactTable();
+}
+
+// ════════════════════════════════════════════════════
+// ADVISORS TABLE
+// ════════════════════════════════════════════════════
+const SS_MAP={'À faire':'ss-todo','En cours':'ss-ip','En attente':'ss-wait','Clôturé':'ss-done','Abandonné':'ss-drop'};
+const SS_OPTS=['À faire','En cours','En attente','Clôturé','Abandonné'];
+function ssCls(s){return SS_MAP[s]||'ss-todo'}
+function ssOpts(cur){return SS_OPTS.map(s=>`<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('')}
+
+function addAdvisorRow(f0='',f1='',status='À faire',f3='',f4='',f5='',archived=false){
+  const tb=document.getElementById('tbody-advisors');if(!tb)return;
+  rowCtr++;
+  const rid='arow-'+rowCtr;
+  const tr=document.createElement('tr');
+  tr.dataset.rowId=rid;
+  if(archived){tr.dataset.archived='true';tr.style.display='none';}
+  tr.innerHTML=`
+    <td><input class="ce" value="${escH(f0)}" placeholder="Nom" oninput="save()"/></td>
+    <td><input class="ce" value="${escH(f1)}" placeholder="Rôle, contexte…" oninput="save()"/></td>
+    <td><select class="ssel ${ssCls(status)}" onchange="this.className='ssel '+ssCls(this.value);save()">${ssOpts(status)}</select></td>
+    <td><input class="ce" value="${escH(f3)}" placeholder="jj/mm" oninput="save()"/></td>
+    <td><input class="ce" value="${escH(f4)}" placeholder="Prochaine action…" oninput="save()"/></td>
+    <td><input class="ce" value="${escH(f5)}" placeholder="Notes…" oninput="save()" style="color:#6b7280"/></td>
+    <td style="text-align:center"><button class="btn-del" title="Archiver" onclick="archiveAdvisorRow(this)" style="font-size:15px" title="Archiver">📦</button></td>`;
+  tb.appendChild(tr);
+  const b=document.getElementById('badge-advisors');
+  if(b)b.textContent=document.querySelectorAll('#tbody-advisors tr:not([data-archived])').length;
+  save();
+}
+
+// ════════════════════════════════════════════════════
+// TODO
+// ════════════════════════════════════════════════════
+function addTodo(text='',done=false){
+  const inp=document.getElementById('todo-in');
+  const lbl=text||(inp?inp.value.trim():'');if(!lbl)return;
+  todoCtr++;const id='ti-'+todoCtr;
+  const empty=document.getElementById('todo-items')?.querySelector('.ti-empty');
+  if(empty)empty.remove();
+  const div=document.createElement('div');div.className='ti';div.id=id;
+  div.innerHTML=`<input type="checkbox" ${done?'checked':''} onchange="toggleTI('${id}',this)"/>
+    <span class="ti-label ${done?'done':''}" contenteditable="true" onblur="save()">${escH(lbl)}</span>
+    <button class="ti-del" onclick="delTI('${id}')">✕</button>`;
+  document.getElementById('todo-items').appendChild(div);
+  if(inp)inp.value='';updateTodoBadge();save();
+}
+function toggleTI(id,cb){const l=document.querySelector('#'+id+' .ti-label');if(l)l.classList.toggle('done',cb.checked);updateTodoBadge();save();}
+function delTI(id){const el=document.getElementById(id);if(el)el.remove();const items=document.querySelectorAll('.ti').length;if(!items){const c=document.getElementById('todo-items');if(c)c.innerHTML='<div class="ti-empty">Aucune tâche pour aujourd\'hui</div>';}updateTodoBadge();save();}
+function updateTodoBadge(){
+  const a=document.querySelectorAll('.ti').length,d=document.querySelectorAll('.ti input:checked').length;
+  const b=document.getElementById('badge-today'),c=document.getElementById('todo-count');
+  if(b)b.textContent=a?d+'/'+a:'-';if(c)c.textContent=d+' / '+a;
+}
+
+// ════════════════════════════════════════════════════
+// MOMENT & DATE
+// ════════════════════════════════════════════════════
+function setMoment(m){
+  ['matin','midi','soir'].forEach(x=>{
+    document.getElementById('mb-'+x)?.classList.toggle('active',x===m);
+    document.getElementById('tb-'+x)?.classList.toggle('active-block',x===m);
+  });
+  localStorage.setItem('crm_moment',m);
+}
+function setDate(){
+  const d=new Date(),opts={weekday:'long',day:'numeric',month:'long',year:'numeric'};
+  const full=d.toLocaleDateString('fr-FR',opts);
+  const el=document.getElementById('sb-date');if(el)el.textContent=full;
+  const ph=document.getElementById('ph-today-date');if(ph)ph.textContent=full;
+}
+
+// ════════════════════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════════════════════
+let saveTimer, _loading=false;
+function save(){if(_loading)return;clearTimeout(saveTimer);saveTimer=setTimeout(_save,700);}
+function _save(){
+  const data={};
+  data.moment=localStorage.getItem('crm_moment')||'matin';
+  ['matin','midi','soir'].forEach(b=>{const el=document.getElementById('block-'+b);if(el)data['block_'+b]=el.value;});
+  data.todos=[];document.querySelectorAll('.ti').forEach(i=>{data.todos.push({label:i.querySelector('.ti-label')?.innerText||'',done:i.querySelector('input')?.checked||false});});
+  data.directCards=Object.entries(directData).map(([id,d])=>({id,...d}));
+  data.indirectCards=Object.entries(indirectData).map(([id,d])=>({id,...d}));
+  data.advisors=[];document.querySelectorAll('#tbody-advisors tr').forEach(tr=>{const i=tr.querySelectorAll('input'),s=tr.querySelector('select');data.advisors.push({f0:i[0]?.value||'',f1:i[1]?.value||'',status:s?.value||'À faire',f3:i[2]?.value||'',f4:i[3]?.value||'',f5:i[4]?.value||'',archived:tr.dataset.archived==='true'});});
+  const ot=document.getElementById('otter-notes');if(ot)data.otter=ot.value;
+  data.projectCats=projectCats.map(c=>({...c}));
+  data.projectTasks=projectTasks.map(t=>({...t}));
+  localStorage.setItem('reprise_crm_v1',JSON.stringify(data));
+  showToast();
+}
+function load(){
+  _loading=true;
+  let data;try{data=JSON.parse(localStorage.getItem('reprise_crm_v1')||'{}');}catch(e){data={};}
+  if(data.moment)setMoment(data.moment);
+  ['matin','midi','soir'].forEach(b=>{const el=document.getElementById('block-'+b);if(el&&data['block_'+b]!=null)el.value=data['block_'+b];});
+  (data.todos||[]).forEach(t=>addTodo(t.label,t.done));
+
+  if((data.directCards||[]).length){
+    data.directCards.forEach(d=>{
+      const{id,col,...f}=d;cardCtr++;const nid=id||'dc-ld-'+cardCtr;
+      directData[nid]=Object.assign(emptyD(),f,{col:col||0,activities:f.activities||[]});
+      if(!f.archived){const c=document.getElementById('kcards-direct-'+(col||0));if(c)c.appendChild(buildDCard(nid,directData[nid],col||0));}
+    });
+    updatePBadge();
+  }else{loadDefaultDirect();}
+
+  if((data.indirectCards||[]).length){
+    data.indirectCards.forEach(d=>{
+      const{id,col,...f}=d;cardCtr++;const nid=id||'ic-ld-'+cardCtr;
+      indirectData[nid]=Object.assign(emptyI(),f,{col:col||0});
+    });
+    const b=document.getElementById('badge-contacts');if(b)b.textContent=Object.values(indirectData).filter(d=>!d.archived).length;
+  }else{loadDefaultIndirect();}
+
+  if((data.advisors||[]).length){data.advisors.forEach(r=>addAdvisorRow(r.f0,r.f1,r.status,r.f3,r.f4,r.f5,r.archived||false));}
+  else{loadDefaultAdvisors();}
+
+  const ot=document.getElementById('otter-notes');if(ot&&data.otter)ot.value=data.otter;
+
+  // Project
+  if((data.projectCats||[]).length){
+    data.projectCats.forEach(c=>{
+      projCtr++;
+      projectCats.push({id:c.id,name:c.name,open:c.open!==false,isProjectMap:!!c.isProjectMap});
+      if(c.isProjectMap)projectMapCatId=c.id;
+    });
+    (data.projectTasks||[]).forEach(t=>{
+      projCtr++;
+      projectTasks.push({id:t.id,catId:t.catId,text:t.text||'',note:t.note||'',done:!!t.done,originalCatId:t.originalCatId||null});
+    });
+  } else {loadDefaultProject();}
+  updateProjBadge();
+  _loading=false;
+}
+
+// ════════════════════════════════════════════════════
+// DEFAULT DATA
+// ════════════════════════════════════════════════════
+function dCol(s){
+  if(s==='Contacté')return 1;
+  if(s==='RDV fixé'||s==='En cours')return 2;
+  if(['En négociation','LOI signée','Deal clôturé','No go','Abandonné'].includes(s))return 3;
+  return 0;
+}
+function iCol(s){
+  if(s==='À relancer'||s==='Contacté')return 1;
+  if(s==='En cours')return 2;if(s==='Converti')return 3;return 0;
+}
+
+function loadDefaultDirect(){
+  const NAC=`Vendeur motivé — autres business, pertes. 2 LOI déclarées (1 réelle estimée). LOI avec dette incl. prêt d'honneur. Notre avantage : equity pure.\n\nProfil owner :\nStartuper - mon âge - exit 2023 sur proprioo (levé 25M). 2024 : rachat hop-bost avec 4 autres businesses online. Embrouille avec partner = rachat de part sept 2024. Mis en mode auto avec 4 freelance.\n\nOpérations :\n60% foin / 80% marges. 5 fournisseurs. Pas ERP — Shopify. Julien 3h/j → 1800/mois.\n\nMarketing :\nInsta+Meta 1300/mois. 15K followers. Newsletter 450/mois. Amazon 200-300/mois.`;
+  const defs=[
+    {secteur:'Agro Frozen food',region:'Montréal, Canada',societe:'Carrement Tarte',contact:'Nico',ca:'5M CAD',premierContact:'18-Feb',premierAppel:'19-Feb',statutCRM:'En cours',notesCRM:'CA 5M CAD. Contact : Nico.',activities:[{type:'call',text:'Premier appel — intéressé, CA 5M CAD, suite à définir',ts:Date.now()-10*86400000},{type:'email',text:'Premier contact email envoyé via réseau',ts:Date.now()-18*86400000}]},
+    {secteur:'Ruminant et Volaille',region:'Ille-et-Vilaine',societe:'Nutrition Animale (BRT258939P)',contact:'Isabelle Ronger — CCI Bretagne',ca:'3 500 000',premierContact:'03-Mar',statutCRM:'En cours',notesCRM:'Via transentreprise.com. Contact CCI Bretagne : Isabelle Ronger.',activities:[{type:'email',text:'Premier contact via transentreprise.com — ref BRT258939P',ts:Date.now()-10*86400000}]},
+    {secteur:'Vente en ligne NAC',region:'Paris / Île-de-France',societe:'NAC E-Commerce Paris',contact:'Via Fusacq (réf 87967)',ca:'250 000',ebitda:'7 000',pax:'< 200',premierContact:'01/03/2026',premierAppel:'06/03/2026',memo:NAC,financials:"En veut 150K — LOI avec dette. EBITDA 7K. Retraitement coût freelance (+42K).",statutCRM:'No go',notesCRM:'No go — décision finale. 2 LOI déclarées. Equity pure notre avantage mais trop petit.',activities:[{type:'note',text:'Décision finale : No go — trop petit, structure trop légère, owner peu fiable',ts:Date.now()-7*86400000},{type:'call',text:'Appel qualification — CA 250K, EBITDA 7K, demande 150K',ts:Date.now()-14*86400000}]},
+    {secteur:'Petfood — Distribution + Marque',region:'France',societe:'Cible A — Petfood',contact:'À sourcer',ca:'1 000 000',premierContact:'',statutCRM:'À contacter',notesCRM:'Cible A Phase 1. Petfood distribution uniquement + marque propre. CA cible ~1M€. B2C + brand equity. À sourcer via réseau + base 402 acteurs.',activities:[{type:'note',text:'Cible Phase 1 — profil : distrib only + marque petfood. Sourcing à lancer.',ts:Date.now()}]},
+    {secteur:'NAC — Distribution + Marque',region:'France',societe:'Cible B — NAC',contact:'À sourcer',ca:'500 000',premierContact:'',statutCRM:'À contacter',notesCRM:'Cible B Phase 1. NAC distribution uniquement + marque propre. CA cible ~500K€. Accès marché NAC + clientèle spécialisée. Score M&A 4-5 requis.',activities:[{type:'note',text:'Cible Phase 1 — profil : distrib only + marque NAC. Sourcing à lancer.',ts:Date.now()}]},
+    {secteur:'Feed — Petit producteur',region:'France',societe:'Cible C — Feed Producteur',contact:'À sourcer',ca:'4 000 000',premierContact:'',statutCRM:'À contacter',notesCRM:'Cible C Phase 1. Feed petit producteur avec site industriel. CA cible ~4M€. Outil de production propre = pivot Phase 3. Site industriel stratégique.',activities:[{type:'note',text:'Cible Phase 1 — profil : petit prod feed avec site industriel. Sourcing à lancer.',ts:Date.now()}]},
+    {secteur:'Équin — Nutrition',region:'France',societe:'Cible D — Équin (en évaluation)',contact:'Stanislas De Vion',ca:'TBD',premierContact:'',statutCRM:'En cours',notesCRM:'Contact Sauvale. Stanislas De Vion, ~59 ans, retraite prochaine. Cible équine en cours d\'évaluation. Secteur équin FR = €280M, +3.5% p.a. Profil cédant idéal.',activities:[{type:'note',text:'Contact via réseau — Sauvale. Stanislas De Vion 59 ans, approche de la retraite. Cible équine.',ts:Date.now()}]},
+  ];
+  defs.forEach(c=>addDCard(dCol(c.statutCRM),c));
+}
+
+function loadDefaultIndirect(){
+  const cs=[
+    {cabinet:'CCI Alsace Eurométropole',prenom:'Dagmar',nom:'WINK',tel:'06 31 78 46 87',email:'d.wink@alsace.cci.fr',loc:'Colmar',next:'Contacter suite France Reprise',statut:'À contacter'},
+    {cabinet:'GO Capital',prenom:'Nicolas',nom:'Di Silvestro',tel:'06 64 94 17 54',email:'ndisilvestro@fauve.com',loc:'Nancy',last:'25-Feb',next:'Relancer suite France Reprise',statut:'À relancer'},
+    {cabinet:'Isplus',prenom:'Benoit',nom:'',tel:'06 83 90 64 35',loc:'Lyon',last:'18-Feb',next:'Relancer suite France Reprise',statut:'À relancer'},
+    {cabinet:'Super Capital',prenom:'Charle',nom:'',tel:'06 30 64 25 72',loc:'Paris',last:'16-Feb',next:'Relancer suite France Reprise',statut:'À relancer'},
+    {cabinet:'Santefi',prenom:'Yohan',nom:'Cariou',email:'y.cariou@axe-avenir.fr',loc:'Quimper, Bretagne',statut:'Prospect'},
+    {cabinet:"L'École supérieure de la banque",prenom:'Guillaume',nom:'Bariot',email:'guillaume.bariot@ca-illeetvilaine.fr',loc:'Rennes, Bretagne',statut:'Prospect'},
+    {cabinet:'Finance & Stratégie',prenom:'Jean-Marc',nom:'Tariant',email:'jt@finance-strategie.com',loc:'Rennes Métropole',statut:'Prospect'},
+    {cabinet:'DIEUDONNE MENUISERIE',prenom:'Christophe',nom:'MAS',loc:'Fréjus, PACA',statut:'Prospect'},
+    {cabinet:'Avalon Partners',prenom:'Paul',nom:'Vokaty',email:'paul.vokaty@avalonpartners.ca',loc:'Montréal, Canada',statut:'Prospect'},
+    {cabinet:'BAUX ET SACHER CONSULTANTS',prenom:'Patrick',nom:'SACHER',email:'patrick.sacher@mbacapital.com',loc:'Bretagne',statut:'Prospect'},
+    {cabinet:'MBA Capital',prenom:'Pierre',nom:'ROUX',email:'pierre.roux@mbacapital.com',loc:'Marseille Métropole',statut:'Prospect'},
+    {cabinet:'FM Audit et Conseil',prenom:'Frédéric',nom:'Maliesky',email:'frederic.maliesky@fmauditetconseil.fr',loc:'Strasbourg Métropole',statut:'Prospect'},
+    {cabinet:'Visia-Transactions',prenom:'Yannick',nom:'Raphalen',loc:'Lorient, Bretagne',statut:'Prospect'},
+    {cabinet:'Cabinet Richemont',prenom:'Thierry',nom:'Pourot',email:'t.pourot@cabinet-richemont.com',loc:'Saint-Nazaire',statut:'Prospect'},
+    {cabinet:'Symphonie Finance',prenom:'Boris',nom:'Christel',email:'b.christel@symphonie-finance.com',loc:'Vannes, Bretagne',statut:'Prospect'},
+    {cabinet:'Credit Agricole Mid Cap',prenom:'Didier',nom:'Lenz',loc:'Strasbourg, Grand Est',statut:'Prospect'},
+    {cabinet:'Banque Populaire Méditerranée',prenom:'Boris',nom:'Mitelman',email:'boris.mitelman@bpmed.fr',loc:'Marseille, PACA',statut:'Prospect'},
+    {cabinet:'SYNERCOM FRANCE',prenom:'Pascal',nom:'FAUCON',email:'pfaucon@synercom-france.fr',loc:'Marseille Métropole',statut:'Prospect'},
+    {cabinet:'COGEP',prenom:'Jean-Claude',nom:'CALEGARI',email:'jccalegari@cogep.fr',loc:'Aix-en-Provence',statut:'Prospect'},
+    {cabinet:'EURALLIA FINANCE',prenom:'Fabienne',nom:'Hanras',email:'f.hanras@eurallia.fr',loc:'France',statut:'Prospect'},
+    {cabinet:'Cabinet Michel Simond',prenom:'Erwan',nom:'Lassalle',loc:'Vannes, Bretagne',statut:'Prospect'},
+    {cabinet:'Arcéane',prenom:'Céline',nom:'VALENTIN',email:'cvalentin@arceane.com',loc:'Paris, Île-de-France',statut:'Prospect'},
+    {cabinet:'JTB & ASSOCIÉS',prenom:'David',nom:'ROBERT',email:'d.robert@jtbconseil.fr',loc:'Rennes Métropole',statut:'Prospect'},
+    {cabinet:"TERRES D'EXPERTS",prenom:'Jean-Yves',nom:'ROUAT',loc:'Quimper, Bretagne',statut:'Prospect'},
+    {cabinet:'IC2M',prenom:'Patrick',nom:'BINDNER',loc:'Nice Métropole',statut:'Prospect'},
+    {cabinet:'SPHERE PME',prenom:'Jean-Louis',nom:'Picollo',loc:'Marseille Métropole',statut:'Prospect'},
+    {cabinet:'AXED FINANCE - EURALLIA',prenom:'Patrick',nom:'Vollekindt',loc:'Bretagne',statut:'Prospect'},
+    {cabinet:'OTOKTONE',prenom:'Jean-Maxime',nom:'Voisin',email:'jean-maxime.voisin@bpgo.fr',loc:'Nantes Métropole',statut:'Prospect'},
+    {cabinet:'ACTICAM',prenom:'Valentin',nom:'MOREAU',email:'vmoreau@acticam.fr',loc:'Bretagne',statut:'Prospect'},
+    {cabinet:'Winlink Capital',prenom:'Mattéo',nom:'Bonnardel',email:'mbonnardel@winlinkcapital.com',loc:'Marseille, PACA',statut:'Prospect'},
+    {cabinet:'LCL',prenom:'Stéphane',nom:'BREGER',email:'stephane.breger@lcl.fr',loc:"L'Isle-Adam, Île-de-France",statut:'Prospect'},
+    {cabinet:'Exco Finances Sud PACA',prenom:'Yann',nom:'AUREILLE',loc:'Les Pennes-Mirabeau, PACA',statut:'Prospect'},
+    {cabinet:'EURALLIA FINANCE',prenom:'Corentin',nom:"Roc'h",email:"c.leroch@eurallia.fr",loc:'Bretagne',statut:'Prospect'},
+    {cabinet:'EC2 Finance',prenom:'Alexandre',nom:'Lacasse',email:'alacasse@ec2finance.com',loc:'Longueuil, Canada',statut:'Prospect'},
+    {cabinet:'CAP CESSION FRANCE',prenom:'Margaux',nom:'Morgando',email:'m.morgando@cabinet-capcession.com',loc:'Nice, PACA',statut:'Prospect'},
+  ];
+  cs.forEach(c=>addIndirectCard(iCol(c.statut),{...c,col:iCol(c.statut)}));
+}
+
+function loadDefaultAdvisors(){
+  [
+    ['Bea','Pote Virg — Ex-Franklin','À faire','','',''],
+    ['Raph Marchant','Pote JB — Feed, reprise boite de son daron','À faire','','',''],
+    ['Maud + JB','Réseau Leclerc — Distribution GMS / E.Leclerc','À activer','','',''],
+    ['Guigui','Réseau Medef — Contacts dirigeants PME agri-food','À activer','','',''],
+    ['Martin','Expert ligne industrielle — nutrition animale','À activer','','',''],
+    ['Sauvale / Stanislas De Vion','Cédant potentiel 59 ans — Équin — retraite prochaine','En cours','','',''],
+  ].forEach(r=>addAdvisorRow(...r));
+}
+
+// ════════════════════════════════════════════════════
+// PROJET — DATA & RENDER
+// ════════════════════════════════════════════════════
+// projectCats: [{id, name, open}, ...]
+// projectTasks: [{id, catId, text, note, done}, ...]
+const projectCats  = [];
+const projectTasks = [];
+let projFilter = 'all';
+let projCtr = 0;
+let projectMapCatId = null;
+
+function addProjCat(name, open=true){
+  projCtr++;
+  const id = 'pc-'+projCtr;
+  projectCats.push({id, name, open});
+  return id;
+}
+
+function addProjTask(catId, text, note='', done=false){
+  projCtr++;
+  const id = 'pt-'+projCtr;
+  projectTasks.push({id, catId, text, note, done});
+  return id;
+}
+
+function setProjFilter(f){
+  projFilter=f;
+  ['all','todo','done'].forEach(x=>document.getElementById('pfilt-'+x)?.classList.toggle('active',x===f));
+  renderProject();
+}
+
+function renderProject(){
+  const container=document.getElementById('proj-scroll');if(!container)return;
+  const q=(document.getElementById('proj-search')?.value||'').toLowerCase();
+  const totalTasks=projectTasks.length;
+  const doneTasks=projectTasks.filter(t=>t.done).length;
+  const remaining=totalTasks-doneTasks;
+
+  // Stats bar
+  const sb=document.getElementById('proj-stats');
+  if(sb)sb.innerHTML=`
+    <div class="proj-stat"><strong>${remaining}</strong> à faire</div>
+    <div class="proj-stat"><strong>${doneTasks}</strong> complétées</div>
+    <div class="proj-stat"><strong>${totalTasks}</strong> total</div>`;
+
+  // Badge
+  const b=document.getElementById('badge-project');if(b)b.textContent=remaining||'';
+
+  container.innerHTML='';
+  // Normal cats first, Project Map at the end
+  const orderedCats=[...projectCats.filter(c=>!c.isProjectMap),...projectCats.filter(c=>c.isProjectMap)];
+  orderedCats.forEach(cat=>{
+    // Filter tasks for this category
+    const tasks=projectTasks.filter(t=>{
+      if(t.catId!==cat.id)return false;
+      if(projFilter==='todo'&&t.done)return false;
+      if(projFilter==='done'&&!t.done)return false;
+      if(q&&![t.text,t.note].some(s=>(s||'').toLowerCase().includes(q)))return false;
+      return true;
+    });
+    // Count all (for header)
+    const allCat=projectTasks.filter(t=>t.catId===cat.id);
+    const doneCat=allCat.filter(t=>t.done).length;
+
+    // Separator before Project Map
+    if(cat.isProjectMap){
+      const sep=document.createElement('div');
+      sep.style.cssText='border-top:2px dashed #e5e7eb;margin:8px 0 4px;';
+      container.appendChild(sep);
+    }
+
+    const block=document.createElement('div');
+    block.className='cat-block'+(cat.open?'':' collapsed');
+    if(cat.isProjectMap)block.style.cssText='border-color:#bbf7d0;background:#f0fdf4';
+    block.id='catblock-'+cat.id;
+
+    const head=document.createElement('div');
+    head.className='cat-head';
+    if(cat.isProjectMap)head.style.cssText='background:#dcfce7';
+    head.innerHTML=`
+      <span class="cat-chevron">▼</span>
+      <span class="cat-head-name">${escH(cat.name)}</span>
+      <span class="cat-progress">${doneCat}/${allCat.length}</span>
+      <span class="cat-count">${allCat.length-doneCat} restantes</span>`;
+    head.onclick=()=>{
+      cat.open=!cat.open;
+      block.classList.toggle('collapsed',!cat.open);
+      save();
+    };
+
+    const body=document.createElement('div');
+    body.className='cat-body';
+    body.id='catbody-'+cat.id;
+
+    tasks.forEach(task=>{
+      const row=document.createElement('div');
+      row.className='pt'+(task.done?' done-task':'');
+      row.id='ptrow-'+task.id;
+      row.innerHTML=`
+        <input type="checkbox" ${task.done?'checked':''} onchange="toggleProjTask('${task.id}',this)"/>
+        <div class="pt-body">
+          <span class="pt-text ${task.done?'done':''}" contenteditable="true"
+            onblur="updateProjTask('${task.id}','text',this.innerText)">${escH(task.text)}</span>
+          <span class="pt-note" contenteditable="true" data-ph="Ajouter une note…"
+            onblur="updateProjTask('${task.id}','note',this.innerText)">${escH(task.note||'')}</span>
+        </div>
+        <button class="pt-del" onclick="deleteProjTask('${task.id}')">✕</button>`;
+      body.appendChild(row);
+    });
+
+    if(!tasks.length&&q){
+      const empty=document.createElement('div');
+      empty.style.cssText='padding:12px 14px;font-size:12px;color:#d1d5db;text-align:center';
+      empty.textContent='Aucune tâche correspondante';
+      body.appendChild(empty);
+    }
+
+    if(!cat.isProjectMap){
+      const addBtn=document.createElement('button');
+      addBtn.className='cat-add-task';
+      addBtn.textContent='+ Ajouter une tâche';
+      addBtn.onclick=()=>addProjTaskUI(cat.id);
+      body.appendChild(addBtn);
+    }
+
+    block.appendChild(head);
+    block.appendChild(body);
+    container.appendChild(block);
+  });
+}
+
+function ensureProjectMapCat(){
+  if(projectMapCatId){
+    const exists=projectCats.find(c=>c.id===projectMapCatId);
+    if(exists)return projectMapCatId;
+  }
+  const existing=projectCats.find(c=>c.isProjectMap);
+  if(existing){projectMapCatId=existing.id;return existing.id;}
+  projCtr++;
+  const id='pc-pmap-'+projCtr;
+  projectCats.push({id,name:'✅ Project Map — Accompli',open:false,isProjectMap:true});
+  projectMapCatId=id;
+  return id;
+}
+
+function toggleProjTask(id, cb){
+  const t=projectTasks.find(x=>x.id===id);if(!t)return;
+  t.done=cb.checked;
+  if(t.done){
+    // Move to Project Map
+    t.originalCatId=t.originalCatId||t.catId;
+    t.catId=ensureProjectMapCat();
+  } else {
+    // Restore to original category
+    if(t.originalCatId){t.catId=t.originalCatId;delete t.originalCatId;}
+  }
+  updateProjBadge();
+  renderProject();
+  save();
+}
+
+function updateProjTask(id, field, val){
+  const t=projectTasks.find(x=>x.id===id);if(!t)return;
+  t[field]=val.trim();
+  save();
+}
+
+function deleteProjTask(id){
+  const idx=projectTasks.findIndex(x=>x.id===id);
+  if(idx>=0)projectTasks.splice(idx,1);
+  const row=document.getElementById('ptrow-'+id);if(row)row.remove();
+  updateProjBadge();save();
+}
+
+function addProjTaskUI(catId){
+  const id=addProjTask(catId,'Nouvelle tâche','',false);
+  renderProject();
+  // Focus the new task text
+  setTimeout(()=>{
+    const row=document.getElementById('ptrow-'+id);
+    const span=row?.querySelector('.pt-text');
+    if(span){span.focus();document.execCommand('selectAll',false,null);}
+  },50);
+}
+
+function updateProjBadge(){
+  const remaining=projectTasks.filter(t=>!t.done).length;
+  const b=document.getElementById('badge-project');
+  if(b)b.textContent=remaining||'';
+}
+
+function loadDefaultProject(){
+  // ── CATÉGORIES & TÂCHES ──
+  const c1=addProjCat('🎓 Thèse & Identité');
+  addProjTask(c1,'Finalisation de la thèse','');
+  addProjTask(c1,'Création de la genèse','');
+  addProjTask(c1,'Define the fucking pain on the business model','');
+
+  const c2=addProjCat('⚖️ Structure légale & Financement');
+  addProjTask(c2,'Montage société','');
+  addProjTask(c2,'Transformation SAS → EURL','');
+  addProjTask(c2,'LBO via SAS — revoir draft','');
+  addProjTask(c2,'Prêt honneur Entreprendre','');
+  addProjTask(c2,'BPI — présentation dossier (garantie ou financement)','');
+  addProjTask(c2,'Expert comptable Ile-et-Vilaine','Waiting for feedback');
+  addProjTask(c2,'Rencontre notaire — mettre famille en sécu','');
+
+  const c3=addProjCat('👥 Équipe & Conseil');
+  addProjTask(c3,'Recherche advisors petfood Paris','Deux dans la petfood à Paris qui ont monté leur startup');
+  addProjTask(c3,'Montage équipe conseil (avocat + audit)','Jeantet contact via Océane + call to Othman + call Conseil actuel (pas en transac)');
+  addProjTask(c3,'Potential + à intégrer','Fournier à terme + Data digital Antoine');
+
+  const c4=addProjCat('🎯 Sourcing & Cibles');
+  addProjTask(c4,'List Target direct','');
+  addProjTask(c4,'List Target indirect','');
+  addProjTask(c4,'Cartographie concurrences','Producteurs on going dans la petfood — à revoir pour creuser sur les autres secteurs');
+  addProjTask(c4,'Reprendre value chain petfood + autres secteurs et targets','');
+  addProjTask(c4,'Contact anciens employés — scrap LinkedIn','10 calls next week to set up');
+  addProjTask(c4,'Revoir list of guys to call','');
+
+  const c5=addProjCat('📞 Actions Réseau');
+  addProjTask(c5,'Contact JB Feed','Call today',false);
+  addProjTask(c5,'Contact Associations','');
+  addProjTask(c5,'Meeting CCI','Done — useless. Tenir informé et envoyer le teaser du projet',true);
+
+  const c6=addProjCat('💡 Stratégie & Produit');
+  addProjTask(c6,'Math Making — BP x Profil','');
+  addProjTask(c6,'Vertical aside — still to have a look at','');
+  addProjTask(c6,'Intégration axe anti-gaspi','');
+  addProjTask(c6,'Intégration limite rejet CO2','');
+  addProjTask(c6,'Intégration cost killing for the community','');
+  addProjTask(c6,'Landing page création','');
+}
+
+// ════════════════════════════════════════════════════
+// ARCHIVES
+// ════════════════════════════════════════════════════
+function archiveActive(pipe){
+  const id=activeCard[pipe];if(!id)return;
+  if(pipe==='direct'){
+    const d=directData[id];if(!d)return;
+    d.archived=true;
+    const el=document.getElementById(id);if(el)el.remove();
+    closeDrawer('direct');
+    updatePBadge();renderStatsBar();
+  } else {
+    const d=indirectData[id];if(!d)return;
+    d.archived=true;
+    closeDrawer('indirect');
+    renderContactTable();
+  }
+  updateArchiveBadge();save();showToast();
+}
+
+function archiveAdvisorRow(btn){
+  const tr=btn.closest('tr');if(!tr)return;
+  tr.dataset.archived='true';
+  tr.style.display='none';
+  const b=document.getElementById('badge-advisors');
+  if(b)b.textContent=document.querySelectorAll('#tbody-advisors tr:not([data-archived])').length;
+  updateArchiveBadge();save();showToast();
+}
+
+function restoreDirect(id){
+  const d=directData[id];if(!d)return;
+  delete d.archived;
+  const col=d.col||0;
+  const c=document.getElementById('kcards-direct-'+col);
+  if(c)c.appendChild(buildDCard(id,d,col));
+  updatePBadge();renderStatsBar();updateArchiveBadge();
+  renderArchives();save();showToast();
+}
+
+function restoreIndirect(id){
+  const d=indirectData[id];if(!d)return;
+  delete d.archived;
+  renderContactTable();updateArchiveBadge();
+  renderArchives();save();showToast();
+}
+
+function restoreAdvisor(btn){
+  const item=btn.closest('.arch-item');
+  const rowId=item?.dataset?.rowId;
+  const tr=rowId?document.querySelector('#tbody-advisors tr[data-row-id="'+rowId+'"]'):null;
+  if(tr){
+    delete tr.dataset.archived;
+    tr.style.display='';
+    const b=document.getElementById('badge-advisors');
+    if(b)b.textContent=document.querySelectorAll('#tbody-advisors tr:not([data-archived])').length;
+    updateArchiveBadge();renderArchives();save();showToast();
+  }
+}
+
+function updateArchiveBadge(){
+  const d=Object.values(directData).filter(x=>x.archived).length;
+  const i=Object.values(indirectData).filter(x=>x.archived).length;
+  const a=document.querySelectorAll('#tbody-advisors tr[data-archived]').length;
+  const total=d+i+a;
+  const b=document.getElementById('badge-archives');
+  if(b)b.textContent=total||'';
+}
+
+function renderArchives(){
+  const el=document.getElementById('arch-content');if(!el)return;
+  const directs=Object.entries(directData).filter(([,d])=>d.archived);
+  const indirects=Object.entries(indirectData).filter(([,d])=>d.archived);
+  const advRows=[...document.querySelectorAll('#tbody-advisors tr[data-archived]')];
+  let html='';
+
+  // Cibles directes
+  html+=`<div><div class="arch-section-h">🎯 Cibles <span>${directs.length}</span></div>`;
+  if(!directs.length){html+='<div class="arch-empty">Aucune cible archivée</div>';}
+  else{directs.forEach(([id,d])=>{
+    html+=`<div class="arch-item">
+      <div class="arch-item-info">
+        <div class="arch-item-name">${escH(d.societe||'Sans nom')}</div>
+        <div class="arch-item-sub">${[d.secteur,d.region,d.ca?'CA: '+d.ca:''].filter(Boolean).join(' · ')}</div>
+      </div>
+      <button class="restore-btn" onclick="restoreDirect('${id}')">↩ Restaurer</button>
+    </div>`;
+  });}
+  html+='</div>';
+
+  // Contacts indirects
+  html+=`<div><div class="arch-section-h">🔗 Contacts Indirects <span>${indirects.length}</span></div>`;
+  if(!indirects.length){html+='<div class="arch-empty">Aucun contact archivé</div>';}
+  else{indirects.forEach(([id,d])=>{
+    const name=[d.prenom,d.nom].filter(Boolean).join(' ');
+    html+=`<div class="arch-item">
+      <div class="arch-item-info">
+        <div class="arch-item-name">${escH(d.cabinet||name||'Sans nom')}</div>
+        <div class="arch-item-sub">${[name,d.loc].filter(Boolean).join(' · ')}</div>
+      </div>
+      <button class="restore-btn" onclick="restoreIndirect('${id}')">↩ Restaurer</button>
+    </div>`;
+  });}
+  html+='</div>';
+
+  // Advisors
+  html+=`<div><div class="arch-section-h">🤝 Advisors <span>${advRows.length}</span></div>`;
+  if(!advRows.length){html+='<div class="arch-empty">Aucun advisor archivé</div>';}
+  else{advRows.forEach(tr=>{
+    const inputs=tr.querySelectorAll('input');
+    const name=inputs[0]?.value||'—';
+    const role=inputs[1]?.value||'';
+    const rowId=tr.dataset.rowId||'';
+    html+=`<div class="arch-item" data-row-id="${escH(rowId)}">
+      <div class="arch-item-info">
+        <div class="arch-item-name">${escH(name)}</div>
+        <div class="arch-item-sub">${escH(role)}</div>
+      </div>
+      <button class="restore-btn" onclick="restoreAdvisor(this)">↩ Restaurer</button>
+    </div>`;
+  });}
+  html+='</div>';
+
+  el.innerHTML=html;
+}
+
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer('direct');closeDrawer('indirect');closeQL();}});
+setDate();
+initKanban();
+const hr=new Date().getHours();
+setMoment(hr<12?'matin':hr<17?'midi':'soir');
+load();
+updateTodoBadge();
+renderStatsBar();
+sortAllColumns();
+updateArchiveBadge();
+
+// ════════════════════════════════════════════════════
+// DEAL FLOW
+// ════════════════════════════════════════════════════
+let dealsData=[];let dealsLoaded=false;let dfNewOnly=false;
+const SRC_COLORS={
+  'Transentreprise':'#dbeafe,#1d4ed8',
+  'BPI France':'#dcfce7,#15803d',
+  'Fusacq':'#fef3c7,#b45309',
+  'CRA':'#ede9fe,#6d28d9',
+  'CessionPME':'#f0fdf4,#166534',
+  'MaCession':'#fff7ed,#c2410c'
+};
+
+function escH(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function toggleDfNew(){
+  dfNewOnly=!dfNewOnly;
+  const b=document.getElementById('df-new-btn');
+  if(b){b.classList.toggle('active',dfNewOnly);}
+  renderDealFlow();
+}
+
+function loadDealsJson(force=false){
+  if(dealsLoaded&&!force)return;
+  fetch('deals.json?_='+Date.now())
+    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(data=>{
+      dealsData=data.deals||[];
+      dealsLoaded=true;
+      renderDealFlow();
+      updateDealFlowBadge();
+      if(data.last_updated){
+        const d=new Date(data.last_updated);
+        const el=document.getElementById('df-last-upd');
+        if(el)el.textContent='Mis à jour: '+d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      }
+    })
+    .catch(()=>{
+      const list=document.getElementById('df-list');
+      if(list)list.innerHTML='<div class="df-empty"><div class="df-empty-icon">🤖</div><div class="df-empty-title">Deal Flow non encore configuré</div><div class="df-empty-sub">Ce CRM doit être hébergé sur GitHub Pages pour que le bot fonctionne.<br>Consulte le fichier <strong>acquis-bot/README.md</strong> pour les instructions.</div></div>';
+    });
+}
+
+function renderDealFlow(){
+  const list=document.getElementById('df-list');if(!list)return;
+  const q=(document.getElementById('df-search')?.value||'').toLowerCase();
+  const src=document.getElementById('df-source')?.value||'';
+  const filtered=dealsData.filter(d=>{
+    if(src&&d.source!==src)return false;
+    if(dfNewOnly&&d.seen)return false;
+    if(q){const t=(d.title+' '+d.region+' '+d.description+' '+d.ca).toLowerCase();if(!t.includes(q))return false;}
+    return true;
+  });
+  const cnt=document.getElementById('df-count');
+  if(cnt)cnt.textContent=filtered.length+' deal'+(filtered.length!==1?'s':'');
+  if(!filtered.length){
+    list.innerHTML='<div class="df-empty"><div class="df-empty-icon">🔍</div><div class="df-empty-sub">'+(dealsData.length?'Aucun résultat pour ces filtres':'Aucun deal trouvé — lance le scraper depuis GitHub Actions')+'</div></div>';
+    return;
+  }
+  const newDeals=filtered.filter(d=>!d.seen);
+  const seenDeals=filtered.filter(d=>d.seen);
+  const renderRow=d=>{
+    const [bg,fg]=(SRC_COLORS[d.source]||'#f3f4f6,#374151').split(',');
+    const added=localStorage.getItem('df_added_'+d.id);
+    return '<tr class="deal-row'+(d.seen?' df-seen':'')+'" onclick="markDealSeen(\''+d.id+'\')">'+
+      '<td style="width:14px">'+(d.seen?'':'<span class="df-new-dot"></span>')+'</td>'+
+      '<td><div class="irow-name">'+escH(d.title)+'</div>'+(d.description?'<div class="irow-sub" style="max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(d.description.substring(0,110))+'</div>':'')+'</td>'+
+      '<td><span class="deal-src-tag" style="background:'+bg+';color:'+fg+'">'+escH(d.source)+'</span></td>'+
+      '<td style="font-size:12px">'+escH(d.region||'—')+'</td>'+
+      '<td><span class="chip chip-ca">'+escH(d.ca)+'</span></td>'+
+      '<td style="font-size:11px;color:#9ca3af">'+escH(d.date_scraped||'')+'</td>'+
+      '<td style="white-space:nowrap">'+
+        (d.url?'<a class="deal-link-btn" href="'+escH(d.url)+'" target="_blank" onclick="event.stopPropagation()">🔗 Voir</a>':'')+
+        (!added?'<button class="deal-add-btn" onclick="event.stopPropagation();addDealToPipeline(\''+escH(d.id)+'\')">🎯 Pipeline</button>':'<span style="font-size:10px;color:#22c55e;font-weight:600;margin-left:6px">✓ Ajouté</span>')+
+      '</td>'+
+    '</tr>';
+  };
+  let html='<table class="df-table"><thead><tr><th></th><th>Société / Activité</th><th>Source</th><th>Région</th><th>CA estimé</th><th>Détecté</th><th></th></tr></thead><tbody>';
+  if(newDeals.length){html+='<tr><td colspan="7" class="df-group-head">🆕 Nouvelles — '+newDeals.length+'</td></tr>';newDeals.forEach(d=>{html+=renderRow(d);});}
+  if(seenDeals.length){html+='<tr><td colspan="7" class="df-group-head" style="color:#9ca3af">Vues — '+seenDeals.length+'</td></tr>';seenDeals.forEach(d=>{html+=renderRow(d);});}
+  html+='</tbody></table>';
+  list.innerHTML=html;
+}
+
+function markDealSeen(id){
+  const deal=dealsData.find(d=>d.id===id);
+  if(deal&&!deal.seen){deal.seen=true;renderDealFlow();updateDealFlowBadge();}
+}
+
+function addDealToPipeline(id){
+  const deal=dealsData.find(d=>d.id===id);if(!deal)return;
+  const newCard={
+    societe:deal.title,
+    secteur:deal.source,
+    region:deal.region||'',
+    ca:deal.ca!=='NC'?deal.ca:'',
+    notesCRM:(deal.description||'')+(deal.url?'\n\nSource: '+deal.url:''),
+    statutCRM:'À contacter',
+    col:0
+  };
+  const cid=addDCard(0,newCard);
+  localStorage.setItem('df_added_'+id,'1');
+  markDealSeen(id);
+  setTimeout(()=>openDrawer('direct',cid),80);
+  goTo('pipeline');
+}
+
+function updateDealFlowBadge(){
+  const unseen=dealsData.filter(d=>!d.seen).length;
+  const b=document.getElementById('badge-dealflow');
+  if(b){
+    b.textContent=unseen>0?unseen:'';
+    if(unseen>0){b.classList.add('badge-red');}else{b.classList.remove('badge-red');}
+  }
+}
+</script>
+</body>
+</html>
