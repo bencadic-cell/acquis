@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-Acquis Deal Flow Scraper v2
+Acquis Deal Flow Scraper v2.1
 Scrapes French M&A platforms daily for business acquisition opportunities
 matching Lughanor's target criteria.
 
 Sources (confirmed working):
-- Transentreprise.com   — POST search, parse div.row.mb-3 cards
-- BPI France Transmission — GET production?searchText=KEYWORD, parse article.result
-- PM-Opp.com            — GET search results
+- Transentreprise.com      — POST search, parse div.row.mb-3 cards
+- BPI France Transmission  — GET production?searchText=KEYWORD, parse article.result
 """
 
 import json
@@ -36,23 +35,25 @@ SECTOR_KEYWORDS_TITLE = [
     "nutrition équine", "aliment cheval",
     "animalerie", "jardinerie animalerie",
     "élevage porcin", "porcin", "porc",
-    "friandise",
+    "friandise",  # friandises pour animaux
     "snack chien", "snack chat",
 ]
 
-# Tier 2 — broader, checked in title+description
+# Tier 2 — broader, checked in title+description (animal-specific only, no generic food terms)
 SECTOR_KEYWORDS_BROAD = SECTOR_KEYWORDS_TITLE + [
-    "agroalimentaire", "agro-alimentaire",
-    "industrie alimentaire", "fabrication alimentaire", "transformation alimentaire",
-    "agriculture", "élevage",
-    "produits vétérinaires", "soins animaux", "accessoires animaux",
+    "élevage",              # animal farming context
+    "produits vétérinaires", "vétérinaire", "soins animaux", "accessoires animaux",
+    "bien-être animal", "bienêtre animal",
+    "aquaculture", "pisciculture",
+    "apiculture", "ruche",
 ]
 
-CA_MIN = 300_000
-CA_MAX = 7_000_000
+CA_MIN = 300_000    # légèrement sous 500K pour ne pas rater les borderlines
+CA_MAX = 7_000_000  # légèrement au-dessus de 5M
 
-MAX_AGE_DAYS = 62
+MAX_AGE_DAYS = 62   # ~2 mois
 
+# Path relative to repo root (scraper is at acquis-bot/scraper/scraper.py)
 DEALS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "deals.json")
 DEALS_FILE = os.path.normpath(DEALS_FILE)
 
@@ -69,22 +70,31 @@ HEADERS = {
     "Cache-Control": "no-cache",
 }
 
-def deal_id(url, title):
+# ─── Utilities ─────────────────────────────────────────────────────────────────
+
+def deal_id(url: str, title: str) -> str:
     key = f"{url.strip().lower()}{title.strip().lower()}"
     return hashlib.md5(key.encode()).hexdigest()[:12]
 
-def normalize(text):
+
+def normalize(text: str) -> str:
     return " ".join(text.lower().split())
 
-def matches_sector_strict(title):
+
+def matches_sector_strict(title: str) -> bool:
+    """Title must contain a strong sector keyword."""
     n = normalize(title)
     return any(kw in n for kw in SECTOR_KEYWORDS_TITLE)
 
-def matches_sector_broad(title, desc):
+
+def matches_sector_broad(title: str, desc: str) -> bool:
+    """Title OR description contains a sector keyword."""
     n = normalize(f"{title} {desc}")
     return any(kw in n for kw in SECTOR_KEYWORDS_BROAD)
 
-def parse_ca(text):
+
+def parse_ca(text: str) -> Optional[int]:
+    """Parse CA strings: '1.2M€', '800 K€', '1 200 000 €', 'de 500 à 1000 k€' → int"""
     if not text:
         return None
     t = text.replace("\u202f", "").replace("\xa0", "").replace(" ", "").lower()
@@ -119,16 +129,20 @@ def parse_ca(text):
             pass
     return None
 
-def ca_in_range(ca):
+
+def ca_in_range(ca: Optional[int]) -> bool:
     if ca is None:
         return True
     return CA_MIN <= ca <= CA_MAX
 
-def get_soup(session, url, retries=2, method="GET", data=None):
+
+def get_soup(session: requests.Session, url: str, retries: int = 2,
+             method: str = "GET", data: dict = None) -> Optional[BeautifulSoup]:
     for attempt in range(retries):
         try:
             if method == "POST":
-                resp = session.post(url, data=data, timeout=25, allow_redirects=True, verify=False)
+                resp = session.post(url, data=data, timeout=25,
+                                    allow_redirects=True, verify=False)
             else:
                 resp = session.get(url, timeout=25, allow_redirects=True, verify=False)
             if resp.status_code == 200:
@@ -140,7 +154,8 @@ def get_soup(session, url, retries=2, method="GET", data=None):
             time.sleep(3)
     return None
 
-def load_existing():
+
+def load_existing() -> dict:
     if os.path.exists(DEALS_FILE):
         try:
             with open(DEALS_FILE, encoding="utf-8") as f:
@@ -150,7 +165,8 @@ def load_existing():
             print(f"  Warning: could not load existing deals: {e}")
     return {}
 
-def save_deals(deals_by_id):
+
+def save_deals(deals_by_id: dict):
     deals_list = list(deals_by_id.values())
     deals_list.sort(key=lambda d: (d.get("date_scraped", ""), d.get("source", "")), reverse=True)
     cutoff = (datetime.utcnow() - timedelta(days=120)).date().isoformat()
@@ -166,7 +182,8 @@ def save_deals(deals_by_id):
         json.dump(payload, f, ensure_ascii=False, indent=2)
     print(f"\n✓ deals.json updated — {len(deals_list)} total deals")
 
-def make_deal(title, url, source, region="", ca_text="", desc="", date_pub=""):
+
+def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="") -> dict:
     ca_val = parse_ca(ca_text + " " + desc)
     return {
         "id": deal_id(url, title),
@@ -183,39 +200,61 @@ def make_deal(title, url, source, region="", ca_text="", desc="", date_pub=""):
         "added_to_crm": False,
     }
 
-def scrape_transentreprise(existing, session):
+
+# ─── Scraper: Transentreprise ───────────────────────────────────────────────────
+
+def scrape_transentreprise(existing: dict, session: requests.Session) -> list:
+    """
+    Transentreprise.com — POST search to set server session, then parse results.
+    Card structure: div.row.mb-3 > [div.col-sm-5 (image), div.col-sm-7 (details)]
+    """
     new_deals = []
     base = "https://www.transentreprise.com"
     search_url = f"{base}/offres/newsearch"
     seen_ids = set()
+
     keywords = [
-        "alimentation animale", "nutrition animale", "petfood",
-        "animalerie", "provenderie", "volailles élevage",
-        "équin cheval", "élevage bovin",
+        "alimentation animale",
+        "nutrition animale",
+        "petfood",
+        "animalerie",
+        "provenderie",
+        "volailles élevage",
+        "équin cheval",
+        "élevage bovin",
     ]
+
     for kw in keywords:
         print(f"    🔍 Searching: {kw}")
         soup = get_soup(session, search_url, method="POST", data={
-            "int-activitie": kw, "int-localisations": "",
-            "nouv": "31", "json": "", "filtre": "",
+            "int-activitie": kw,
+            "int-localisations": "",
+            "nouv": "31",
+            "json": "",
+            "filtre": "",
         })
         if not soup:
             time.sleep(2)
             continue
+
         cards = soup.select("div.row.mb-3")
         if not cards:
             time.sleep(2)
             continue
+
         for card in cards:
             fiche_links = [a for a in card.select("a[href*='/offres/fiche/']") if len(a.get_text(strip=True)) > 4]
             if not fiche_links:
                 continue
+
             title_el = fiche_links[0]
             title = title_el.get_text(strip=True)
             href = title_el.get("href", "")
             if href and not href.startswith("http"):
                 href = base + href
+
             detail = card.select_one("div.col-sm-7, div.col-12.col-sm-7")
+
             region = ""
             if detail:
                 region_el = detail.select_one("p a, span.region, .localisation")
@@ -224,46 +263,72 @@ def scrape_transentreprise(existing, session):
                     region = all_text_parts[1] if len(all_text_parts) > 1 else ""
                 else:
                     region = region_el.get_text(strip=True)
+
             ca_txt = ""
             if detail:
                 full_text = detail.get_text(separator="\n")
                 ca_match = re.search(r"C\.A\.\s*:?\s*(.+?)(?:\n|Effectif|$)", full_text, re.IGNORECASE)
                 if ca_match:
                     ca_txt = ca_match.group(1).strip()
+
             date_pub = ""
             if detail:
                 date_match = re.search(r"\d{2}/\d{2}/\d{4}", detail.get_text())
                 if date_match:
                     date_pub = date_match.group(0)
+
             desc = detail.get_text(separator=" ", strip=True)[:400] if detail else ""
+
             if not title or len(title) < 5:
                 continue
+
+            # Strict: title must match a sector keyword
             if not matches_sector_strict(title):
                 if not matches_sector_broad(title, desc):
                     continue
+
             if not ca_in_range(parse_ca(ca_txt + " " + desc)):
                 continue
+
             did = deal_id(href or title, title)
             if did in existing or did in seen_ids:
                 continue
+
             seen_ids.add(did)
-            deal = make_deal(title, href or search_url, "Transentreprise", region, ca_txt, desc, date_pub)
+            deal = make_deal(title, href or search_url, "Transentreprise",
+                             region, ca_txt, desc, date_pub)
             new_deals.append(deal)
             print(f"    ✚ {title[:65]}")
+
         time.sleep(3)
+
     return new_deals
 
-def scrape_bpi(existing, session):
+
+# ─── Scraper: BPI France Transmission ──────────────────────────────────────────
+
+def scrape_bpi(existing: dict, session: requests.Session) -> list:
+    """
+    reprise-entreprise.bpifrance.fr — Bourse de la Transmission
+    URL: /production?searchText=KEYWORD  or  /commerce?searchText=KEYWORD
+    Card: article.result  |  title: h3 a  |  link: a.info-annonce
+    """
     new_deals = []
     base = "https://reprise-entreprise.bpifrance.fr"
     seen_ids = set()
+
     search_configs = [
-        ("production", "alimentation animale"), ("production", "petfood"),
-        ("production", "nutrition animale"), ("production", "volailles"),
-        ("production", "élevage"), ("production", "provenderie"),
-        ("production", "équin"), ("commerce", "animalerie"),
-        ("commerce", "alimentation animale"),
+        ("production", "alimentation animale"),
+        ("production", "petfood"),
+        ("production", "nutrition animale"),
+        ("production", "volailles"),
+        ("production", "élevage"),
+        ("production", "provenderie"),
+        ("production", "équin"),
+        ("commerce",   "animalerie"),
+        ("commerce",   "alimentation animale"),
     ]
+
     for section, kw in search_configs:
         url = f"{base}/{section}?searchText={requests.utils.quote(kw)}"
         print(f"    🔍 BPI {section}: {kw}")
@@ -271,10 +336,12 @@ def scrape_bpi(existing, session):
         if not soup:
             time.sleep(2)
             continue
+
         cards = soup.select("article.result")
         if not cards:
             time.sleep(2)
             continue
+
         for card in cards:
             title_els = card.select("h3 a, h2 a")
             title = ""
@@ -283,6 +350,7 @@ def scrape_bpi(existing, session):
                 if len(t) > 5:
                     title = t
                     break
+
             href = ""
             direct_link = card.select_one("a.info-annonce, a[href*='/annonce/']")
             if direct_link:
@@ -293,10 +361,13 @@ def scrape_bpi(existing, session):
                     href = tracking.get("href", "")
             if href and not href.startswith("http"):
                 href = base + href
+
             region = ""
-            region_el = card.select_one(".departement, .region, .localisation, [class*='depart'], [class*='region']")
+            region_el = card.select_one(".departement, .region, .localisation, "
+                                        "[class*='depart'], [class*='region']")
             if region_el:
                 region = region_el.get_text(strip=True)
+
             ca_txt = ""
             ca_el = card.select_one("[class*='ca'], [class*='CA'], td.ca")
             if ca_el:
@@ -305,6 +376,7 @@ def scrape_bpi(existing, session):
                 px = int(card["data-prix"])
                 if px > 0:
                     ca_txt = ca_txt or f"{px // 1000} k€"
+
             date_pub = ""
             date_el = card.select_one(".date, time, [class*='date']")
             if date_el:
@@ -313,7 +385,9 @@ def scrape_bpi(existing, session):
                 dm = re.search(r"\d{2}/\d{2}/\d{4}", card.get_text())
                 if dm:
                     date_pub = dm.group(0)
+
             desc = card.get_text(separator=" ", strip=True)[:400]
+
             if not title or len(title) < 5:
                 continue
             if not matches_sector_strict(title):
@@ -321,139 +395,48 @@ def scrape_bpi(existing, session):
                     continue
             if not ca_in_range(parse_ca(ca_txt + " " + desc)):
                 continue
+
             did = deal_id(href or title, title)
             if did in existing or did in seen_ids:
                 continue
+
             seen_ids.add(did)
-            deal = make_deal(title, href or url, "BPI France", region, ca_txt, desc, date_pub)
+            deal = make_deal(title, href or url, "BPI France",
+                             region, ca_txt, desc, date_pub)
             new_deals.append(deal)
             print(f"    ✚ {title[:65]}")
+
         time.sleep(2)
+
     return new_deals
 
-def scrape_pmopp(existing, session):
-    new_deals = []
-    base = "https://www.pm-opp.com"
-    seen_ids = set()
-    keywords = ["alimentation+animale", "petfood", "animalerie", "volailles", "élevage", "équin"]
-    for kw in keywords:
-        url = f"{base}/offres?mot={kw}&activite=industrie-agroalimentaire"
-        soup = get_soup(session, url)
-        if not soup:
-            url2 = f"{base}/offres?mot={kw}"
-            soup = get_soup(session, url2)
-        if not soup:
-            time.sleep(2)
-            continue
-        cards = soup.select("article, .offre, .annonce, .offer-card, .card-offre, [class*='offre'], [class*='annonce']")
-        if not cards:
-            cards = list({a.find_parent(["div", "li", "article"]) for a in soup.select("a[href*='/offre/'], a[href*='/annonce/']") if a.find_parent(["div", "li", "article"])})
-        for card in cards:
-            title_el = card.select_one("h2, h3, h4, .title, a.titre")
-            link_el  = card.select_one("a[href*='/offre/'], a[href*='/annonce/'], a[href]")
-            desc_el  = card.select_one("p, .description, .excerpt")
-            region_el = card.select_one(".region, .localisation, .departement")
-            ca_el    = card.select_one(".ca, .chiffre, [class*='ca']")
-            if not (title_el or link_el):
-                continue
-            title  = (title_el or link_el).get_text(strip=True)
-            href   = link_el.get("href", "") if link_el else ""
-            if href and not href.startswith("http"):
-                href = base + href
-            desc   = desc_el.get_text(strip=True) if desc_el else ""
-            region = region_el.get_text(strip=True) if region_el else ""
-            ca_txt = ca_el.get_text(strip=True) if ca_el else ""
-            if not title or len(title) < 5:
-                continue
-            if not matches_sector_strict(title):
-                if not matches_sector_broad(title, desc):
-                    continue
-            if not ca_in_range(parse_ca(ca_txt + " " + desc)):
-                continue
-            did = deal_id(href or title, title)
-            if did in existing or did in seen_ids:
-                continue
-            seen_ids.add(did)
-            deal = make_deal(title, href or url, "PM-Opp", region, ca_txt, desc)
-            new_deals.append(deal)
-            print(f"    ✚ {title[:65]}")
-        time.sleep(2)
-    return new_deals
 
-def scrape_agricession(existing, session):
-    new_deals = []
-    base = "https://www.agri-cession.com"
-    seen_ids = set()
-    urls = [
-        f"{base}/annonces/industrie-agroalimentaire",
-        f"{base}/annonces/elevage",
-        f"{base}/annonces",
-    ]
-    for url in urls:
-        soup = get_soup(session, url)
-        if not soup:
-            time.sleep(2)
-            continue
-        cards = soup.select("article, .annonce, .offre, .card, .listing-item, [class*='annonce'], [class*='offre']")
-        if not cards:
-            links = soup.select("a[href*='/annonce/'], a[href*='/offre/'], a[href*='/vente/']")
-            cards = list({a.find_parent(["div", "li", "article", "section"]) for a in links if a.find_parent(["div", "li", "article", "section"])})
-        for card in cards:
-            title_el  = card.select_one("h2, h3, h4, .title, .nom")
-            link_el   = card.select_one("a[href]")
-            desc_el   = card.select_one("p, .description, .activite")
-            region_el = card.select_one(".region, .location, .departement, .ville")
-            ca_el     = card.select_one(".ca, .chiffre, [class*='ca']")
-            date_el   = card.select_one(".date, time")
-            if not (title_el or link_el):
-                continue
-            title  = (title_el or link_el).get_text(strip=True)
-            href   = link_el.get("href", "") if link_el else ""
-            if href and not href.startswith("http"):
-                href = base + href
-            desc   = desc_el.get_text(strip=True) if desc_el else ""
-            region = region_el.get_text(strip=True) if region_el else ""
-            ca_txt = ca_el.get_text(strip=True) if ca_el else ""
-            date_pub = date_el.get_text(strip=True) if date_el else ""
-            if not title or len(title) < 5:
-                continue
-            if not matches_sector_strict(title):
-                if not matches_sector_broad(title, desc):
-                    continue
-            if not ca_in_range(parse_ca(ca_txt + " " + desc)):
-                continue
-            did = deal_id(href or title, title)
-            if did in existing or did in seen_ids:
-                continue
-            seen_ids.add(did)
-            deal = make_deal(title, href or url, "Agri-Cession", region, ca_txt, desc, date_pub)
-            new_deals.append(deal)
-            print(f"    ✚ {title[:65]}")
-        time.sleep(2)
-        if new_deals:
-            break
-    return new_deals
+# ─── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
     import urllib3
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
     print(f"\n{'='*65}")
-    print(f"  🔍 Acquis Deal Flow Scraper v2 — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
+    print(f"  🔍 Acquis Deal Flow Scraper v2.1 — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
     print(f"  Sectors: petfood | nutrition animale | équin | NAC | volailles")
     print(f"  CA range: {CA_MIN//1000}K€ — {CA_MAX//1_000_000}M€")
     print(f"  Deals file: {DEALS_FILE}")
     print(f"{'='*65}\n")
+
     existing = load_existing()
     print(f"  Existing deals in database: {len(existing)}\n")
+
     session = requests.Session()
     session.headers.update(HEADERS)
+
     all_new = []
+
     scrapers = [
         ("Transentreprise", lambda e: scrape_transentreprise(e, session)),
         ("BPI France",      lambda e: scrape_bpi(e, session)),
-        ("PM-Opp",          lambda e: scrape_pmopp(e, session)),
-        ("Agri-Cession",    lambda e: scrape_agricession(e, session)),
     ]
+
     for name, fn in scrapers:
         print(f"▶ {name}...")
         try:
@@ -463,17 +446,24 @@ def main():
         except Exception as e:
             print(f"  ✗ {name} failed: {e}")
         print()
+
     print(f"{'='*65}")
     print(f"  Total new: {len(all_new)} deal(s)")
+
     for deal in all_new:
         existing[deal["id"]] = deal
+
     save_deals(existing)
+
     if all_new:
         print(f"\n🆕 New opportunities today:")
         for d in sorted(all_new, key=lambda x: x["source"]):
             ca_str = d["ca"] if d["ca"] != "NC" else "CA?"
-            print(f"  [{d['source']:15s}] {d['title'][:50]:50s} | {d['region']:15s} | {ca_str}")
+            print(f"  [{d['source']:15s}] {d['title'][:50]:50s} | "
+                  f"{d['region']:15s} | {ca_str}")
+
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
