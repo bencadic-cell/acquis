@@ -1,1 +1,63 @@
-{"last_updated":"2026-03-13T00:00:00Z","count":0,"new_today":0,"deals":[]}
+{
+  "last_updated": "2026-03-13T15:05:28Z",
+  "count": 4,
+  "new_today": 4,
+  "deals": [
+    {
+      "id": "fca8a17a527f",
+      "title": "BOULANGERIE PATISSERIE SNACKINGPays de l'Occitane et des Mont (87)",
+      "url": "https://www.transentreprise.com/offres/fiche/NAQ263633A/boulangerie-patisserie-snacking/nouvelle-aquitaine/haute-vienne/pays-de-loccitane-et-des-mont",
+      "source": "Transentreprise",
+      "region": "Prix :310 000 €",
+      "ca": "de 500 à 750 k€",
+      "ca_value": 750000,
+      "description": "NAQ263633A BOULANGERIE PATISSERIE SNACKING Pays de l'Occitane et des Mont (87) Prix : 310 000 € C.A. : de 500 à 750 k€ Effectif : 10 à 20 Diagnostic Transmission Évaluation",
+      "date_pub": "",
+      "date_scraped": "2026-03-13",
+      "seen": false,
+      "added_to_crm": false
+    },
+    {
+      "id": "cba3392a6962",
+      "title": "Paysagiste - entretien espace verts, animalerie/jardinerie, location de machines et équipements dans l'Hérault (34)",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "34",
+      "ca_value": 814000,
+      "description": "Paysagiste - entretien espace verts, animalerie/jardinerie, location de machines et équipements dans l'Hérault (34) 30/12/2025 Département : 34 Hérault Simuler votre financement 814 k€ NC 495 k€ Consulter sur...",
+      "date_pub": "30/12/2025",
+      "date_scraped": "2026-03-13",
+      "seen": false,
+      "added_to_crm": false
+    },
+    {
+      "id": "36608ff2f634",
+      "title": "Animalerie, alimentation et accessoires animalier",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "07",
+      "ca_value": 1081000,
+      "description": "Animalerie, alimentation et accessoires animalier 21/01/2026 Département : 07 Ardèche Simuler votre financement 1 081 k€ NC 1 310 k€ Consulter sur...",
+      "date_pub": "21/01/2026",
+      "date_scraped": "2026-03-13",
+      "seen": false,
+      "added_to_crm": false
+    },
+    {
+      "id": "2563e44f2938",
+      "title": "Jardinerie – horticulture – animalerie - Belle opportunité",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "19",
+      "ca_value": 534000,
+      "description": "Jardinerie – horticulture – animalerie - Belle opportunité 14/01/2026 Département : 19 Corrèze Simuler votre financement 534 k€ NC 385 k€ Consulter sur...",
+      "date_pub": "14/01/2026",
+      "date_scraped": "2026-03-13",
+      "seen": false,
+      "added_to_crm": false
+    }
+  ]
+}
