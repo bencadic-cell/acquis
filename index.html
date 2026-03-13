@@ -1944,13 +1944,16 @@ async function ghRestore() {
     if (!r.ok) { syncStatus('', ''); return false; }
     const j = await r.json();
     _syncSha = j.sha;
-    const data = JSON.parse(decodeURIComponent(escape(atob(j.content.split('\n').join(''))));
+    const b64 = j.content.split('\n').join('');
+    const json = decodeURIComponent(Array.prototype.map.call(atob(b64), function(c){
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const data = JSON.parse(json);
     _origSetItem('reprise_crm_v1', JSON.stringify(data));
     syncStatus('✅ Restauré depuis GitHub', '#059669');
     return true;
   } catch(e) { syncStatus('', ''); return false; }
 }
-
 function showTokenModal() {
   const cur = ghToken();
   const display = cur ? cur.slice(0,8) + '...' : 'aucun';
