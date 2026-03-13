@@ -374,8 +374,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="sb-divider"></div>
   <div style="padding:8px 12px;">
-    <button onclick="exportCRM()" style="width:100%;margin:2px 0;padding:7px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">⬇ Exporter données</button>
-    <label style="width:100%;display:block;margin:2px 0;padding:7px;background:#059669;color:#fff;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;">⬆ Importer données<input type="file" accept=".json" style="display:none" onchange="importCRM(event)"></label>
+    <div id="sync-status" style="font-size:10px;color:#4a5568;margin-bottom:4px;text-align:center;min-height:14px;"></div>
+    <button onclick="exportCRM()" style="width:100%;margin:2px 0;padding:7px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">⬇ Exporter</button>
+    <label style="width:100%;display:block;margin:2px 0;padding:7px;background:#059669;color:#fff;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;">⬆ Importer<input type="file" accept=".json" style="display:none" onchange="importCRM(event)"></label>
+    <button onclick="showTokenModal()" style="width:100%;margin:2px 0;padding:6px;background:#1f2937;color:#9ca3af;border:none;border-radius:6px;cursor:pointer;font-size:11px;">⚙ GitHub Sync</button>
   </div>
 </nav>
 
@@ -1879,7 +1881,110 @@ function updateDealFlowBadge(){
   }
 }
 
-function exportCRM(){
+// ═══ GITHUB AUTO-BACKUP ═══
+const _GH = { owner: 'bencadic-cell', repo: 'acquis', file: 'crm-data.json' };
+let _backupTimer = null;
+let _syncSha = null;
+const _origSetItem = localStorage.setItem.bind(localStorage);
+
+function ghToken() { return localStorage.getItem('acquis_gh_token') || ''; }
+
+function syncStatus(msg, color) {
+  const el = document.getElementById('sync-status');
+  if (el) { el.textContent = msg; el.style.color = color || '#4a5568'; }
+}
+
+// Intercept all localStorage saves to trigger auto-backup
+localStorage.setItem = function(key, value) {
+  _origSetItem(key, value);
+  if (key === 'reprise_crm_v1' && ghToken()) {
+    clearTimeout(_backupTimer);
+    syncStatus('⏳ Sauvegarde...', '#f59e0b');
+    _backupTimer = setTimeout(() => { try { ghBackup(JSON.parse(value)); } catch(e){} }, 8000);
+  }
+};
+
+async function ghBackup(data) {
+  const token = ghToken();
+  if (!token) return;
+  try {
+    if (!_syncSha) {
+      const r = await fetch('https://api.github.com/repos/' + _GH.owner + '/' + _GH.repo + '/contents/' + _GH.file, {
+        headers: { Authorization: 'token ' + token }
+      });
+      if (r.ok) { const j = await r.json(); _syncSha = j.sha; }
+    }
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const body = { message: 'Auto-backup CRM ' + new Date().toISOString().slice(0,16), content };
+    if (_syncSha) body.sha = _syncSha;
+    const res = await fetch('https://api.github.com/repos/' + _GH.owner + '/' + _GH.repo + '/contents/' + _GH.file, {
+      method: 'PUT',
+      headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      const j = await res.json();
+      _syncSha = j.content.sha;
+      const t = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+      syncStatus('✅ Sync ' + t, '#059669');
+    } else {
+      syncStatus('⚠ Sync échoué', '#ef4444');
+    }
+  } catch(e) { syncStatus('⚠ Erreur sync', '#ef4444'); }
+}
+
+async function ghRestore() {
+  const token = ghToken();
+  if (!token) return false;
+  try {
+    syncStatus('🔄 Chargement...', '#2563eb');
+    const r = await fetch('https://api.github.com/repos/' + _GH.owner + '/' + _GH.repo + '/contents/' + _GH.file + '?t=' + Date.now(), {
+      headers: { Authorization: 'token ' + token }
+    });
+    if (!r.ok) { syncStatus('', ''); return false; }
+    const j = await r.json();
+    _syncSha = j.sha;
+    const data = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/
+/g,'')))));
+    _origSetItem('reprise_crm_v1', JSON.stringify(data));
+    syncStatus('✅ Restauré depuis GitHub', '#059669');
+    return true;
+  } catch(e) { syncStatus('', ''); return false; }
+}
+
+function showTokenModal() {
+  const cur = ghToken();
+  const display = cur ? cur.slice(0,8) + '...' : 'aucun';
+  const tok = prompt('GitHub Personal Access Token\n(repo > Contents: Read & Write)\n\nToken actuel: ' + display, cur || '');
+  if (tok === null) return;
+  if (tok.trim() === '') {
+    _origSetItem('acquis_gh_token', '');
+    syncStatus('Sync désactivé', '#4a5568');
+  } else {
+    _origSetItem('acquis_gh_token', tok.trim());
+    syncStatus('✅ Token enregistré', '#059669');
+    ghRestore().then(ok => {
+      if (!ok) syncStatus('✅ Sync actif — sauvegarde auto à chaque modif', '#059669');
+      else setTimeout(() => location.reload(), 1500);
+    });
+  }
+}
+
+window.addEventListener('load', function() {
+  if (ghToken()) {
+    const existing = localStorage.getItem('reprise_crm_v1');
+    if (!existing) {
+      ghRestore().then(ok => { if (ok) setTimeout(() => location.reload(), 1000); });
+    } else {
+      syncStatus('✅ Sync actif', '#059669');
+      fetch('https://api.github.com/repos/' + _GH.owner + '/' + _GH.repo + '/contents/' + _GH.file, {
+        headers: { Authorization: 'token ' + ghToken() }
+      }).then(r => r.ok ? r.json() : null).then(j => { if (j) _syncSha = j.sha; });
+    }
+  }
+});
+
+function exportCRM() {
   const d = localStorage.getItem('reprise_crm_v1') || '{}';
   const b = new Blob([d], {type:'application/json'});
   const u = URL.createObjectURL(b);
@@ -1891,19 +1996,18 @@ function exportCRM(){
   document.body.removeChild(a);
   URL.revokeObjectURL(u);
 }
-function importCRM(e){
+
+function importCRM(e) {
   const f = e.target.files[0];
   if (!f) return;
   const r = new FileReader();
-  r.onload = function(ev){
+  r.onload = function(ev) {
     try {
       const d = JSON.parse(ev.target.result);
       localStorage.setItem('reprise_crm_v1', JSON.stringify(d));
       alert('✅ Données restaurées ! La page va se recharger.');
       location.reload();
-    } catch(err) {
-      alert('❌ Fichier invalide : ' + err.message);
-    }
+    } catch(err) { alert('❌ Fichier invalide : ' + err.message); }
   };
   r.readAsText(f);
 }
