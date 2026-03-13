@@ -1944,8 +1944,7 @@ async function ghRestore() {
     if (!r.ok) { syncStatus('', ''); return false; }
     const j = await r.json();
     _syncSha = j.sha;
-    const data = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/
-/g,'')))));
+    const data = JSON.parse(decodeURIComponent(escape(atob(j.content.split('\n').join(''))));
     _origSetItem('reprise_crm_v1', JSON.stringify(data));
     syncStatus('✅ Restauré depuis GitHub', '#059669');
     return true;
