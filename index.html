@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Acquis</title>
 <style>
-/* ── Reset & base ── */
+/* ââ Reset & base ââ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --sb:#16213e; --sb2:#1a2744; --acc:#6366f1; --acc2:#5254cc;
@@ -15,7 +15,7 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;display:flex;height:100vh;overflow:hidden}
 
-/* ════════════════════ SIDEBAR ════════════════════ */
+/* ââââââââââââââââââââ SIDEBAR ââââââââââââââââââââ */
 .sb{width:var(--sb-w);min-width:var(--sb-w);background:var(--sb);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
 .sb-brand{padding:20px 18px 4px;display:flex;align-items:center;gap:8px}
 .sb-brand-icon{font-size:20px}
@@ -38,7 +38,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sb-otter strong{display:block;font-size:11px;color:#fb923c;margin-bottom:2px}
 .sb-otter span{font-size:10px;color:#4a5568}
 
-/* ════════════════════ MAIN ════════════════════ */
+/* ââââââââââââââââââââ MAIN ââââââââââââââââââââ */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .page{display:none;flex:1;flex-direction:column;overflow:hidden}
 .page.active{display:flex}
@@ -49,7 +49,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ph p{font-size:12px;color:var(--sub)}
 .ph-divider{height:1px;background:var(--border);margin:14px 28px 0}
 
-/* ════════════════════ STATS BAR ════════════════════ */
+/* ââââââââââââââââââââ STATS BAR ââââââââââââââââââââ */
 .stats-bar{display:flex;gap:0;padding:0 28px;flex-shrink:0;background:var(--card);border-bottom:1px solid var(--border)}
 .stat{padding:12px 20px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--border);cursor:pointer;transition:.12s}
 .stat:last-child{border-right:none}
@@ -59,7 +59,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .stat-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--sub)}
 .stat-sub{font-size:10px;color:#9ca3af}
 
-/* ════════════════════ PIPELINE PAGE ════════════════════ */
+/* ââââââââââââââââââââ PIPELINE PAGE ââââââââââââââââââââ */
 .pipe-scroll{flex:1;overflow-y:auto;padding:20px 28px 28px}
 .kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
 .k-col{background:var(--card);border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
@@ -71,7 +71,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .k-col-count{background:#f0f0f0;color:#888;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
 .k-cards{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:80px}
 
-/* ── Direct card ── */
+/* ââ Direct card ââ */
 .dc{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;cursor:pointer;transition:.15s;position:relative}
 .dc:hover{border-color:var(--acc);box-shadow:0 2px 10px rgba(99,102,241,.12)}
 .dc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
@@ -87,12 +87,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .chip-ca{background:#e0f2fe;color:#0369a1;font-weight:700}
 .chip-red{background:#fee2e2;color:#b91c1c;font-weight:700}
 .crm-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
-.crm-0{background:#f0f0f0;color:#666}       /* À contacter */
-.crm-1{background:#dbeafe;color:#1d4ed8}    /* Contacté */
-.crm-2{background:#ede9fe;color:#6d28d9}    /* RDV fixé */
-.crm-3{background:#fef3c7;color:#b45309}    /* En cours / négociation */
+.crm-0{background:#f0f0f0;color:#666}       /* Ã contacter */
+.crm-1{background:#dbeafe;color:#1d4ed8}    /* ContactÃ© */
+.crm-2{background:#ede9fe;color:#6d28d9}    /* RDV fixÃ© */
+.crm-3{background:#fef3c7;color:#b45309}    /* En cours / nÃ©gociation */
 .crm-4{background:#d1fae5;color:#065f46}    /* LOI / Deal */
-.crm-x{background:#fee2e2;color:#b91c1c}    /* No go / Abandonné */
+.crm-x{background:#fee2e2;color:#b91c1c}    /* No go / AbandonnÃ© */
 .dc-footer{display:flex;align-items:center;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid #f5f5f5}
 .dc-age-label{font-size:10px;color:#9ca3af;flex:1}
 .dc-actions{display:flex;gap:3px}
@@ -107,7 +107,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .k-add{width:calc(100% - 16px);margin:4px 8px 8px;background:none;border:1px dashed var(--border);border-radius:7px;padding:8px;font-size:12px;color:#9ca3af;cursor:pointer;font-family:inherit}
 .k-add:hover{border-color:var(--acc);color:var(--acc);background:#f5f5ff}
 
-/* ════════════════════ QUICK LOG POPUP ════════════════════ */
+/* ââââââââââââââââââââ QUICK LOG POPUP ââââââââââââââââââââ */
 .ql-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:300;display:none}
 .ql-overlay.open{display:flex;align-items:center;justify-content:center}
 .ql-box{background:#fff;border-radius:12px;padding:20px 24px;width:360px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
@@ -122,7 +122,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ql-save{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 .ql-save:hover{background:var(--acc2)}
 
-/* ════════════════════ DRAWER ════════════════════ */
+/* ââââââââââââââââââââ DRAWER ââââââââââââââââââââ */
 .dov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
 .dov.open{opacity:1;pointer-events:all}
 .drawer{position:fixed;top:0;right:0;width:600px;max-width:95vw;height:100vh;background:#fff;z-index:201;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-6px 0 30px rgba(0,0,0,.12)}
@@ -152,7 +152,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .df-del{background:none;border:1px solid #fecaca;border-radius:7px;padding:6px 12px;font-size:12px;color:var(--red);cursor:pointer;font-family:inherit;flex-shrink:0}
 .df-del:hover{background:#fee2e2}
 
-/* ── Activity log ── */
+/* ââ Activity log ââ */
 .act-log{display:flex;flex-direction:column;gap:0}
 .act-entry{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5}
 .act-entry:last-child{border-bottom:none}
@@ -172,7 +172,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .act-save-btn{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;cursor:pointer;font-weight:600}
 .act-save-btn:hover{background:var(--acc2)}
 
-/* ════════════════════ CONTACTS PAGE (indirect) ════════════════════ */
+/* ââââââââââââââââââââ CONTACTS PAGE (indirect) ââââââââââââââââââââ */
 .contacts-toolbar{padding:14px 28px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--card)}
 .search-input{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;width:280px}
 .search-input:focus{border-color:var(--acc)}
@@ -189,7 +189,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .add-contact-btn{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .add-contact-btn:hover{background:var(--acc2)}
 
-/* ════════════════════ TODAY PAGE ════════════════════ */
+/* ââââââââââââââââââââ TODAY PAGE ââââââââââââââââââââ */
 .today-scroll{flex:1;overflow-y:auto;padding:20px 28px 28px}
 .time-blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 .tb{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -215,7 +215,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ti-del:hover{color:var(--red)}
 .ti-empty{padding:20px;text-align:center;font-size:13px;color:#d1d5db}
 
-/* ════════════════════ ADVISORS TABLE ════════════════════ */
+/* ââââââââââââââââââââ ADVISORS TABLE ââââââââââââââââââââ */
 .tbl-scroll{flex:1;overflow-y:auto;padding:20px 28px 28px}
 .pipe-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);border:1px solid var(--border)}
 .pipe-table th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;padding:11px 14px;background:#fafafa;border-bottom:2px solid var(--border)}
@@ -229,7 +229,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .add-row{background:none;border:1px dashed var(--border);border-radius:8px;width:100%;padding:9px;font-size:12px;color:#9ca3af;cursor:pointer;margin-top:10px;font-family:inherit}
 .add-row:hover{border-color:var(--acc);color:var(--acc);background:#f5f5ff}
 
-/* ════════════════════ OTTER PAGE ════════════════════ */
+/* ââââââââââââââââââââ OTTER PAGE ââââââââââââââââââââ */
 .otter-pg{flex:1;overflow-y:auto;padding:20px 28px}
 .otter-card{background:var(--card);border:1px solid #ffd4c2;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .otter-card-h{background:#fff7f3;padding:14px 20px;border-bottom:1px solid #ffd4c2;display:flex;align-items:center;gap:12px}
@@ -239,7 +239,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .otter-ta{width:100%;border:none;padding:18px 20px;font-size:13px;font-family:inherit;resize:none;outline:none;line-height:1.7;min-height:260px;color:var(--txt)}
 .otter-ta::placeholder{color:#d1d5db}
 
-/* ════════════════════ PROJET PAGE ════════════════════ */
+/* ââââââââââââââââââââ PROJET PAGE ââââââââââââââââââââ */
 .proj-scroll{flex:1;overflow-y:auto;padding:16px 28px 40px}
 .proj-toolbar{padding:11px 28px;display:flex;align-items:center;gap:8px;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--card)}
 .proj-filter-btn{border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;background:#fff;font-family:inherit;color:#6b7280;transition:.12s}
@@ -273,7 +273,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cat-add-task{width:calc(100% - 28px);margin:4px 14px 8px;background:none;border:1px dashed var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:#9ca3af;cursor:pointer;font-family:inherit;text-align:left}
 .cat-add-task:hover{border-color:var(--acc);color:var(--acc);background:#f5f5ff}
 
-/* ════════════════════ ARCHIVES ════════════════════ */
+/* ââââââââââââââââââââ ARCHIVES ââââââââââââââââââââ */
 .arch-btn{background:none;border:1px solid #fed7aa;border-radius:7px;padding:6px 12px;font-size:12px;color:#ea580c;cursor:pointer;font-family:inherit;flex-shrink:0}
 .arch-btn:hover{background:#fff7ed}
 .restore-btn{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:11px;color:#15803d;cursor:pointer;font-weight:600}
@@ -287,7 +287,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .arch-item-name{font-size:13px;font-weight:600;color:#6b7280}
 .arch-item-sub{font-size:11px;color:#9ca3af;margin-top:2px}
 
-/* ════════════════════ DEAL FLOW PAGE ════════════════════ */
+/* ââââââââââââââââââââ DEAL FLOW PAGE ââââââââââââââââââââ */
 .df-page-scroll{flex:1;overflow-y:auto;padding:0 28px 28px}
 .df-toolbar{padding:11px 28px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--card);flex-wrap:wrap}
 .df-table{width:100%;border-collapse:collapse;margin-top:14px}
@@ -308,82 +308,87 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .df-empty-sub{font-size:12px;color:#6b7280;line-height:1.6}
 .sb-badge.badge-red{background:#ef4444 !important;color:#fff !important}
 
-/* ════════════════════ SHARED UTILS ════════════════════ */
+/* ââââââââââââââââââââ SHARED UTILS ââââââââââââââââââââ */
 .toast{position:fixed;bottom:20px;right:24px;background:var(--txt);color:#fff;padding:8px 18px;border-radius:8px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999}
 .toast.show{opacity:1}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<!-- âââââââââââââââ SIDEBAR âââââââââââââââ -->
 <nav class="sb">
-  <div class="sb-brand"><span class="sb-brand-icon">🎯</span><span class="sb-brand-name">Acquis</span></div>
+  <div class="sb-brand"><span class="sb-brand-icon">ð¯</span><span class="sb-brand-name">Acquis</span></div>
   <div class="sb-date" id="sb-date"></div>
 
   <div class="sb-moment">
-    <button class="sb-mbtn" id="mb-matin" onclick="setMoment('matin')">☀️ Matin</button>
-    <button class="sb-mbtn" id="mb-midi"  onclick="setMoment('midi')">🌤 Midi</button>
-    <button class="sb-mbtn" id="mb-soir"  onclick="setMoment('soir')">🌙 Soir</button>
+    <button class="sb-mbtn" id="mb-matin" onclick="setMoment('matin')">âï¸ Matin</button>
+    <button class="sb-mbtn" id="mb-midi"  onclick="setMoment('midi')">ð¤ Midi</button>
+    <button class="sb-mbtn" id="mb-soir"  onclick="setMoment('soir')">ð Soir</button>
   </div>
 
   <div class="sb-divider"></div>
   <div class="sb-label">Pipeline</div>
   <div class="sb-item active" id="nav-pipeline" onclick="goTo('pipeline')">
-    <span class="si">🎯</span> Acquisitions
+    <span class="si">ð¯</span> Acquisitions
     <span class="sb-badge" id="badge-pipeline">0</span>
   </div>
   <div class="sb-item" id="nav-contacts" onclick="goTo('contacts')">
-    <span class="si">🔗</span> Contacts Indirects
+    <span class="si">ð</span> Contacts Indirects
     <span class="sb-badge" id="badge-contacts">0</span>
   </div>
 
   <div class="sb-item" id="nav-project" onclick="goTo('project')">
-    <span class="si">📌</span> Projet
+    <span class="si">ð</span> Projet
     <span class="sb-badge" id="badge-project">0</span>
   </div>
 
   <div class="sb-divider"></div>
-  <div class="sb-label">Journée</div>
+  <div class="sb-label">JournÃ©e</div>
   <div class="sb-item" id="nav-today" onclick="goTo('today')">
-    <span class="si">📋</span> Aujourd'hui
+    <span class="si">ð</span> Aujourd'hui
     <span class="sb-badge" id="badge-today">-</span>
   </div>
   <div class="sb-item" id="nav-advisors" onclick="goTo('advisors')">
-    <span class="si">🤝</span> Advisors
+    <span class="si">ð¤</span> Advisors
     <span class="sb-badge" id="badge-advisors">0</span>
   </div>
 
   <div class="sb-divider"></div>
   <div class="sb-label">Sourcing</div>
   <div class="sb-item" id="nav-dealflow" onclick="goTo('dealflow')">
-    <span class="si">🔍</span> Deal Flow
+    <span class="si">ð</span> Deal Flow
     <span class="sb-badge" id="badge-dealflow"></span>
   </div>
 
   <div class="sb-divider"></div>
   <div class="sb-item" id="nav-archives" onclick="goTo('archives')">
-    <span class="si">📦</span> Archives
+    <span class="si">ð¦</span> Archives
     <span class="sb-badge" id="badge-archives"></span>
   </div>
 
   <div class="sb-divider"></div>
   <div class="sb-otter" onclick="goTo('otter')">
-    <strong>🎙 Otter.ai</strong>
-    <span>Intégration — Step 2</span>
+    <strong>ð Otter.ai</strong>
+    <span>IntÃ©gration â Step 2</span>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-item" onclick="exportCRM()" style="color:#4ade80;font-weight:600;">
+    <span class="si">&#x1F4BE;</span> Exporter
   </div>
 </nav>
 
-<!-- ═══════════════ QUICK LOG POPUP ═══════════════ -->
+<!-- âââââââââââââââ QUICK LOG POPUP âââââââââââââââ -->
 <div class="ql-overlay" id="ql-overlay" onclick="closeQL()">
   <div class="ql-box" onclick="event.stopPropagation()">
-    <div class="ql-title" id="ql-title">Logger une activité</div>
+    <div class="ql-title" id="ql-title">Logger une activitÃ©</div>
     <div class="ql-types">
-      <button class="ql-type active" id="qlt-call"    onclick="selectQLType('call')">📞 Appel</button>
-      <button class="ql-type"        id="qlt-email"   onclick="selectQLType('email')">📧 Email</button>
-      <button class="ql-type"        id="qlt-meeting" onclick="selectQLType('meeting')">📅 RDV</button>
-      <button class="ql-type"        id="qlt-note"    onclick="selectQLType('note')">📝 Note</button>
+      <button class="ql-type active" id="qlt-call"    onclick="selectQLType('call')">ð Appel</button>
+      <button class="ql-type"        id="qlt-email"   onclick="selectQLType('email')">ð§ Email</button>
+      <button class="ql-type"        id="qlt-meeting" onclick="selectQLType('meeting')">ð RDV</button>
+      <button class="ql-type"        id="qlt-note"    onclick="selectQLType('note')">ð Note</button>
     </div>
-    <textarea class="ql-ta" id="ql-text" placeholder="Résumé rapide…"></textarea>
+    <textarea class="ql-ta" id="ql-text" placeholder="RÃ©sumÃ© rapideâ¦"></textarea>
     <div class="ql-footer">
       <button class="ql-cancel" onclick="closeQL()">Annuler</button>
       <button class="ql-save"   onclick="saveQL()">Enregistrer</button>
@@ -391,7 +396,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<!-- ═══════════════ DRAWER — DIRECT ═══════════════ -->
+<!-- âââââââââââââââ DRAWER â DIRECT âââââââââââââââ -->
 <div class="dov" id="dov-direct" onclick="closeDrawer('direct')"></div>
 <div class="drawer" id="drawer-direct">
   <div class="dh">
@@ -399,28 +404,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="dh-title" id="dh-direct-title">Fiche</div>
       <div class="dh-sub"   id="dh-direct-sub"></div>
     </div>
-    <button class="dh-close" onclick="closeDrawer('direct')">✕ Fermer</button>
+    <button class="dh-close" onclick="closeDrawer('direct')">â Fermer</button>
   </div>
   <div class="dbody">
     <!-- Identification -->
     <div><div class="dsec">Identification</div>
       <div class="grid2">
-        <div class="fg"><label>Société / Référence</label><input class="fi" id="dd-societe"  placeholder="Nom…" oninput="syncD()"/></div>
-        <div class="fg"><label>Contact</label>            <input class="fi" id="dd-contact"  placeholder="Contact…" oninput="syncD()"/></div>
-        <div class="fg"><label>Secteur</label>            <input class="fi" id="dd-secteur"  placeholder="Petfood…" oninput="syncD()"/></div>
-        <div class="fg"><label>Région</label>             <input class="fi" id="dd-region"   placeholder="Bretagne…" oninput="syncD()"/></div>
+        <div class="fg"><label>SociÃ©tÃ© / RÃ©fÃ©rence</label><input class="fi" id="dd-societe"  placeholder="Nomâ¦" oninput="syncD()"/></div>
+        <div class="fg"><label>Contact</label>            <input class="fi" id="dd-contact"  placeholder="Contactâ¦" oninput="syncD()"/></div>
+        <div class="fg"><label>Secteur</label>            <input class="fi" id="dd-secteur"  placeholder="Petfoodâ¦" oninput="syncD()"/></div>
+        <div class="fg"><label>RÃ©gion</label>             <input class="fi" id="dd-region"   placeholder="Bretagneâ¦" oninput="syncD()"/></div>
       </div>
     </div>
     <!-- Financials -->
     <div><div class="dsec">Financials</div>
       <div class="grid4">
-        <div class="fg"><label>CA (€)</label>     <input class="fi" id="dd-ca"     placeholder="2 000 000" oninput="syncD()"/></div>
-        <div class="fg"><label>EBITDA (€)</label> <input class="fi" id="dd-ebitda" placeholder="300 000"   oninput="syncD()"/></div>
+        <div class="fg"><label>CA (â¬)</label>     <input class="fi" id="dd-ca"     placeholder="2 000 000" oninput="syncD()"/></div>
+        <div class="fg"><label>EBITDA (â¬)</label> <input class="fi" id="dd-ebitda" placeholder="300 000"   oninput="syncD()"/></div>
         <div class="fg"><label>BFR</label>        <input class="fi" id="dd-bfr"    placeholder="120 000"   oninput="syncD()"/></div>
         <div class="fg"><label>Pax</label>        <input class="fi" id="dd-pax"    placeholder="12"        oninput="syncD()"/></div>
       </div>
-      <div class="fg" style="margin-top:10px"><label>Financials — détail</label>
-        <textarea class="fta" id="dd-financials" placeholder="Bilan, ratios…" oninput="syncD()"></textarea>
+      <div class="fg" style="margin-top:10px"><label>Financials â dÃ©tail</label>
+        <textarea class="fta" id="dd-financials" placeholder="Bilan, ratiosâ¦" oninput="syncD()"></textarea>
       </div>
     </div>
     <!-- Historique -->
@@ -429,8 +434,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="fg"><label>Premier contact</label><input class="fi" id="dd-pc" placeholder="jj/mm/aaaa" oninput="syncD()"/></div>
         <div class="fg"><label>Premier appel</label>  <input class="fi" id="dd-pa" placeholder="jj/mm/aaaa" oninput="syncD()"/></div>
       </div>
-      <div class="fg" style="margin-top:10px"><label>Mémo</label>
-        <textarea class="fta" id="dd-memo" placeholder="Contexte, impressions…" oninput="syncD()"></textarea>
+      <div class="fg" style="margin-top:10px"><label>MÃ©mo</label>
+        <textarea class="fta" id="dd-memo" placeholder="Contexte, impressionsâ¦" oninput="syncD()"></textarea>
       </div>
     </div>
     <!-- CRM -->
@@ -438,26 +443,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="fg">
         <label>Statut CRM</label>
         <select class="fsel" id="dd-crm" onchange="syncD()">
-          <option>À contacter</option><option>Contacté</option><option>RDV fixé</option>
-          <option>En cours</option><option>En négociation</option><option>LOI signée</option>
-          <option>Deal clôturé</option><option>No go</option><option>Abandonné</option>
+          <option>Ã contacter</option><option>ContactÃ©</option><option>RDV fixÃ©</option>
+          <option>En cours</option><option>En nÃ©gociation</option><option>LOI signÃ©e</option>
+          <option>Deal clÃ´turÃ©</option><option>No go</option><option>AbandonnÃ©</option>
         </select>
       </div>
       <div class="fg" style="margin-top:10px"><label>Notes CRM</label>
-        <textarea class="fta" id="dd-notes" placeholder="Prochaine étape…" oninput="syncD()"></textarea>
+        <textarea class="fta" id="dd-notes" placeholder="Prochaine Ã©tapeâ¦" oninput="syncD()"></textarea>
       </div>
     </div>
     <!-- Activity log -->
-    <div><div class="dsec">Journal d'activités</div>
+    <div><div class="dsec">Journal d'activitÃ©s</div>
       <div class="act-add-form">
         <div class="act-types" id="act-types-row">
-          <button class="act-type-btn active" id="at-call"    onclick="selectActType('call')">📞 Appel</button>
-          <button class="act-type-btn"        id="at-email"   onclick="selectActType('email')">📧 Email</button>
-          <button class="act-type-btn"        id="at-meeting" onclick="selectActType('meeting')">📅 RDV</button>
-          <button class="act-type-btn"        id="at-note"    onclick="selectActType('note')">📝 Note</button>
+          <button class="act-type-btn active" id="at-call"    onclick="selectActType('call')">ð Appel</button>
+          <button class="act-type-btn"        id="at-email"   onclick="selectActType('email')">ð§ Email</button>
+          <button class="act-type-btn"        id="at-meeting" onclick="selectActType('meeting')">ð RDV</button>
+          <button class="act-type-btn"        id="at-note"    onclick="selectActType('note')">ð Note</button>
         </div>
         <div class="act-input-row">
-          <input class="act-ti" id="act-input" placeholder="Résumé de l'activité…" onkeydown="if(event.key==='Enter')saveActivity()"/>
+          <input class="act-ti" id="act-input" placeholder="RÃ©sumÃ© de l'activitÃ©â¦" onkeydown="if(event.key==='Enter')saveActivity()"/>
           <button class="act-save-btn" onclick="saveActivity()">+ Log</button>
         </div>
       </div>
@@ -465,15 +470,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="df">
-    <div class="df-mvs"><span style="font-size:11px;color:#aaa;margin-right:4px">Déplacer :</span><span id="df-mv-direct"></span></div>
+    <div class="df-mvs"><span style="font-size:11px;color:#aaa;margin-right:4px">DÃ©placer :</span><span id="df-mv-direct"></span></div>
     <div style="display:flex;gap:8px">
-      <button class="arch-btn" onclick="archiveActive('direct')">📦 Archiver</button>
+      <button class="arch-btn" onclick="archiveActive('direct')">ð¦ Archiver</button>
       <button class="df-del" onclick="delActiveCard('direct')">Supprimer</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ DRAWER — INDIRECT ═══════════════ -->
+<!-- âââââââââââââââ DRAWER â INDIRECT âââââââââââââââ -->
 <div class="dov" id="dov-indirect" onclick="closeDrawer('indirect')"></div>
 <div class="drawer" id="drawer-indirect">
   <div class="dh">
@@ -481,21 +486,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="dh-title" id="dh-indirect-title">Fiche contact</div>
       <div class="dh-sub"   id="dh-indirect-sub"></div>
     </div>
-    <button class="dh-close" onclick="closeDrawer('indirect')">✕ Fermer</button>
+    <button class="dh-close" onclick="closeDrawer('indirect')">â Fermer</button>
   </div>
   <div class="dbody">
     <div><div class="dsec">Identification</div>
       <div class="grid2">
-        <div class="fg"><label>Cabinet / Société</label><input class="fi" id="di-cabinet" placeholder="Nom…" oninput="syncI()"/></div>
-        <div class="fg"><label>Localisation</label>     <input class="fi" id="di-loc"     placeholder="Ville…" oninput="syncI()"/></div>
-        <div class="fg"><label>Prénom</label>           <input class="fi" id="di-prenom"  placeholder="Prénom…" oninput="syncI()"/></div>
-        <div class="fg"><label>Nom</label>              <input class="fi" id="di-nom"     placeholder="Nom…" oninput="syncI()"/></div>
+        <div class="fg"><label>Cabinet / SociÃ©tÃ©</label><input class="fi" id="di-cabinet" placeholder="Nomâ¦" oninput="syncI()"/></div>
+        <div class="fg"><label>Localisation</label>     <input class="fi" id="di-loc"     placeholder="Villeâ¦" oninput="syncI()"/></div>
+        <div class="fg"><label>PrÃ©nom</label>           <input class="fi" id="di-prenom"  placeholder="PrÃ©nomâ¦" oninput="syncI()"/></div>
+        <div class="fg"><label>Nom</label>              <input class="fi" id="di-nom"     placeholder="Nomâ¦" oninput="syncI()"/></div>
       </div>
     </div>
-    <div><div class="dsec">Coordonnées</div>
+    <div><div class="dsec">CoordonnÃ©es</div>
       <div class="grid2">
-        <div class="fg"><label>Téléphone</label><input class="fi" id="di-tel"   placeholder="06 xx xx xx xx" oninput="syncI()"/></div>
-        <div class="fg"><label>Email</label>    <input class="fi" id="di-email" placeholder="email@…" oninput="syncI()"/></div>
+        <div class="fg"><label>TÃ©lÃ©phone</label><input class="fi" id="di-tel"   placeholder="06 xx xx xx xx" oninput="syncI()"/></div>
+        <div class="fg"><label>Email</label>    <input class="fi" id="di-email" placeholder="email@â¦" oninput="syncI()"/></div>
       </div>
     </div>
     <div><div class="dsec">Suivi</div>
@@ -503,26 +508,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="fg"><label>Dernier contact</label><input class="fi" id="di-last" placeholder="jj/mm" oninput="syncI()"/></div>
         <div class="fg"><label>Statut</label>
           <select class="fsel" id="di-statut" onchange="syncI()">
-            <option>Prospect</option><option>À contacter</option><option>Contacté</option>
-            <option>À relancer</option><option>En cours</option><option>Converti</option><option>Abandonné</option>
+            <option>Prospect</option><option>Ã contacter</option><option>ContactÃ©</option>
+            <option>Ã relancer</option><option>En cours</option><option>Converti</option><option>AbandonnÃ©</option>
           </select>
         </div>
       </div>
-      <div class="fg" style="margin-top:10px"><label>Prochaines étapes</label>
-        <textarea class="fta" id="di-next" placeholder="Actions, relances…" oninput="syncI()"></textarea>
+      <div class="fg" style="margin-top:10px"><label>Prochaines Ã©tapes</label>
+        <textarea class="fta" id="di-next" placeholder="Actions, relancesâ¦" oninput="syncI()"></textarea>
       </div>
     </div>
   </div>
   <div class="df">
-    <div class="df-mvs"><span style="font-size:11px;color:#aaa;margin-right:4px">Déplacer :</span><span id="df-mv-indirect"></span></div>
+    <div class="df-mvs"><span style="font-size:11px;color:#aaa;margin-right:4px">DÃ©placer :</span><span id="df-mv-indirect"></span></div>
     <div style="display:flex;gap:8px">
-      <button class="arch-btn" onclick="archiveActive('indirect')">📦 Archiver</button>
+      <button class="arch-btn" onclick="archiveActive('indirect')">ð¦ Archiver</button>
       <button class="df-del" onclick="delActiveCard('indirect')">Supprimer</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<!-- âââââââââââââââ MAIN CONTENT âââââââââââââââ -->
 <div class="main">
 
   <!-- PIPELINE PAGE -->
@@ -533,26 +538,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <!-- CONTACTS PAGE -->
   <div class="page" id="page-contacts">
-    <div class="ph"><h2>🔗 Contacts Indirects</h2><p>Apporteurs d'affaires, cabinets, banques, associations</p></div>
+    <div class="ph"><h2>ð Contacts Indirects</h2><p>Apporteurs d'affaires, cabinets, banques, associations</p></div>
     <div class="ph-divider"></div>
     <div class="contacts-toolbar">
-      <input class="search-input" id="contact-search" placeholder="🔍  Rechercher un cabinet, un contact…" oninput="filterContacts()"/>
+      <input class="search-input" id="contact-search" placeholder="ð  Rechercher un cabinet, un contactâ¦" oninput="filterContacts()"/>
       <select class="filter-select" id="contact-filter" onchange="filterContacts()">
         <option value="">Tous les statuts</option>
-        <option>Prospect</option><option>À contacter</option><option>Contacté</option>
-        <option>À relancer</option><option>En cours</option><option>Converti</option><option>Abandonné</option>
+        <option>Prospect</option><option>Ã contacter</option><option>ContactÃ©</option>
+        <option>Ã relancer</option><option>En cours</option><option>Converti</option><option>AbandonnÃ©</option>
       </select>
       <span class="ct-count" id="ct-count"></span>
       <button class="add-contact-btn" onclick="addIndirectCard(0)">+ Ajouter</button>
     </div>
     <div class="contacts-list"><table class="contact-table">
       <thead><tr>
-        <th style="width:22%">Cabinet / Société</th>
+        <th style="width:22%">Cabinet / SociÃ©tÃ©</th>
         <th style="width:18%">Contact</th>
         <th style="width:15%">Localisation</th>
-        <th style="width:10%">Téléphone</th>
+        <th style="width:10%">TÃ©lÃ©phone</th>
         <th style="width:14%">Statut</th>
-        <th>Prochaines étapes</th>
+        <th>Prochaines Ã©tapes</th>
       </tr></thead>
       <tbody id="contact-tbody"></tbody>
     </table></div>
@@ -560,33 +565,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <!-- TODAY PAGE -->
   <div class="page" id="page-today">
-    <div class="ph"><h2>📋 Aujourd'hui</h2><p id="ph-today-date"></p></div>
+    <div class="ph"><h2>ð Aujourd'hui</h2><p id="ph-today-date"></p></div>
     <div class="ph-divider"></div>
     <div class="today-scroll">
       <div class="time-blocks">
-        <div class="tb" id="tb-matin"><label>☀️ Matin — intentions</label><textarea id="block-matin" placeholder="Ce que je veux accomplir ce matin…" oninput="save()"></textarea></div>
-        <div class="tb" id="tb-midi"> <label>🌤 Midi — bilan</label>      <textarea id="block-midi"  placeholder="Où j'en suis, ajustements…" oninput="save()"></textarea></div>
-        <div class="tb" id="tb-soir"><label>🌙 Soir — clôture</label>     <textarea id="block-soir" placeholder="Ce qui est fait, demain…" oninput="save()"></textarea></div>
+        <div class="tb" id="tb-matin"><label>âï¸ Matin â intentions</label><textarea id="block-matin" placeholder="Ce que je veux accomplir ce matinâ¦" oninput="save()"></textarea></div>
+        <div class="tb" id="tb-midi"> <label>ð¤ Midi â bilan</label>      <textarea id="block-midi"  placeholder="OÃ¹ j'en suis, ajustementsâ¦" oninput="save()"></textarea></div>
+        <div class="tb" id="tb-soir"><label>ð Soir â clÃ´ture</label>     <textarea id="block-soir" placeholder="Ce qui est fait, demainâ¦" oninput="save()"></textarea></div>
       </div>
       <div class="todo-panel">
-        <div class="todo-ph"><h3>Tâches du jour</h3><span id="todo-count">0 / 0</span></div>
+        <div class="todo-ph"><h3>TÃ¢ches du jour</h3><span id="todo-count">0 / 0</span></div>
         <div class="todo-row">
-          <input class="todo-in" id="todo-in" placeholder="Ajouter une tâche…" onkeydown="if(event.key==='Enter')addTodo()"/>
+          <input class="todo-in" id="todo-in" placeholder="Ajouter une tÃ¢cheâ¦" onkeydown="if(event.key==='Enter')addTodo()"/>
           <button class="todo-add" onclick="addTodo()">+ Ajouter</button>
         </div>
-        <div class="todo-items" id="todo-items"><div class="ti-empty">Aucune tâche pour aujourd'hui</div></div>
+        <div class="todo-items" id="todo-items"><div class="ti-empty">Aucune tÃ¢che pour aujourd'hui</div></div>
       </div>
     </div>
   </div>
 
   <!-- ADVISORS PAGE -->
   <div class="page" id="page-advisors">
-    <div class="ph"><h2>🤝 Support & Advisors</h2><p>Avocats, expert-comptable, mentors, réseau de confiance</p></div>
+    <div class="ph"><h2>ð¤ Support & Advisors</h2><p>Avocats, expert-comptable, mentors, rÃ©seau de confiance</p></div>
     <div class="ph-divider"></div>
     <div class="tbl-scroll">
       <table class="pipe-table">
         <thead><tr>
-          <th style="width:18%">Nom</th><th style="width:24%">Rôle</th><th style="width:12%">Statut</th>
+          <th style="width:18%">Nom</th><th style="width:24%">RÃ´le</th><th style="width:12%">Statut</th>
           <th style="width:14%">Dernier contact</th><th style="width:16%">Prochaine action</th><th>Notes</th><th style="width:38px"></th>
         </tr></thead>
         <tbody id="tbody-advisors"></tbody>
@@ -597,28 +602,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <!-- OTTER PAGE -->
   <div class="page" id="page-otter">
-    <div class="ph"><h2>🎙 Otter.ai</h2><p>Résumés d'appels & extraits emails — intégration automatique Step 2</p></div>
+    <div class="ph"><h2>ð Otter.ai</h2><p>RÃ©sumÃ©s d'appels & extraits emails â intÃ©gration automatique Step 2</p></div>
     <div class="ph-divider"></div>
     <div class="otter-pg">
       <div class="otter-card">
         <div class="otter-card-h">
-          <span>🎙</span>
-          <div><strong>Otter — En attente d'intégration</strong><p>En attendant, coller ici les notes d'appels ou actions à logguer</p></div>
+          <span>ð</span>
+          <div><strong>Otter â En attente d'intÃ©gration</strong><p>En attendant, coller ici les notes d'appels ou actions Ã  logguer</p></div>
         </div>
-        <textarea class="otter-ta" id="otter-notes" placeholder="Ex: Call avec X le 12/03 — intéressé, CA ~2M€, RDV à fixer début avril…" oninput="save()"></textarea>
+        <textarea class="otter-ta" id="otter-notes" placeholder="Ex: Call avec X le 12/03 â intÃ©ressÃ©, CA ~2Mâ¬, RDV Ã  fixer dÃ©but avrilâ¦" oninput="save()"></textarea>
       </div>
     </div>
   </div>
 
   <!-- PROJET PAGE -->
   <div class="page" id="page-project">
-    <div class="ph"><h2>📌 Projet Reprise</h2><p>Backlog de toutes les actions — de la thèse au closing</p></div>
+    <div class="ph"><h2>ð Projet Reprise</h2><p>Backlog de toutes les actions â de la thÃ¨se au closing</p></div>
     <div class="ph-divider"></div>
     <div class="proj-toolbar">
       <button class="proj-filter-btn active" id="pfilt-all"   onclick="setProjFilter('all')">Tout</button>
-      <button class="proj-filter-btn"        id="pfilt-todo"  onclick="setProjFilter('todo')">À faire</button>
+      <button class="proj-filter-btn"        id="pfilt-todo"  onclick="setProjFilter('todo')">Ã faire</button>
       <button class="proj-filter-btn"        id="pfilt-done"  onclick="setProjFilter('done')">Fait</button>
-      <input class="proj-search" id="proj-search" placeholder="🔍 Rechercher…" oninput="renderProject()"/>
+      <input class="proj-search" id="proj-search" placeholder="ð Rechercherâ¦" oninput="renderProject()"/>
     </div>
     <div class="proj-stats-row" id="proj-stats"></div>
     <div class="proj-scroll" id="proj-scroll"></div>
@@ -627,12 +632,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- DEAL FLOW PAGE -->
   <div class="page" id="page-dealflow">
     <div class="ph">
-      <h2>🔍 Deal Flow</h2>
-      <p>Opportunités détectées automatiquement — Petfood · Nutrition animale · Équin · NAC &nbsp;·&nbsp; <span id="df-last-upd" style="color:#9ca3af"></span></p>
+      <h2>ð Deal Flow</h2>
+      <p>OpportunitÃ©s dÃ©tectÃ©es automatiquement â Petfood Â· Nutrition animale Â· Ãquin Â· NAC &nbsp;Â·&nbsp; <span id="df-last-upd" style="color:#9ca3af"></span></p>
     </div>
     <div class="ph-divider"></div>
     <div class="df-toolbar">
-      <input class="search-input" id="df-search" placeholder="🔎 Rechercher..." oninput="renderDealFlow()" style="width:220px"/>
+      <input class="search-input" id="df-search" placeholder="ð Rechercher..." oninput="renderDealFlow()" style="width:220px"/>
       <select class="filter-select" id="df-source" onchange="renderDealFlow()">
         <option value="">Toutes les sources</option>
         <option>Transentreprise</option>
@@ -642,41 +647,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <option>CessionPME</option>
         <option>MaCession</option>
       </select>
-      <button class="proj-filter-btn" id="df-new-btn" onclick="toggleDfNew()" style="flex-shrink:0">🆕 Nouvelles</button>
+      <button class="proj-filter-btn" id="df-new-btn" onclick="toggleDfNew()" style="flex-shrink:0">ð Nouvelles</button>
       <span class="ct-count" id="df-count" style="margin-left:auto"></span>
-      <button class="add-contact-btn" onclick="loadDealsJson(true)" style="flex-shrink:0">🔄 Actualiser</button>
+      <button class="add-contact-btn" onclick="loadDealsJson(true)" style="flex-shrink:0">ð Actualiser</button>
     </div>
     <div class="df-page-scroll">
-      <div id="df-list"><div class="df-empty"><div class="df-empty-icon">🔍</div><div class="df-empty-title">Chargement...</div></div></div>
+      <div id="df-list"><div class="df-empty"><div class="df-empty-icon">ð</div><div class="df-empty-title">Chargement...</div></div></div>
     </div>
   </div>
 
   <!-- ARCHIVES PAGE -->
   <div class="page" id="page-archives">
-    <div class="ph"><h2>📦 Archives</h2><p>Contacts et cibles clôturés — plus rien à en tirer</p></div>
+    <div class="ph"><h2>ð¦ Archives</h2><p>Contacts et cibles clÃ´turÃ©s â plus rien Ã  en tirer</p></div>
     <div class="ph-divider"></div>
     <div class="arch-page-scroll" id="arch-content"></div>
   </div>
 
 </div><!-- /main -->
 
-<div class="toast" id="toast">Sauvegardé ✓</div>
+<div class="toast" id="toast">SauvegardÃ© â</div>
 
 <script>
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // CONSTANTS
-// ════════════════════════════════════════════════════
-const K_COLS   = ['À contacter','Contacté','En cours','Suivi'];
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const K_COLS   = ['Ã contacter','ContactÃ©','En cours','Suivi'];
 const COL_DOTS = ['dot-0','dot-1','dot-2','dot-3'];
-const ACT_ICONS= {call:'📞',email:'📧',meeting:'📅',note:'📝'};
+const ACT_ICONS= {call:'ð',email:'ð§',meeting:'ð',note:'ð'};
 const CRM_MAP  = {
-  'À contacter':'crm-0','Contacté':'crm-1','RDV fixé':'crm-2',
-  'En cours':'crm-3','En négociation':'crm-3','LOI signée':'crm-4','Deal clôturé':'crm-4',
-  'No go':'crm-x','Abandonné':'crm-x'
+  'Ã contacter':'crm-0','ContactÃ©':'crm-1','RDV fixÃ©':'crm-2',
+  'En cours':'crm-3','En nÃ©gociation':'crm-3','LOI signÃ©e':'crm-4','Deal clÃ´turÃ©':'crm-4',
+  'No go':'crm-x','AbandonnÃ©':'crm-x'
 };
 const ISC_MAP = {
-  'Prospect':'crm-0','À contacter':'crm-0','Contacté':'crm-1','À relancer':'crm-3',
-  'En cours':'crm-3','Converti':'crm-4','Abandonné':'crm-x'
+  'Prospect':'crm-0','Ã contacter':'crm-0','ContactÃ©':'crm-1','Ã relancer':'crm-3',
+  'En cours':'crm-3','Converti':'crm-4','AbandonnÃ©':'crm-x'
 };
 
 let cardCtr=0, todoCtr=0, rowCtr=0;
@@ -686,9 +691,9 @@ const activeCard  ={direct:null,indirect:null};
 let qlCardId=null, qlType='call', actType='call';
 let contactFilter={q:'',status:''};
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // UTILS
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function now(){return Date.now()}
 function today(){return new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})}
@@ -701,13 +706,13 @@ function fmtTs(ts){
   return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
 }
 function agingInfo(activities){
-  if(!activities||!activities.length)return{cls:'age-none',label:'Jamais contacté'};
+  if(!activities||!activities.length)return{cls:'age-none',label:'Jamais contactÃ©'};
   const last=Math.max(...activities.map(a=>a.ts||0));
   const days=Math.floor((Date.now()-last)/86400000);
   if(days<3) return{cls:'age-fresh',label:`il y a ${days===0?'aujourd\'hui':days+'j'}`};
   if(days<7) return{cls:'age-ok',label:`il y a ${days}j`};
-  if(days<14)return{cls:'age-old',label:`⚠ il y a ${days}j`};
-  return{cls:'age-dead',label:`🔴 il y a ${days}j`};
+  if(days<14)return{cls:'age-old',label:`â  il y a ${days}j`};
+  return{cls:'age-dead',label:`ð´ il y a ${days}j`};
 }
 function parseCA(s){
   if(!s)return 0;
@@ -717,16 +722,16 @@ function parseCA(s){
   return n;
 }
 function fmtNum(n){
-  if(n>=1000000)return(n/1000000).toFixed(1)+'M€';
-  if(n>=1000)return Math.round(n/1000)+'K€';
-  return n+'€';
+  if(n>=1000000)return(n/1000000).toFixed(1)+'Mâ¬';
+  if(n>=1000)return Math.round(n/1000)+'Kâ¬';
+  return n+'â¬';
 }
 let toastT;
 function showToast(){const t=document.getElementById('toast');t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1600)}
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // NAVIGATION
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function goTo(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
@@ -740,26 +745,26 @@ function goTo(id){
   if(id==='dealflow')loadDealsJson();
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // STATS BAR
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderStatsBar(){
   const bar=document.getElementById('stats-bar'); if(!bar)return;
   const nonArchived=Object.values(directData).filter(d=>!d.archived);
-  const active=nonArchived.filter(d=>!['No go','Abandonné'].includes(d.statutCRM));
+  const active=nonArchived.filter(d=>!['No go','AbandonnÃ©'].includes(d.statutCRM));
   let totalCA=0; active.forEach(d=>totalCA+=parseCA(d.ca));
   const byCols=K_COLS.map((_,ci)=>nonArchived.filter(d=>d.col===ci).length);
   bar.innerHTML=`
     <div class="stat"><div class="stat-val">${active.length}</div><div class="stat-lbl">Deals actifs</div></div>
-    <div class="stat"><div class="stat-val">${totalCA?fmtNum(totalCA):'—'}</div><div class="stat-lbl">CA pipeline</div></div>
+    <div class="stat"><div class="stat-val">${totalCA?fmtNum(totalCA):'â'}</div><div class="stat-lbl">CA pipeline</div></div>
     ${K_COLS.map((col,ci)=>`<div class="stat"><div class="stat-val">${byCols[ci]}</div><div class="stat-lbl">${col}</div></div>`).join('')}
   `;
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // DIRECT CARDS
-// ════════════════════════════════════════════════════
-function emptyD(){return{col:0,societe:'',contact:'',secteur:'',region:'',ca:'',ebitda:'',bfr:'',pax:'',premierContact:'',premierAppel:'',memo:'',financials:'',statutCRM:'À contacter',notesCRM:'',activities:[]}}
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function emptyD(){return{col:0,societe:'',contact:'',secteur:'',region:'',ca:'',ebitda:'',bfr:'',pax:'',premierContact:'',premierAppel:'',memo:'',financials:'',statutCRM:'Ã contacter',notesCRM:'',activities:[]}}
 
 function buildDCard(id,d,ci){
   const el=document.createElement('div');
@@ -771,8 +776,8 @@ function buildDCard(id,d,ci){
     d.region ?`<span class="chip chip-green">${escH(d.region)}</span>`:'',
     d.ca     ?`<span class="chip chip-ca">CA: ${escH(d.ca)}</span>`:'',
   ].join('');
-  const lA=ci>0              ?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',-1)">←</button>`:'';
-  const rA=ci<K_COLS.length-1?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',1)">→</button>`:'';
+  const lA=ci>0              ?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',-1)">â</button>`:'';
+  const rA=ci<K_COLS.length-1?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',1)">â</button>`:'';
   el.innerHTML=`
     <div class="dc-top">
       <div class="dc-name">${escH(d.societe)||'<span style="color:#d1d5db">Nouvelle cible</span>'}</div>
@@ -785,7 +790,7 @@ function buildDCard(id,d,ci){
       <div class="dc-actions">
         <button class="btn-log" onclick="event.stopPropagation();openQL('${id}')">+ Log</button>
         ${lA}${rA}
-        <button class="btn-del" onclick="event.stopPropagation();delDC('${id}')">✕</button>
+        <button class="btn-del" onclick="event.stopPropagation();delDC('${id}')">â</button>
       </div>
     </div>`;
   el.addEventListener('click',()=>openDrawer('direct',id));
@@ -836,9 +841,9 @@ function updatePBadge(){
   const b=document.getElementById('badge-pipeline');if(b)b.textContent=t;
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // KANBAN INIT
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function initKanban(){
   const el=document.getElementById('kanban-direct');if(!el)return;
   el.innerHTML='';
@@ -855,9 +860,9 @@ function initKanban(){
   });
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // PIPELINE AUTO-SORT
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function getSortScore(d){
   // Higher score = more urgent = floats to top
   const acts=d.activities||[];
@@ -876,7 +881,7 @@ function sortAllColumns(){
     cards.sort((a,b)=>{
       const da=directData[a.id],db=directData[b.id];
       if(!da||!db)return 0;
-      return getSortScore(db)-getSortScore(da); // wait: higher score = top → sort desc
+      return getSortScore(db)-getSortScore(da); // wait: higher score = top â sort desc
     });
     // Re-insert in sorted order (add-button stays at bottom via CSS, it's outside k-cards)
     cards.forEach(c=>container.appendChild(c));
@@ -888,15 +893,15 @@ function sortAllColumns(){
       if(score>=1000){
         if(!chip){chip=document.createElement('span');chip.className='chip chip-red sort-chip';c.querySelector('.dc-chips')?.prepend(chip);}
         const daysAgo=Math.round(score-1000);
-        chip.textContent=daysAgo===0?'📅 Aujourd\'hui':'⚠️ '+(daysAgo>=7?'Semaine en cours':'Relancer');
+        chip.textContent=daysAgo===0?'ð Aujourd\'hui':'â ï¸ '+(daysAgo>=7?'Semaine en cours':'Relancer');
       } else if(chip){chip.remove();}
     });
   });
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // QUICK LOG POPUP
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function openQL(cardId){
   qlCardId=cardId;
   qlType='call';
@@ -904,7 +909,7 @@ function openQL(cardId){
   document.getElementById('qlt-call')?.classList.add('active');
   document.getElementById('ql-text').value='';
   const d=directData[cardId];
-  document.getElementById('ql-title').textContent='Logger — '+(d?.societe||'Contact');
+  document.getElementById('ql-title').textContent='Logger â '+(d?.societe||'Contact');
   document.getElementById('ql-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('ql-text').focus(),50);
 }
@@ -925,9 +930,9 @@ function saveQL(){
   closeQL();save();showToast();
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // ACTIVITY LOG IN DRAWER
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function selectActType(t){
   actType=t;
   ['call','email','meeting','note'].forEach(x=>{document.getElementById('at-'+x)?.classList.remove('active')});
@@ -949,10 +954,10 @@ function renderActivityLog(id){
   const d=directData[id];
   const log=document.getElementById('act-log');if(!log)return;
   const acts=d?.activities||[];
-  if(!acts.length){log.innerHTML='<div class="act-empty">Aucune activité — logger votre premier échange</div>';return;}
+  if(!acts.length){log.innerHTML='<div class="act-empty">Aucune activitÃ© â logger votre premier Ã©change</div>';return;}
   log.innerHTML=acts.map(a=>`
     <div class="act-entry">
-      <div class="act-icon">${ACT_ICONS[a.type]||'📝'}</div>
+      <div class="act-icon">${ACT_ICONS[a.type]||'ð'}</div>
       <div class="act-body">
         <div class="act-text">${escH(a.text)}</div>
         <div class="act-date">${fmtTs(a.ts)}</div>
@@ -960,9 +965,9 @@ function renderActivityLog(id){
     </div>`).join('');
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // DIRECT DRAWER
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function openDrawer(pipe,id){
   activeCard[pipe]=id;
   if(pipe==='direct'){
@@ -979,10 +984,10 @@ function openDrawer(pipe,id){
     document.getElementById('dd-pa').value       =d.premierAppel||'';
     document.getElementById('dd-memo').value     =d.memo||'';
     document.getElementById('dd-financials').value=d.financials||'';
-    document.getElementById('dd-crm').value      =d.statutCRM||'À contacter';
+    document.getElementById('dd-crm').value      =d.statutCRM||'Ã contacter';
     document.getElementById('dd-notes').value    =d.notesCRM||'';
     document.getElementById('dh-direct-title').textContent=d.societe||'Nouvelle cible';
-    document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' · ');
+    document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' Â· ');
     actType='call';selectActType('call');
     renderActivityLog(id);
     updateDMoveButtons(d.col);
@@ -999,7 +1004,7 @@ function openDrawer(pipe,id){
     document.getElementById('di-statut').value =d.statut||'Prospect';
     const fn=[d.prenom,d.nom].filter(Boolean).join(' ');
     document.getElementById('dh-indirect-title').textContent=d.cabinet||'Nouveau contact';
-    document.getElementById('dh-indirect-sub').textContent=[fn,d.loc].filter(Boolean).join(' · ');
+    document.getElementById('dh-indirect-sub').textContent=[fn,d.loc].filter(Boolean).join(' Â· ');
     updateIMoveButtons(d.col);
   }
   document.getElementById('drawer-'+pipe).classList.add('open');
@@ -1029,7 +1034,7 @@ function syncD(){
   d.statutCRM=document.getElementById('dd-crm').value;
   d.notesCRM=document.getElementById('dd-notes').value;
   document.getElementById('dh-direct-title').textContent=d.societe||'Nouvelle cible';
-  document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' · ');
+  document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' Â· ');
   refreshDCard(id);renderStatsBar();save();
 }
 function syncI(){
@@ -1046,7 +1051,7 @@ function syncI(){
   d.statut=document.getElementById('di-statut').value;
   const fn=[d.prenom,d.nom].filter(Boolean).join(' ');
   document.getElementById('dh-indirect-title').textContent=d.cabinet||'Nouveau contact';
-  document.getElementById('dh-indirect-sub').textContent=[fn,d.loc].filter(Boolean).join(' · ');
+  document.getElementById('dh-indirect-sub').textContent=[fn,d.loc].filter(Boolean).join(' Â· ');
   // Update table row if contacts page visible
   const row=document.getElementById('irow-'+id);
   if(row)updateContactRow(id,row);
@@ -1055,21 +1060,21 @@ function syncI(){
 function updateDMoveButtons(ci){
   const w=document.getElementById('df-mv-direct');if(!w)return;
   let h='';
-  if(ci>0)h+=`<button class="df-mv" onclick="moveDC('${activeCard.direct}',-1)">← ${K_COLS[ci-1]}</button>`;
-  if(ci<K_COLS.length-1)h+=`<button class="df-mv" onclick="moveDC('${activeCard.direct}',1)">${K_COLS[ci+1]} →</button>`;
-  w.innerHTML=h||'<span style="font-size:11px;color:#d1d5db">Dernière colonne</span>';
+  if(ci>0)h+=`<button class="df-mv" onclick="moveDC('${activeCard.direct}',-1)">â ${K_COLS[ci-1]}</button>`;
+  if(ci<K_COLS.length-1)h+=`<button class="df-mv" onclick="moveDC('${activeCard.direct}',1)">${K_COLS[ci+1]} â</button>`;
+  w.innerHTML=h||'<span style="font-size:11px;color:#d1d5db">DerniÃ¨re colonne</span>';
 }
 function updateIMoveButtons(ci){
   const w=document.getElementById('df-mv-indirect');if(!w)return;
   let h='';
-  if(ci>0)h+=`<button class="df-mv" onclick="moveIC('${activeCard.indirect}',-1)">← ${K_COLS[ci-1]}</button>`;
-  if(ci<K_COLS.length-1)h+=`<button class="df-mv" onclick="moveIC('${activeCard.indirect}',1)">${K_COLS[ci+1]} →</button>`;
+  if(ci>0)h+=`<button class="df-mv" onclick="moveIC('${activeCard.indirect}',-1)">â ${K_COLS[ci-1]}</button>`;
+  if(ci<K_COLS.length-1)h+=`<button class="df-mv" onclick="moveIC('${activeCard.indirect}',1)">${K_COLS[ci+1]} â</button>`;
   w.innerHTML=h||'';
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // INDIRECT CONTACTS
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function emptyI(){return{col:0,cabinet:'',prenom:'',nom:'',tel:'',email:'',loc:'',last:'',next:'',statut:'Prospect'}}
 
 function addIndirectCard(ci,data){
@@ -1114,16 +1119,16 @@ function renderContactTable(){
   const b=document.getElementById('badge-contacts');
   if(b)b.textContent=active.length;
   // Sort: priority status first, then by last contact date (most recent first within same group)
-  const STATUS_PRIO={'À relancer':0,'À contacter':1,'Contacté':2,'En cours':3,'Prospect':4,'Converti':5,'Abandonné':6};
+  const STATUS_PRIO={'Ã relancer':0,'Ã contacter':1,'ContactÃ©':2,'En cours':3,'Prospect':4,'Converti':5,'AbandonnÃ©':6};
   function parseLast(s){
     if(!s)return 0;
     // formats: "25-Feb", "01/03/2026", "jj/mm" etc.
     const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-    const mFr={jan:0,fev:1,'fév':1,mar:2,avr:3,mai:4,juin:5,jui:6,jul:6,aou:7,'aoû':7,sep:8,oct:9,nov:10,dec:11};
+    const mFr={jan:0,fev:1,'fÃ©v':1,mar:2,avr:3,mai:4,juin:5,jui:6,jul:6,aou:7,'aoÃ»':7,sep:8,oct:9,nov:10,dec:11};
     const all={...months,...mFr};
     const s2=s.toLowerCase().trim();
     // "25-Feb" or "25-Mar"
-    const m1=s2.match(/^(\d{1,2})[\/\-]([a-zéû]+)$/);
+    const m1=s2.match(/^(\d{1,2})[\/\-]([a-zÃ©Ã»]+)$/);
     if(m1){const mo=all[m1[2].substring(0,3)];if(mo!==undefined)return new Date(2026,mo,parseInt(m1[1])).getTime();}
     // "01/03/2026" or "01/03"
     const m2=s2.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?$/);
@@ -1142,10 +1147,10 @@ function renderContactTable(){
     const tr=document.createElement('tr');
     tr.className='irow';tr.id='irow-'+id;
     tr.innerHTML=`
-      <td><div class="irow-name">${escH(d.cabinet)||'—'}</div></td>
-      <td><div class="irow-name">${escH([d.prenom,d.nom].filter(Boolean).join(' '))||'—'}</div><div class="irow-sub">${escH(d.email)||''}</div></td>
-      <td>${escH(d.loc)||'—'}</td>
-      <td>${escH(d.tel)||'—'}</td>
+      <td><div class="irow-name">${escH(d.cabinet)||'â'}</div></td>
+      <td><div class="irow-name">${escH([d.prenom,d.nom].filter(Boolean).join(' '))||'â'}</div><div class="irow-sub">${escH(d.email)||''}</div></td>
+      <td>${escH(d.loc)||'â'}</td>
+      <td>${escH(d.tel)||'â'}</td>
       <td><span class="crm-badge ${ISC_MAP[d.statut]||'crm-0'}">${escH(d.statut)}</span></td>
       <td style="font-size:12px;color:#6b7280">${escH(d.next)||''}</td>`;
     tr.addEventListener('click',()=>openDrawer('indirect',id));
@@ -1156,10 +1161,10 @@ function renderContactTable(){
 function updateContactRow(id,row){
   const d=indirectData[id];if(!d||!row)return;
   const cells=row.querySelectorAll('td');
-  if(cells[0])cells[0].innerHTML=`<div class="irow-name">${escH(d.cabinet)||'—'}</div>`;
-  if(cells[1])cells[1].innerHTML=`<div class="irow-name">${escH([d.prenom,d.nom].filter(Boolean).join(' '))||'—'}</div><div class="irow-sub">${escH(d.email)||''}</div>`;
-  if(cells[2])cells[2].textContent=d.loc||'—';
-  if(cells[3])cells[3].textContent=d.tel||'—';
+  if(cells[0])cells[0].innerHTML=`<div class="irow-name">${escH(d.cabinet)||'â'}</div>`;
+  if(cells[1])cells[1].innerHTML=`<div class="irow-name">${escH([d.prenom,d.nom].filter(Boolean).join(' '))||'â'}</div><div class="irow-sub">${escH(d.email)||''}</div>`;
+  if(cells[2])cells[2].textContent=d.loc||'â';
+  if(cells[3])cells[3].textContent=d.tel||'â';
   if(cells[4])cells[4].innerHTML=`<span class="crm-badge ${ISC_MAP[d.statut]||'crm-0'}">${escH(d.statut)}</span>`;
   if(cells[5])cells[5].textContent=d.next||'';
 }
@@ -1170,15 +1175,15 @@ function filterContacts(){
   renderContactTable();
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // ADVISORS TABLE
-// ════════════════════════════════════════════════════
-const SS_MAP={'À faire':'ss-todo','En cours':'ss-ip','En attente':'ss-wait','Clôturé':'ss-done','Abandonné':'ss-drop'};
-const SS_OPTS=['À faire','En cours','En attente','Clôturé','Abandonné'];
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const SS_MAP={'Ã faire':'ss-todo','En cours':'ss-ip','En attente':'ss-wait','ClÃ´turÃ©':'ss-done','AbandonnÃ©':'ss-drop'};
+const SS_OPTS=['Ã faire','En cours','En attente','ClÃ´turÃ©','AbandonnÃ©'];
 function ssCls(s){return SS_MAP[s]||'ss-todo'}
 function ssOpts(cur){return SS_OPTS.map(s=>`<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('')}
 
-function addAdvisorRow(f0='',f1='',status='À faire',f3='',f4='',f5='',archived=false){
+function addAdvisorRow(f0='',f1='',status='Ã faire',f3='',f4='',f5='',archived=false){
   const tb=document.getElementById('tbody-advisors');if(!tb)return;
   rowCtr++;
   const rid='arow-'+rowCtr;
@@ -1187,21 +1192,21 @@ function addAdvisorRow(f0='',f1='',status='À faire',f3='',f4='',f5='',archived=
   if(archived){tr.dataset.archived='true';tr.style.display='none';}
   tr.innerHTML=`
     <td><input class="ce" value="${escH(f0)}" placeholder="Nom" oninput="save()"/></td>
-    <td><input class="ce" value="${escH(f1)}" placeholder="Rôle, contexte…" oninput="save()"/></td>
+    <td><input class="ce" value="${escH(f1)}" placeholder="RÃ´le, contexteâ¦" oninput="save()"/></td>
     <td><select class="ssel ${ssCls(status)}" onchange="this.className='ssel '+ssCls(this.value);save()">${ssOpts(status)}</select></td>
     <td><input class="ce" value="${escH(f3)}" placeholder="jj/mm" oninput="save()"/></td>
-    <td><input class="ce" value="${escH(f4)}" placeholder="Prochaine action…" oninput="save()"/></td>
-    <td><input class="ce" value="${escH(f5)}" placeholder="Notes…" oninput="save()" style="color:#6b7280"/></td>
-    <td style="text-align:center"><button class="btn-del" title="Archiver" onclick="archiveAdvisorRow(this)" style="font-size:15px" title="Archiver">📦</button></td>`;
+    <td><input class="ce" value="${escH(f4)}" placeholder="Prochaine actionâ¦" oninput="save()"/></td>
+    <td><input class="ce" value="${escH(f5)}" placeholder="Notesâ¦" oninput="save()" style="color:#6b7280"/></td>
+    <td style="text-align:center"><button class="btn-del" title="Archiver" onclick="archiveAdvisorRow(this)" style="font-size:15px" title="Archiver">ð¦</button></td>`;
   tb.appendChild(tr);
   const b=document.getElementById('badge-advisors');
   if(b)b.textContent=document.querySelectorAll('#tbody-advisors tr:not([data-archived])').length;
   save();
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // TODO
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function addTodo(text='',done=false){
   const inp=document.getElementById('todo-in');
   const lbl=text||(inp?inp.value.trim():'');if(!lbl)return;
@@ -1211,21 +1216,21 @@ function addTodo(text='',done=false){
   const div=document.createElement('div');div.className='ti';div.id=id;
   div.innerHTML=`<input type="checkbox" ${done?'checked':''} onchange="toggleTI('${id}',this)"/>
     <span class="ti-label ${done?'done':''}" contenteditable="true" onblur="save()">${escH(lbl)}</span>
-    <button class="ti-del" onclick="delTI('${id}')">✕</button>`;
+    <button class="ti-del" onclick="delTI('${id}')">â</button>`;
   document.getElementById('todo-items').appendChild(div);
   if(inp)inp.value='';updateTodoBadge();save();
 }
 function toggleTI(id,cb){const l=document.querySelector('#'+id+' .ti-label');if(l)l.classList.toggle('done',cb.checked);updateTodoBadge();save();}
-function delTI(id){const el=document.getElementById(id);if(el)el.remove();const items=document.querySelectorAll('.ti').length;if(!items){const c=document.getElementById('todo-items');if(c)c.innerHTML='<div class="ti-empty">Aucune tâche pour aujourd\'hui</div>';}updateTodoBadge();save();}
+function delTI(id){const el=document.getElementById(id);if(el)el.remove();const items=document.querySelectorAll('.ti').length;if(!items){const c=document.getElementById('todo-items');if(c)c.innerHTML='<div class="ti-empty">Aucune tÃ¢che pour aujourd\'hui</div>';}updateTodoBadge();save();}
 function updateTodoBadge(){
   const a=document.querySelectorAll('.ti').length,d=document.querySelectorAll('.ti input:checked').length;
   const b=document.getElementById('badge-today'),c=document.getElementById('todo-count');
   if(b)b.textContent=a?d+'/'+a:'-';if(c)c.textContent=d+' / '+a;
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // MOMENT & DATE
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function setMoment(m){
   ['matin','midi','soir'].forEach(x=>{
     document.getElementById('mb-'+x)?.classList.toggle('active',x===m);
@@ -1240,9 +1245,9 @@ function setDate(){
   const ph=document.getElementById('ph-today-date');if(ph)ph.textContent=full;
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // STORAGE
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let saveTimer, _loading=false;
 function save(){if(_loading)return;clearTimeout(saveTimer);saveTimer=setTimeout(_save,700);}
 function _save(){
@@ -1252,7 +1257,7 @@ function _save(){
   data.todos=[];document.querySelectorAll('.ti').forEach(i=>{data.todos.push({label:i.querySelector('.ti-label')?.innerText||'',done:i.querySelector('input')?.checked||false});});
   data.directCards=Object.entries(directData).map(([id,d])=>({id,...d}));
   data.indirectCards=Object.entries(indirectData).map(([id,d])=>({id,...d}));
-  data.advisors=[];document.querySelectorAll('#tbody-advisors tr').forEach(tr=>{const i=tr.querySelectorAll('input'),s=tr.querySelector('select');data.advisors.push({f0:i[0]?.value||'',f1:i[1]?.value||'',status:s?.value||'À faire',f3:i[2]?.value||'',f4:i[3]?.value||'',f5:i[4]?.value||'',archived:tr.dataset.archived==='true'});});
+  data.advisors=[];document.querySelectorAll('#tbody-advisors tr').forEach(tr=>{const i=tr.querySelectorAll('input'),s=tr.querySelector('select');data.advisors.push({f0:i[0]?.value||'',f1:i[1]?.value||'',status:s?.value||'Ã faire',f3:i[2]?.value||'',f4:i[3]?.value||'',f5:i[4]?.value||'',archived:tr.dataset.archived==='true'});});
   const ot=document.getElementById('otter-notes');if(ot)data.otter=ot.value;
   data.projectCats=projectCats.map(c=>({...c}));
   data.projectTasks=projectTasks.map(t=>({...t}));
@@ -1304,67 +1309,67 @@ function load(){
   _loading=false;
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // DEFAULT DATA
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function dCol(s){
-  if(s==='Contacté')return 1;
-  if(s==='RDV fixé'||s==='En cours')return 2;
-  if(['En négociation','LOI signée','Deal clôturé','No go','Abandonné'].includes(s))return 3;
+  if(s==='ContactÃ©')return 1;
+  if(s==='RDV fixÃ©'||s==='En cours')return 2;
+  if(['En nÃ©gociation','LOI signÃ©e','Deal clÃ´turÃ©','No go','AbandonnÃ©'].includes(s))return 3;
   return 0;
 }
 function iCol(s){
-  if(s==='À relancer'||s==='Contacté')return 1;
+  if(s==='Ã relancer'||s==='ContactÃ©')return 1;
   if(s==='En cours')return 2;if(s==='Converti')return 3;return 0;
 }
 
 function loadDefaultDirect(){
-  const NAC=`Vendeur motivé — autres business, pertes. 2 LOI déclarées (1 réelle estimée). LOI avec dette incl. prêt d'honneur. Notre avantage : equity pure.\n\nProfil owner :\nStartuper - mon âge - exit 2023 sur proprioo (levé 25M). 2024 : rachat hop-bost avec 4 autres businesses online. Embrouille avec partner = rachat de part sept 2024. Mis en mode auto avec 4 freelance.\n\nOpérations :\n60% foin / 80% marges. 5 fournisseurs. Pas ERP — Shopify. Julien 3h/j → 1800/mois.\n\nMarketing :\nInsta+Meta 1300/mois. 15K followers. Newsletter 450/mois. Amazon 200-300/mois.`;
+  const NAC=`Vendeur motivÃ© â autres business, pertes. 2 LOI dÃ©clarÃ©es (1 rÃ©elle estimÃ©e). LOI avec dette incl. prÃªt d'honneur. Notre avantage : equity pure.\n\nProfil owner :\nStartuper - mon Ã¢ge - exit 2023 sur proprioo (levÃ© 25M). 2024 : rachat hop-bost avec 4 autres businesses online. Embrouille avec partner = rachat de part sept 2024. Mis en mode auto avec 4 freelance.\n\nOpÃ©rations :\n60% foin / 80% marges. 5 fournisseurs. Pas ERP â Shopify. Julien 3h/j â 1800/mois.\n\nMarketing :\nInsta+Meta 1300/mois. 15K followers. Newsletter 450/mois. Amazon 200-300/mois.`;
   const defs=[
-    {secteur:'Agro Frozen food',region:'Montréal, Canada',societe:'Carrement Tarte',contact:'Nico',ca:'5M CAD',premierContact:'18-Feb',premierAppel:'19-Feb',statutCRM:'En cours',notesCRM:'CA 5M CAD. Contact : Nico.',activities:[{type:'call',text:'Premier appel — intéressé, CA 5M CAD, suite à définir',ts:Date.now()-10*86400000},{type:'email',text:'Premier contact email envoyé via réseau',ts:Date.now()-18*86400000}]},
-    {secteur:'Ruminant et Volaille',region:'Ille-et-Vilaine',societe:'Nutrition Animale (BRT258939P)',contact:'Isabelle Ronger — CCI Bretagne',ca:'3 500 000',premierContact:'03-Mar',statutCRM:'En cours',notesCRM:'Via transentreprise.com. Contact CCI Bretagne : Isabelle Ronger.',activities:[{type:'email',text:'Premier contact via transentreprise.com — ref BRT258939P',ts:Date.now()-10*86400000}]},
-    {secteur:'Vente en ligne NAC',region:'Paris / Île-de-France',societe:'NAC E-Commerce Paris',contact:'Via Fusacq (réf 87967)',ca:'250 000',ebitda:'7 000',pax:'< 200',premierContact:'01/03/2026',premierAppel:'06/03/2026',memo:NAC,financials:"En veut 150K — LOI avec dette. EBITDA 7K. Retraitement coût freelance (+42K).",statutCRM:'No go',notesCRM:'No go — décision finale. 2 LOI déclarées. Equity pure notre avantage mais trop petit.',activities:[{type:'note',text:'Décision finale : No go — trop petit, structure trop légère, owner peu fiable',ts:Date.now()-7*86400000},{type:'call',text:'Appel qualification — CA 250K, EBITDA 7K, demande 150K',ts:Date.now()-14*86400000}]},
-    {secteur:'Petfood — Distribution + Marque',region:'France',societe:'Cible A — Petfood',contact:'À sourcer',ca:'1 000 000',premierContact:'',statutCRM:'À contacter',notesCRM:'Cible A Phase 1. Petfood distribution uniquement + marque propre. CA cible ~1M€. B2C + brand equity. À sourcer via réseau + base 402 acteurs.',activities:[{type:'note',text:'Cible Phase 1 — profil : distrib only + marque petfood. Sourcing à lancer.',ts:Date.now()}]},
-    {secteur:'NAC — Distribution + Marque',region:'France',societe:'Cible B — NAC',contact:'À sourcer',ca:'500 000',premierContact:'',statutCRM:'À contacter',notesCRM:'Cible B Phase 1. NAC distribution uniquement + marque propre. CA cible ~500K€. Accès marché NAC + clientèle spécialisée. Score M&A 4-5 requis.',activities:[{type:'note',text:'Cible Phase 1 — profil : distrib only + marque NAC. Sourcing à lancer.',ts:Date.now()}]},
-    {secteur:'Feed — Petit producteur',region:'France',societe:'Cible C — Feed Producteur',contact:'À sourcer',ca:'4 000 000',premierContact:'',statutCRM:'À contacter',notesCRM:'Cible C Phase 1. Feed petit producteur avec site industriel. CA cible ~4M€. Outil de production propre = pivot Phase 3. Site industriel stratégique.',activities:[{type:'note',text:'Cible Phase 1 — profil : petit prod feed avec site industriel. Sourcing à lancer.',ts:Date.now()}]},
-    {secteur:'Équin — Nutrition',region:'France',societe:'Cible D — Équin (en évaluation)',contact:'Stanislas De Vion',ca:'TBD',premierContact:'',statutCRM:'En cours',notesCRM:'Contact Sauvale. Stanislas De Vion, ~59 ans, retraite prochaine. Cible équine en cours d\'évaluation. Secteur équin FR = €280M, +3.5% p.a. Profil cédant idéal.',activities:[{type:'note',text:'Contact via réseau — Sauvale. Stanislas De Vion 59 ans, approche de la retraite. Cible équine.',ts:Date.now()}]},
+    {secteur:'Agro Frozen food',region:'MontrÃ©al, Canada',societe:'Carrement Tarte',contact:'Nico',ca:'5M CAD',premierContact:'18-Feb',premierAppel:'19-Feb',statutCRM:'En cours',notesCRM:'CA 5M CAD. Contact : Nico.',activities:[{type:'call',text:'Premier appel â intÃ©ressÃ©, CA 5M CAD, suite Ã  dÃ©finir',ts:Date.now()-10*86400000},{type:'email',text:'Premier contact email envoyÃ© via rÃ©seau',ts:Date.now()-18*86400000}]},
+    {secteur:'Ruminant et Volaille',region:'Ille-et-Vilaine',societe:'Nutrition Animale (BRT258939P)',contact:'Isabelle Ronger â CCI Bretagne',ca:'3 500 000',premierContact:'03-Mar',statutCRM:'En cours',notesCRM:'Via transentreprise.com. Contact CCI Bretagne : Isabelle Ronger.',activities:[{type:'email',text:'Premier contact via transentreprise.com â ref BRT258939P',ts:Date.now()-10*86400000}]},
+    {secteur:'Vente en ligne NAC',region:'Paris / Ãle-de-France',societe:'NAC E-Commerce Paris',contact:'Via Fusacq (rÃ©f 87967)',ca:'250 000',ebitda:'7 000',pax:'< 200',premierContact:'01/03/2026',premierAppel:'06/03/2026',memo:NAC,financials:"En veut 150K â LOI avec dette. EBITDA 7K. Retraitement coÃ»t freelance (+42K).",statutCRM:'No go',notesCRM:'No go â dÃ©cision finale. 2 LOI dÃ©clarÃ©es. Equity pure notre avantage mais trop petit.',activities:[{type:'note',text:'DÃ©cision finale : No go â trop petit, structure trop lÃ©gÃ¨re, owner peu fiable',ts:Date.now()-7*86400000},{type:'call',text:'Appel qualification â CA 250K, EBITDA 7K, demande 150K',ts:Date.now()-14*86400000}]},
+    {secteur:'Petfood â Distribution + Marque',region:'France',societe:'Cible A â Petfood',contact:'Ã sourcer',ca:'1 000 000',premierContact:'',statutCRM:'Ã contacter',notesCRM:'Cible A Phase 1. Petfood distribution uniquement + marque propre. CA cible ~1Mâ¬. B2C + brand equity. Ã sourcer via rÃ©seau + base 402 acteurs.',activities:[{type:'note',text:'Cible Phase 1 â profil : distrib only + marque petfood. Sourcing Ã  lancer.',ts:Date.now()}]},
+    {secteur:'NAC â Distribution + Marque',region:'France',societe:'Cible B â NAC',contact:'Ã sourcer',ca:'500 000',premierContact:'',statutCRM:'Ã contacter',notesCRM:'Cible B Phase 1. NAC distribution uniquement + marque propre. CA cible ~500Kâ¬. AccÃ¨s marchÃ© NAC + clientÃ¨le spÃ©cialisÃ©e. Score M&A 4-5 requis.',activities:[{type:'note',text:'Cible Phase 1 â profil : distrib only + marque NAC. Sourcing Ã  lancer.',ts:Date.now()}]},
+    {secteur:'Feed â Petit producteur',region:'France',societe:'Cible C â Feed Producteur',contact:'Ã sourcer',ca:'4 000 000',premierContact:'',statutCRM:'Ã contacter',notesCRM:'Cible C Phase 1. Feed petit producteur avec site industriel. CA cible ~4Mâ¬. Outil de production propre = pivot Phase 3. Site industriel stratÃ©gique.',activities:[{type:'note',text:'Cible Phase 1 â profil : petit prod feed avec site industriel. Sourcing Ã  lancer.',ts:Date.now()}]},
+    {secteur:'Ãquin â Nutrition',region:'France',societe:'Cible D â Ãquin (en Ã©valuation)',contact:'Stanislas De Vion',ca:'TBD',premierContact:'',statutCRM:'En cours',notesCRM:'Contact Sauvale. Stanislas De Vion, ~59 ans, retraite prochaine. Cible Ã©quine en cours d\'Ã©valuation. Secteur Ã©quin FR = â¬280M, +3.5% p.a. Profil cÃ©dant idÃ©al.',activities:[{type:'note',text:'Contact via rÃ©seau â Sauvale. Stanislas De Vion 59 ans, approche de la retraite. Cible Ã©quine.',ts:Date.now()}]},
   ];
   defs.forEach(c=>addDCard(dCol(c.statutCRM),c));
 }
 
 function loadDefaultIndirect(){
   const cs=[
-    {cabinet:'CCI Alsace Eurométropole',prenom:'Dagmar',nom:'WINK',tel:'06 31 78 46 87',email:'d.wink@alsace.cci.fr',loc:'Colmar',next:'Contacter suite France Reprise',statut:'À contacter'},
-    {cabinet:'GO Capital',prenom:'Nicolas',nom:'Di Silvestro',tel:'06 64 94 17 54',email:'ndisilvestro@fauve.com',loc:'Nancy',last:'25-Feb',next:'Relancer suite France Reprise',statut:'À relancer'},
-    {cabinet:'Isplus',prenom:'Benoit',nom:'',tel:'06 83 90 64 35',loc:'Lyon',last:'18-Feb',next:'Relancer suite France Reprise',statut:'À relancer'},
-    {cabinet:'Super Capital',prenom:'Charle',nom:'',tel:'06 30 64 25 72',loc:'Paris',last:'16-Feb',next:'Relancer suite France Reprise',statut:'À relancer'},
+    {cabinet:'CCI Alsace EuromÃ©tropole',prenom:'Dagmar',nom:'WINK',tel:'06 31 78 46 87',email:'d.wink@alsace.cci.fr',loc:'Colmar',next:'Contacter suite France Reprise',statut:'Ã contacter'},
+    {cabinet:'GO Capital',prenom:'Nicolas',nom:'Di Silvestro',tel:'06 64 94 17 54',email:'ndisilvestro@fauve.com',loc:'Nancy',last:'25-Feb',next:'Relancer suite France Reprise',statut:'Ã relancer'},
+    {cabinet:'Isplus',prenom:'Benoit',nom:'',tel:'06 83 90 64 35',loc:'Lyon',last:'18-Feb',next:'Relancer suite France Reprise',statut:'Ã relancer'},
+    {cabinet:'Super Capital',prenom:'Charle',nom:'',tel:'06 30 64 25 72',loc:'Paris',last:'16-Feb',next:'Relancer suite France Reprise',statut:'Ã relancer'},
     {cabinet:'Santefi',prenom:'Yohan',nom:'Cariou',email:'y.cariou@axe-avenir.fr',loc:'Quimper, Bretagne',statut:'Prospect'},
-    {cabinet:"L'École supérieure de la banque",prenom:'Guillaume',nom:'Bariot',email:'guillaume.bariot@ca-illeetvilaine.fr',loc:'Rennes, Bretagne',statut:'Prospect'},
-    {cabinet:'Finance & Stratégie',prenom:'Jean-Marc',nom:'Tariant',email:'jt@finance-strategie.com',loc:'Rennes Métropole',statut:'Prospect'},
-    {cabinet:'DIEUDONNE MENUISERIE',prenom:'Christophe',nom:'MAS',loc:'Fréjus, PACA',statut:'Prospect'},
-    {cabinet:'Avalon Partners',prenom:'Paul',nom:'Vokaty',email:'paul.vokaty@avalonpartners.ca',loc:'Montréal, Canada',statut:'Prospect'},
+    {cabinet:"L'Ãcole supÃ©rieure de la banque",prenom:'Guillaume',nom:'Bariot',email:'guillaume.bariot@ca-illeetvilaine.fr',loc:'Rennes, Bretagne',statut:'Prospect'},
+    {cabinet:'Finance & StratÃ©gie',prenom:'Jean-Marc',nom:'Tariant',email:'jt@finance-strategie.com',loc:'Rennes MÃ©tropole',statut:'Prospect'},
+    {cabinet:'DIEUDONNE MENUISERIE',prenom:'Christophe',nom:'MAS',loc:'FrÃ©jus, PACA',statut:'Prospect'},
+    {cabinet:'Avalon Partners',prenom:'Paul',nom:'Vokaty',email:'paul.vokaty@avalonpartners.ca',loc:'MontrÃ©al, Canada',statut:'Prospect'},
     {cabinet:'BAUX ET SACHER CONSULTANTS',prenom:'Patrick',nom:'SACHER',email:'patrick.sacher@mbacapital.com',loc:'Bretagne',statut:'Prospect'},
-    {cabinet:'MBA Capital',prenom:'Pierre',nom:'ROUX',email:'pierre.roux@mbacapital.com',loc:'Marseille Métropole',statut:'Prospect'},
-    {cabinet:'FM Audit et Conseil',prenom:'Frédéric',nom:'Maliesky',email:'frederic.maliesky@fmauditetconseil.fr',loc:'Strasbourg Métropole',statut:'Prospect'},
+    {cabinet:'MBA Capital',prenom:'Pierre',nom:'ROUX',email:'pierre.roux@mbacapital.com',loc:'Marseille MÃ©tropole',statut:'Prospect'},
+    {cabinet:'FM Audit et Conseil',prenom:'FrÃ©dÃ©ric',nom:'Maliesky',email:'frederic.maliesky@fmauditetconseil.fr',loc:'Strasbourg MÃ©tropole',statut:'Prospect'},
     {cabinet:'Visia-Transactions',prenom:'Yannick',nom:'Raphalen',loc:'Lorient, Bretagne',statut:'Prospect'},
     {cabinet:'Cabinet Richemont',prenom:'Thierry',nom:'Pourot',email:'t.pourot@cabinet-richemont.com',loc:'Saint-Nazaire',statut:'Prospect'},
     {cabinet:'Symphonie Finance',prenom:'Boris',nom:'Christel',email:'b.christel@symphonie-finance.com',loc:'Vannes, Bretagne',statut:'Prospect'},
     {cabinet:'Credit Agricole Mid Cap',prenom:'Didier',nom:'Lenz',loc:'Strasbourg, Grand Est',statut:'Prospect'},
-    {cabinet:'Banque Populaire Méditerranée',prenom:'Boris',nom:'Mitelman',email:'boris.mitelman@bpmed.fr',loc:'Marseille, PACA',statut:'Prospect'},
-    {cabinet:'SYNERCOM FRANCE',prenom:'Pascal',nom:'FAUCON',email:'pfaucon@synercom-france.fr',loc:'Marseille Métropole',statut:'Prospect'},
+    {cabinet:'Banque Populaire MÃ©diterranÃ©e',prenom:'Boris',nom:'Mitelman',email:'boris.mitelman@bpmed.fr',loc:'Marseille, PACA',statut:'Prospect'},
+    {cabinet:'SYNERCOM FRANCE',prenom:'Pascal',nom:'FAUCON',email:'pfaucon@synercom-france.fr',loc:'Marseille MÃ©tropole',statut:'Prospect'},
     {cabinet:'COGEP',prenom:'Jean-Claude',nom:'CALEGARI',email:'jccalegari@cogep.fr',loc:'Aix-en-Provence',statut:'Prospect'},
     {cabinet:'EURALLIA FINANCE',prenom:'Fabienne',nom:'Hanras',email:'f.hanras@eurallia.fr',loc:'France',statut:'Prospect'},
     {cabinet:'Cabinet Michel Simond',prenom:'Erwan',nom:'Lassalle',loc:'Vannes, Bretagne',statut:'Prospect'},
-    {cabinet:'Arcéane',prenom:'Céline',nom:'VALENTIN',email:'cvalentin@arceane.com',loc:'Paris, Île-de-France',statut:'Prospect'},
-    {cabinet:'JTB & ASSOCIÉS',prenom:'David',nom:'ROBERT',email:'d.robert@jtbconseil.fr',loc:'Rennes Métropole',statut:'Prospect'},
+    {cabinet:'ArcÃ©ane',prenom:'CÃ©line',nom:'VALENTIN',email:'cvalentin@arceane.com',loc:'Paris, Ãle-de-France',statut:'Prospect'},
+    {cabinet:'JTB & ASSOCIÃS',prenom:'David',nom:'ROBERT',email:'d.robert@jtbconseil.fr',loc:'Rennes MÃ©tropole',statut:'Prospect'},
     {cabinet:"TERRES D'EXPERTS",prenom:'Jean-Yves',nom:'ROUAT',loc:'Quimper, Bretagne',statut:'Prospect'},
-    {cabinet:'IC2M',prenom:'Patrick',nom:'BINDNER',loc:'Nice Métropole',statut:'Prospect'},
-    {cabinet:'SPHERE PME',prenom:'Jean-Louis',nom:'Picollo',loc:'Marseille Métropole',statut:'Prospect'},
+    {cabinet:'IC2M',prenom:'Patrick',nom:'BINDNER',loc:'Nice MÃ©tropole',statut:'Prospect'},
+    {cabinet:'SPHERE PME',prenom:'Jean-Louis',nom:'Picollo',loc:'Marseille MÃ©tropole',statut:'Prospect'},
     {cabinet:'AXED FINANCE - EURALLIA',prenom:'Patrick',nom:'Vollekindt',loc:'Bretagne',statut:'Prospect'},
-    {cabinet:'OTOKTONE',prenom:'Jean-Maxime',nom:'Voisin',email:'jean-maxime.voisin@bpgo.fr',loc:'Nantes Métropole',statut:'Prospect'},
+    {cabinet:'OTOKTONE',prenom:'Jean-Maxime',nom:'Voisin',email:'jean-maxime.voisin@bpgo.fr',loc:'Nantes MÃ©tropole',statut:'Prospect'},
     {cabinet:'ACTICAM',prenom:'Valentin',nom:'MOREAU',email:'vmoreau@acticam.fr',loc:'Bretagne',statut:'Prospect'},
-    {cabinet:'Winlink Capital',prenom:'Mattéo',nom:'Bonnardel',email:'mbonnardel@winlinkcapital.com',loc:'Marseille, PACA',statut:'Prospect'},
-    {cabinet:'LCL',prenom:'Stéphane',nom:'BREGER',email:'stephane.breger@lcl.fr',loc:"L'Isle-Adam, Île-de-France",statut:'Prospect'},
+    {cabinet:'Winlink Capital',prenom:'MattÃ©o',nom:'Bonnardel',email:'mbonnardel@winlinkcapital.com',loc:'Marseille, PACA',statut:'Prospect'},
+    {cabinet:'LCL',prenom:'StÃ©phane',nom:'BREGER',email:'stephane.breger@lcl.fr',loc:"L'Isle-Adam, Ãle-de-France",statut:'Prospect'},
     {cabinet:'Exco Finances Sud PACA',prenom:'Yann',nom:'AUREILLE',loc:'Les Pennes-Mirabeau, PACA',statut:'Prospect'},
     {cabinet:'EURALLIA FINANCE',prenom:'Corentin',nom:"Roc'h",email:"c.leroch@eurallia.fr",loc:'Bretagne',statut:'Prospect'},
     {cabinet:'EC2 Finance',prenom:'Alexandre',nom:'Lacasse',email:'alacasse@ec2finance.com',loc:'Longueuil, Canada',statut:'Prospect'},
@@ -1375,18 +1380,18 @@ function loadDefaultIndirect(){
 
 function loadDefaultAdvisors(){
   [
-    ['Bea','Pote Virg — Ex-Franklin','À faire','','',''],
-    ['Raph Marchant','Pote JB — Feed, reprise boite de son daron','À faire','','',''],
-    ['Maud + JB','Réseau Leclerc — Distribution GMS / E.Leclerc','À activer','','',''],
-    ['Guigui','Réseau Medef — Contacts dirigeants PME agri-food','À activer','','',''],
-    ['Martin','Expert ligne industrielle — nutrition animale','À activer','','',''],
-    ['Sauvale / Stanislas De Vion','Cédant potentiel 59 ans — Équin — retraite prochaine','En cours','','',''],
+    ['Bea','Pote Virg â Ex-Franklin','Ã faire','','',''],
+    ['Raph Marchant','Pote JB â Feed, reprise boite de son daron','Ã faire','','',''],
+    ['Maud + JB','RÃ©seau Leclerc â Distribution GMS / E.Leclerc','Ã activer','','',''],
+    ['Guigui','RÃ©seau Medef â Contacts dirigeants PME agri-food','Ã activer','','',''],
+    ['Martin','Expert ligne industrielle â nutrition animale','Ã activer','','',''],
+    ['Sauvale / Stanislas De Vion','CÃ©dant potentiel 59 ans â Ãquin â retraite prochaine','En cours','','',''],
   ].forEach(r=>addAdvisorRow(...r));
 }
 
-// ════════════════════════════════════════════════════
-// PROJET — DATA & RENDER
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// PROJET â DATA & RENDER
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // projectCats: [{id, name, open}, ...]
 // projectTasks: [{id, catId, text, note, done}, ...]
 const projectCats  = [];
@@ -1425,8 +1430,8 @@ function renderProject(){
   // Stats bar
   const sb=document.getElementById('proj-stats');
   if(sb)sb.innerHTML=`
-    <div class="proj-stat"><strong>${remaining}</strong> à faire</div>
-    <div class="proj-stat"><strong>${doneTasks}</strong> complétées</div>
+    <div class="proj-stat"><strong>${remaining}</strong> Ã  faire</div>
+    <div class="proj-stat"><strong>${doneTasks}</strong> complÃ©tÃ©es</div>
     <div class="proj-stat"><strong>${totalTasks}</strong> total</div>`;
 
   // Badge
@@ -1464,7 +1469,7 @@ function renderProject(){
     head.className='cat-head';
     if(cat.isProjectMap)head.style.cssText='background:#dcfce7';
     head.innerHTML=`
-      <span class="cat-chevron">▼</span>
+      <span class="cat-chevron">â¼</span>
       <span class="cat-head-name">${escH(cat.name)}</span>
       <span class="cat-progress">${doneCat}/${allCat.length}</span>
       <span class="cat-count">${allCat.length-doneCat} restantes</span>`;
@@ -1487,24 +1492,24 @@ function renderProject(){
         <div class="pt-body">
           <span class="pt-text ${task.done?'done':''}" contenteditable="true"
             onblur="updateProjTask('${task.id}','text',this.innerText)">${escH(task.text)}</span>
-          <span class="pt-note" contenteditable="true" data-ph="Ajouter une note…"
+          <span class="pt-note" contenteditable="true" data-ph="Ajouter une noteâ¦"
             onblur="updateProjTask('${task.id}','note',this.innerText)">${escH(task.note||'')}</span>
         </div>
-        <button class="pt-del" onclick="deleteProjTask('${task.id}')">✕</button>`;
+        <button class="pt-del" onclick="deleteProjTask('${task.id}')">â</button>`;
       body.appendChild(row);
     });
 
     if(!tasks.length&&q){
       const empty=document.createElement('div');
       empty.style.cssText='padding:12px 14px;font-size:12px;color:#d1d5db;text-align:center';
-      empty.textContent='Aucune tâche correspondante';
+      empty.textContent='Aucune tÃ¢che correspondante';
       body.appendChild(empty);
     }
 
     if(!cat.isProjectMap){
       const addBtn=document.createElement('button');
       addBtn.className='cat-add-task';
-      addBtn.textContent='+ Ajouter une tâche';
+      addBtn.textContent='+ Ajouter une tÃ¢che';
       addBtn.onclick=()=>addProjTaskUI(cat.id);
       body.appendChild(addBtn);
     }
@@ -1524,7 +1529,7 @@ function ensureProjectMapCat(){
   if(existing){projectMapCatId=existing.id;return existing.id;}
   projCtr++;
   const id='pc-pmap-'+projCtr;
-  projectCats.push({id,name:'✅ Project Map — Accompli',open:false,isProjectMap:true});
+  projectCats.push({id,name:'â Project Map â Accompli',open:false,isProjectMap:true});
   projectMapCatId=id;
   return id;
 }
@@ -1559,7 +1564,7 @@ function deleteProjTask(id){
 }
 
 function addProjTaskUI(catId){
-  const id=addProjTask(catId,'Nouvelle tâche','',false);
+  const id=addProjTask(catId,'Nouvelle tÃ¢che','',false);
   renderProject();
   // Focus the new task text
   setTimeout(()=>{
@@ -1576,51 +1581,51 @@ function updateProjBadge(){
 }
 
 function loadDefaultProject(){
-  // ── CATÉGORIES & TÂCHES ──
-  const c1=addProjCat('🎓 Thèse & Identité');
-  addProjTask(c1,'Finalisation de la thèse','');
-  addProjTask(c1,'Création de la genèse','');
+  // ââ CATÃGORIES & TÃCHES ââ
+  const c1=addProjCat('ð ThÃ¨se & IdentitÃ©');
+  addProjTask(c1,'Finalisation de la thÃ¨se','');
+  addProjTask(c1,'CrÃ©ation de la genÃ¨se','');
   addProjTask(c1,'Define the fucking pain on the business model','');
 
-  const c2=addProjCat('⚖️ Structure légale & Financement');
-  addProjTask(c2,'Montage société','');
-  addProjTask(c2,'Transformation SAS → EURL','');
-  addProjTask(c2,'LBO via SAS — revoir draft','');
-  addProjTask(c2,'Prêt honneur Entreprendre','');
-  addProjTask(c2,'BPI — présentation dossier (garantie ou financement)','');
+  const c2=addProjCat('âï¸ Structure lÃ©gale & Financement');
+  addProjTask(c2,'Montage sociÃ©tÃ©','');
+  addProjTask(c2,'Transformation SAS â EURL','');
+  addProjTask(c2,'LBO via SAS â revoir draft','');
+  addProjTask(c2,'PrÃªt honneur Entreprendre','');
+  addProjTask(c2,'BPI â prÃ©sentation dossier (garantie ou financement)','');
   addProjTask(c2,'Expert comptable Ile-et-Vilaine','Waiting for feedback');
-  addProjTask(c2,'Rencontre notaire — mettre famille en sécu','');
+  addProjTask(c2,'Rencontre notaire â mettre famille en sÃ©cu','');
 
-  const c3=addProjCat('👥 Équipe & Conseil');
-  addProjTask(c3,'Recherche advisors petfood Paris','Deux dans la petfood à Paris qui ont monté leur startup');
-  addProjTask(c3,'Montage équipe conseil (avocat + audit)','Jeantet contact via Océane + call to Othman + call Conseil actuel (pas en transac)');
-  addProjTask(c3,'Potential + à intégrer','Fournier à terme + Data digital Antoine');
+  const c3=addProjCat('ð¥ Ãquipe & Conseil');
+  addProjTask(c3,'Recherche advisors petfood Paris','Deux dans la petfood Ã  Paris qui ont montÃ© leur startup');
+  addProjTask(c3,'Montage Ã©quipe conseil (avocat + audit)','Jeantet contact via OcÃ©ane + call to Othman + call Conseil actuel (pas en transac)');
+  addProjTask(c3,'Potential + Ã  intÃ©grer','Fournier Ã  terme + Data digital Antoine');
 
-  const c4=addProjCat('🎯 Sourcing & Cibles');
+  const c4=addProjCat('ð¯ Sourcing & Cibles');
   addProjTask(c4,'List Target direct','');
   addProjTask(c4,'List Target indirect','');
-  addProjTask(c4,'Cartographie concurrences','Producteurs on going dans la petfood — à revoir pour creuser sur les autres secteurs');
+  addProjTask(c4,'Cartographie concurrences','Producteurs on going dans la petfood â Ã  revoir pour creuser sur les autres secteurs');
   addProjTask(c4,'Reprendre value chain petfood + autres secteurs et targets','');
-  addProjTask(c4,'Contact anciens employés — scrap LinkedIn','10 calls next week to set up');
+  addProjTask(c4,'Contact anciens employÃ©s â scrap LinkedIn','10 calls next week to set up');
   addProjTask(c4,'Revoir list of guys to call','');
 
-  const c5=addProjCat('📞 Actions Réseau');
+  const c5=addProjCat('ð Actions RÃ©seau');
   addProjTask(c5,'Contact JB Feed','Call today',false);
   addProjTask(c5,'Contact Associations','');
-  addProjTask(c5,'Meeting CCI','Done — useless. Tenir informé et envoyer le teaser du projet',true);
+  addProjTask(c5,'Meeting CCI','Done â useless. Tenir informÃ© et envoyer le teaser du projet',true);
 
-  const c6=addProjCat('💡 Stratégie & Produit');
-  addProjTask(c6,'Math Making — BP x Profil','');
-  addProjTask(c6,'Vertical aside — still to have a look at','');
-  addProjTask(c6,'Intégration axe anti-gaspi','');
-  addProjTask(c6,'Intégration limite rejet CO2','');
-  addProjTask(c6,'Intégration cost killing for the community','');
-  addProjTask(c6,'Landing page création','');
+  const c6=addProjCat('ð¡ StratÃ©gie & Produit');
+  addProjTask(c6,'Math Making â BP x Profil','');
+  addProjTask(c6,'Vertical aside â still to have a look at','');
+  addProjTask(c6,'IntÃ©gration axe anti-gaspi','');
+  addProjTask(c6,'IntÃ©gration limite rejet CO2','');
+  addProjTask(c6,'IntÃ©gration cost killing for the community','');
+  addProjTask(c6,'Landing page crÃ©ation','');
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // ARCHIVES
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function archiveActive(pipe){
   const id=activeCard[pipe];if(!id)return;
   if(pipe==='direct'){
@@ -1694,40 +1699,40 @@ function renderArchives(){
   let html='';
 
   // Cibles directes
-  html+=`<div><div class="arch-section-h">🎯 Cibles <span>${directs.length}</span></div>`;
-  if(!directs.length){html+='<div class="arch-empty">Aucune cible archivée</div>';}
+  html+=`<div><div class="arch-section-h">ð¯ Cibles <span>${directs.length}</span></div>`;
+  if(!directs.length){html+='<div class="arch-empty">Aucune cible archivÃ©e</div>';}
   else{directs.forEach(([id,d])=>{
     html+=`<div class="arch-item">
       <div class="arch-item-info">
         <div class="arch-item-name">${escH(d.societe||'Sans nom')}</div>
-        <div class="arch-item-sub">${[d.secteur,d.region,d.ca?'CA: '+d.ca:''].filter(Boolean).join(' · ')}</div>
+        <div class="arch-item-sub">${[d.secteur,d.region,d.ca?'CA: '+d.ca:''].filter(Boolean).join(' Â· ')}</div>
       </div>
-      <button class="restore-btn" onclick="restoreDirect('${id}')">↩ Restaurer</button>
+      <button class="restore-btn" onclick="restoreDirect('${id}')">â© Restaurer</button>
     </div>`;
   });}
   html+='</div>';
 
   // Contacts indirects
-  html+=`<div><div class="arch-section-h">🔗 Contacts Indirects <span>${indirects.length}</span></div>`;
-  if(!indirects.length){html+='<div class="arch-empty">Aucun contact archivé</div>';}
+  html+=`<div><div class="arch-section-h">ð Contacts Indirects <span>${indirects.length}</span></div>`;
+  if(!indirects.length){html+='<div class="arch-empty">Aucun contact archivÃ©</div>';}
   else{indirects.forEach(([id,d])=>{
     const name=[d.prenom,d.nom].filter(Boolean).join(' ');
     html+=`<div class="arch-item">
       <div class="arch-item-info">
         <div class="arch-item-name">${escH(d.cabinet||name||'Sans nom')}</div>
-        <div class="arch-item-sub">${[name,d.loc].filter(Boolean).join(' · ')}</div>
+        <div class="arch-item-sub">${[name,d.loc].filter(Boolean).join(' Â· ')}</div>
       </div>
-      <button class="restore-btn" onclick="restoreIndirect('${id}')">↩ Restaurer</button>
+      <button class="restore-btn" onclick="restoreIndirect('${id}')">â© Restaurer</button>
     </div>`;
   });}
   html+='</div>';
 
   // Advisors
-  html+=`<div><div class="arch-section-h">🤝 Advisors <span>${advRows.length}</span></div>`;
-  if(!advRows.length){html+='<div class="arch-empty">Aucun advisor archivé</div>';}
+  html+=`<div><div class="arch-section-h">ð¤ Advisors <span>${advRows.length}</span></div>`;
+  if(!advRows.length){html+='<div class="arch-empty">Aucun advisor archivÃ©</div>';}
   else{advRows.forEach(tr=>{
     const inputs=tr.querySelectorAll('input');
-    const name=inputs[0]?.value||'—';
+    const name=inputs[0]?.value||'â';
     const role=inputs[1]?.value||'';
     const rowId=tr.dataset.rowId||'';
     html+=`<div class="arch-item" data-row-id="${escH(rowId)}">
@@ -1735,7 +1740,7 @@ function renderArchives(){
         <div class="arch-item-name">${escH(name)}</div>
         <div class="arch-item-sub">${escH(role)}</div>
       </div>
-      <button class="restore-btn" onclick="restoreAdvisor(this)">↩ Restaurer</button>
+      <button class="restore-btn" onclick="restoreAdvisor(this)">â© Restaurer</button>
     </div>`;
   });}
   html+='</div>';
@@ -1743,9 +1748,9 @@ function renderArchives(){
   el.innerHTML=html;
 }
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // INIT
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer('direct');closeDrawer('indirect');closeQL();}});
 setDate();
 initKanban();
@@ -1757,9 +1762,9 @@ renderStatsBar();
 sortAllColumns();
 updateArchiveBadge();
 
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // DEAL FLOW
-// ════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let dealsData=[];let dealsLoaded=false;let dfNewOnly=false;
 const SRC_COLORS={
   'Transentreprise':'#dbeafe,#1d4ed8',
@@ -1791,12 +1796,12 @@ function loadDealsJson(force=false){
       if(data.last_updated){
         const d=new Date(data.last_updated);
         const el=document.getElementById('df-last-upd');
-        if(el)el.textContent='Mis à jour: '+d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+        if(el)el.textContent='Mis Ã  jour: '+d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
       }
     })
     .catch(()=>{
       const list=document.getElementById('df-list');
-      if(list)list.innerHTML='<div class="df-empty"><div class="df-empty-icon">🤖</div><div class="df-empty-title">Deal Flow non encore configuré</div><div class="df-empty-sub">Ce CRM doit être hébergé sur GitHub Pages pour que le bot fonctionne.<br>Consulte le fichier <strong>acquis-bot/README.md</strong> pour les instructions.</div></div>';
+      if(list)list.innerHTML='<div class="df-empty"><div class="df-empty-icon">ð¤</div><div class="df-empty-title">Deal Flow non encore configurÃ©</div><div class="df-empty-sub">Ce CRM doit Ãªtre hÃ©bergÃ© sur GitHub Pages pour que le bot fonctionne.<br>Consulte le fichier <strong>acquis-bot/README.md</strong> pour les instructions.</div></div>';
     });
 }
 
@@ -1813,7 +1818,7 @@ function renderDealFlow(){
   const cnt=document.getElementById('df-count');
   if(cnt)cnt.textContent=filtered.length+' deal'+(filtered.length!==1?'s':'');
   if(!filtered.length){
-    list.innerHTML='<div class="df-empty"><div class="df-empty-icon">🔍</div><div class="df-empty-sub">'+(dealsData.length?'Aucun résultat pour ces filtres':'Aucun deal trouvé — lance le scraper depuis GitHub Actions')+'</div></div>';
+    list.innerHTML='<div class="df-empty"><div class="df-empty-icon">ð</div><div class="df-empty-sub">'+(dealsData.length?'Aucun rÃ©sultat pour ces filtres':'Aucun deal trouvÃ© â lance le scraper depuis GitHub Actions')+'</div></div>';
     return;
   }
   const newDeals=filtered.filter(d=>!d.seen);
@@ -1825,18 +1830,18 @@ function renderDealFlow(){
       '<td style="width:14px">'+(d.seen?'':'<span class="df-new-dot"></span>')+'</td>'+
       '<td><div class="irow-name">'+escH(d.title)+'</div>'+(d.description?'<div class="irow-sub" style="max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(d.description.substring(0,110))+'</div>':'')+'</td>'+
       '<td><span class="deal-src-tag" style="background:'+bg+';color:'+fg+'">'+escH(d.source)+'</span></td>'+
-      '<td style="font-size:12px">'+escH(d.region||'—')+'</td>'+
+      '<td style="font-size:12px">'+escH(d.region||'â')+'</td>'+
       '<td><span class="chip chip-ca">'+escH(d.ca)+'</span></td>'+
       '<td style="font-size:11px;color:#9ca3af">'+escH(d.date_scraped||'')+'</td>'+
       '<td style="white-space:nowrap">'+
-        (d.url?'<a class="deal-link-btn" href="'+escH(d.url)+'" target="_blank" onclick="event.stopPropagation()">🔗 Voir</a>':'')+
-        (!added?'<button class="deal-add-btn" onclick="event.stopPropagation();addDealToPipeline(\''+escH(d.id)+'\')">🎯 Pipeline</button>':'<span style="font-size:10px;color:#22c55e;font-weight:600;margin-left:6px">✓ Ajouté</span>')+
+        (d.url?'<a class="deal-link-btn" href="'+escH(d.url)+'" target="_blank" onclick="event.stopPropagation()">ð Voir</a>':'')+
+        (!added?'<button class="deal-add-btn" onclick="event.stopPropagation();addDealToPipeline(\''+escH(d.id)+'\')">ð¯ Pipeline</button>':'<span style="font-size:10px;color:#22c55e;font-weight:600;margin-left:6px">â AjoutÃ©</span>')+
       '</td>'+
     '</tr>';
   };
-  let html='<table class="df-table"><thead><tr><th></th><th>Société / Activité</th><th>Source</th><th>Région</th><th>CA estimé</th><th>Détecté</th><th></th></tr></thead><tbody>';
-  if(newDeals.length){html+='<tr><td colspan="7" class="df-group-head">🆕 Nouvelles — '+newDeals.length+'</td></tr>';newDeals.forEach(d=>{html+=renderRow(d);});}
-  if(seenDeals.length){html+='<tr><td colspan="7" class="df-group-head" style="color:#9ca3af">Vues — '+seenDeals.length+'</td></tr>';seenDeals.forEach(d=>{html+=renderRow(d);});}
+  let html='<table class="df-table"><thead><tr><th></th><th>SociÃ©tÃ© / ActivitÃ©</th><th>Source</th><th>RÃ©gion</th><th>CA estimÃ©</th><th>DÃ©tectÃ©</th><th></th></tr></thead><tbody>';
+  if(newDeals.length){html+='<tr><td colspan="7" class="df-group-head">ð Nouvelles â '+newDeals.length+'</td></tr>';newDeals.forEach(d=>{html+=renderRow(d);});}
+  if(seenDeals.length){html+='<tr><td colspan="7" class="df-group-head" style="color:#9ca3af">Vues â '+seenDeals.length+'</td></tr>';seenDeals.forEach(d=>{html+=renderRow(d);});}
   html+='</tbody></table>';
   list.innerHTML=html;
 }
@@ -1854,7 +1859,7 @@ function addDealToPipeline(id){
     region:deal.region||'',
     ca:deal.ca!=='NC'?deal.ca:'',
     notesCRM:(deal.description||'')+(deal.url?'\n\nSource: '+deal.url:''),
-    statutCRM:'À contacter',
+    statutCRM:'Ã contacter',
     col:0
   };
   const cid=addDCard(0,newCard);
@@ -1872,6 +1877,46 @@ function updateDealFlowBadge(){
     if(unseen>0){b.classList.add('badge-red');}else{b.classList.remove('badge-red');}
   }
 }
+
+
+  // ===== EXPORT & AUTO-BACKUP =====
+  function exportCRM() {
+    const raw = localStorage.getItem('reprise_crm_v1');
+    if (!raw) { alert('Aucune donnée à exporter.'); return; }
+    const today = new Date().toISOString().slice(0,10);
+    const blob = new Blob([raw], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'acquis-backup-' + today + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    localStorage.setItem('reprise_last_backup', today);
+  }
+
+  function autoBackupIfNeeded() {
+    const today = new Date().toISOString().slice(0,10);
+    const last = localStorage.getItem('reprise_last_backup') || '';
+    if (last !== today) {
+      const raw = localStorage.getItem('reprise_crm_v1');
+      if (raw) {
+        const blob = new Blob([raw], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'acquis-backup-' + today + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        localStorage.setItem('reprise_last_backup', today);
+      }
+    }
+  }
+
+  // Auto-backup au chargement si pas encore fait aujourd'hui
+  window.addEventListener('load', () => { setTimeout(autoBackupIfNeeded, 2000); });
+
 </script>
 </body>
 </html>
