@@ -1,22 +1,8 @@
 {
-  "last_updated": "2026-03-13T15:05:28Z",
+  "last_updated": "2026-03-14T07:56:54Z",
   "count": 5,
-  "new_today": 4,
+  "new_today": 0,
   "deals": [
-    {
-      "id": "43f82b601553",
-      "title": "Aliments et produits spécifiques pour chevaux",
-      "url": "https://www.fusacq.com/vente-entreprise-aliments-et-produits-specifiques-pour-chevaux-bourgogne,87612_fr_",
-      "source": "Fusacq",
-      "region": "Bourgogne",
-      "ca": "NC",
-      "ca_value": null,
-      "description": "Vente d’entreprise spécialisée dans la fabrication et distribution d’aliments et produits spécifiques pour chevaux, en Bourgogne. Référence Fusacq 87612.",
-      "date_pub": "",
-      "date_scraped": "2026-03-13",
-      "seen": false,
-      "added_to_crm": false
-    },
     {
       "id": "fca8a17a527f",
       "title": "BOULANGERIE PATISSERIE SNACKINGPays de l'Occitane et des Mont (87)",
@@ -26,6 +12,20 @@
       "ca": "de 500 à 750 k€",
       "ca_value": 750000,
       "description": "NAQ263633A BOULANGERIE PATISSERIE SNACKING Pays de l'Occitane et des Mont (87) Prix : 310 000 € C.A. : de 500 à 750 k€ Effectif : 10 à 20",
+      "date_pub": "",
+      "date_scraped": "2026-03-13",
+      "seen": false,
+      "added_to_crm": false
+    },
+    {
+      "id": "43f82b601553",
+      "title": "Aliments et produits spécifiques pour chevaux",
+      "url": "https://www.fusacq.com/vente-entreprise-aliments-et-produits-specifiques-pour-chevaux-bourgogne,87612_fr_",
+      "source": "Fusacq",
+      "region": "Bourgogne",
+      "ca": "NC",
+      "ca_value": null,
+      "description": "Vente d’entreprise spécialisée dans la fabrication et distribution d’aliments et produits spécifiques pour chevaux, en Bourgogne. Référence Fusacq 87612.",
       "date_pub": "",
       "date_scraped": "2026-03-13",
       "seen": false,
