@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Acquis Deal Flow Scraper v2.1
+Acquis Deal Flow Scraper v2.2
 Scrapes French M&A platforms daily for business acquisition opportunities
 matching Lughanor's target criteria.
 
@@ -435,6 +435,7 @@ def main():
     scrapers = [
         ("Transentreprise", lambda e: scrape_transentreprise(e, session)),
         ("BPI France",      lambda e: scrape_bpi(e, session)),
+        ("Fusacq",          lambda e: scrape_fusacq(e, session)),
     ]
 
     for name, fn in scrapers:
