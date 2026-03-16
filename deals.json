@@ -1,8 +1,22 @@
 {
-  "last_updated": "2026-03-15T20:23:48Z",
-  "count": 5,
-  "new_today": 0,
+  "last_updated": "2026-03-16T08:04:58Z",
+  "count": 6,
+  "new_today": 1,
   "deals": [
+    {
+      "id": "3c6b9802ee42",
+      "title": "Jardinage/Animalerie/Décoration",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "11",
+      "ca_value": 1418000,
+      "description": "Jardinage/Animalerie/Décoration 13/03/2026 Département : 11 Aude Simuler votre financement 1 418 k€ NC 1 397 k€ Consulter sur...",
+      "date_pub": "13/03/2026",
+      "date_scraped": "2026-03-16",
+      "seen": false,
+      "added_to_crm": false
+    },
     {
       "id": "fca8a17a527f",
       "title": "BOULANGERIE PATISSERIE SNACKINGPays de l'Occitane et des Mont (87)",
