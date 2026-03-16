@@ -411,6 +411,106 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
     return new_deals
 
 
+
+# ─── Scraper: Fusacq ────────────────────────────────────────────────
+
+def scrape_fusacq(existing: dict, session: requests.Session) -> list:
+    """
+    fusacq.com — Server-side rendered listing pages.
+    Card: .card.no_shadow.mb-3  |  Title: .titre_annonce
+    CA/date: .nowrap_custom x3  |  Location: text node after .fa-map-marker-alt
+    """
+    base = "https://www.fusacq.com"
+    search_path = "/reprendre-une-entreprise/resultats-annonces-cession-entreprise_fr_"
+    new_deals = []
+    seen_ids = set()
+
+    keywords = [
+        "petfood",
+        "alimentation animale",
+        "cheval",
+        "élevage",
+        "animalerie",
+        "provenderie",
+        "nutrition animale",
+        "équin",
+        "volailles",
+        "friandise",
+    ]
+
+    for kw in keywords:
+        print(f"    🔍 Fusacq: {kw}")
+        for page in range(1, 4):
+            sep = "?"
+            url = base + search_path + sep + "reference_mots_cles=" + requests.utils.quote(kw) + "&page=" + str(page)
+            soup = get_soup(session, url)
+            if not soup:
+                break
+
+            cards = soup.select(".card.no_shadow.mb-3")
+            if not cards:
+                break
+
+            found_new = False
+            for card in cards:
+                title_el = card.select_one(".titre_annonce")
+                if not title_el:
+                    continue
+                title = title_el.get_text(strip=True)
+
+                link_el = card.select_one("a.btn-bleu-annonce")
+                href = link_el.get("href", "") if link_el else ""
+                if not href:
+                    continue
+                if not href.startswith("http"):
+                    href = base + href
+
+                nowraps = card.select(".nowrap_custom")
+                ca_raw = nowraps[0].get_text(strip=True) if len(nowraps) > 0 else ""
+                date_raw = nowraps[1].get_text(strip=True) if len(nowraps) > 1 else ""
+
+                ca_txt = re.sub(r"^CA\s*:\s*", "", ca_raw, flags=re.IGNORECASE).strip()
+
+                date_pub = ""
+                dm = re.search(r"(\d{2})/(\d{2})/(\d{4})", date_raw)
+                if dm:
+                    date_pub = f"{dm.group(3)}-{dm.group(2)}-{dm.group(1)}"
+
+                region = ""
+                marker_el = card.select_one(".fa-map-marker-alt")
+                if marker_el and marker_el.next_sibling:
+                    ns = marker_el.next_sibling
+                    if hasattr(ns, "strip"):
+                        region = ns.strip()
+
+                if region and any(c in region for c in ["Suisse", "Belgique", "Canada", "Luxembourg"]):
+                    continue
+
+                ca_val = parse_ca(ca_txt)
+                if not ca_in_range(ca_val):
+                    continue
+
+                desc = card.get_text(separator" ", strip=True)[:400]
+                if not matches_sector_strict(title):
+                    if not matches_sector_broad(title, desc):
+                        continue
+
+                did = deal_id(href, title)
+                if did in existing or did in seen_ids:
+                    continue
+
+                seen_ids.add(did)
+                deal = make_deal(title, href, "Fusacq", region, ca_txt, desc, date_pub)
+                new_deals.append(deal)
+                print(f"    ✚ {title[:65]}")
+                found_new = True
+
+            if not found_new and page > 1:
+                break
+            time.sleep(2)
+
+    return new_deals
+
 # ─── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
