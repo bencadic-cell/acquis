@@ -567,7 +567,7 @@ def scrape_cra(existing: dict, session: requests.Session) -> list:
 
             price_el = card.select_one("p.price")
             price_txt = price_el.get_text(strip=True) if price_el else ""
-            # Match "CA : 950 000 €"
+            # Match "CA : 950 000 EUR"
             ca_m = re.search(r"CA\s*:\s*([\d\s]+" + euro + ")", price_txt, re.IGNORECASE)
             ca_txt = ca_m.group(1).strip() if ca_m else ""
 
