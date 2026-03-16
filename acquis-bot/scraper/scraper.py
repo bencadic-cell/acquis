@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Acquis Deal Flow Scraper v2.2
+Acquis Deal Flow Scraper v2.3
 Scrapes French M&A platforms daily for business acquisition opportunities
 matching Lughanor's target criteria.
 
 Sources (confirmed working):
-- Transentreprise.com      — POST search, parse div.row.mb-3 cards
-- BPI France Transmission  — GET production?searchText=KEYWORD, parse article.result
+- Transentreprise.com      â POST search, parse div.row.mb-3 cards
+- BPI France Transmission  â GET production?searchText=KEYWORD, parse article.result
 """
 
 import json
@@ -20,36 +20,36 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-# ─── Target Criteria ───────────────────────────────────────────────────────────
+# âââ Target Criteria âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-# Tier 1 — strong signal: title MUST contain at least one of these
+# Tier 1 â strong signal: title MUST contain at least one of these
 SECTOR_KEYWORDS_TITLE = [
     "petfood", "pet food",
     "alimentation animale", "nutrition animale", "aliment animal", "aliments animaux",
     "nourriture animale", "nourriture pour animaux",
-    "croquettes", "pâtée",
+    "croquettes", "pÃ¢tÃ©e",
     "ruminant", "bovin", "ovin", "caprin", "volaille", "volailles", "aviculture",
-    "provenderie", "fabrication aliments", "aliments du bétail",
+    "provenderie", "fabrication aliments", "aliments du bÃ©tail",
     "nac", "nouveaux animaux de compagnie", "reptile", "aquariophilie",
-    "équin", "équine", "équitation", "cheval", "chevaux", "hippique",
-    "nutrition équine", "aliment cheval",
+    "Ã©quin", "Ã©quine", "Ã©quitation", "cheval", "chevaux", "hippique",
+    "nutrition Ã©quine", "aliment cheval",
     "animalerie", "jardinerie animalerie",
-    "élevage porcin", "porcin", "porc",
+    "Ã©levage porcin", "porcin", "porc",
     "friandise",  # friandises pour animaux
     "snack chien", "snack chat",
 ]
 
-# Tier 2 — broader, checked in title+description (animal-specific only, no generic food terms)
+# Tier 2 â broader, checked in title+description (animal-specific only, no generic food terms)
 SECTOR_KEYWORDS_BROAD = SECTOR_KEYWORDS_TITLE + [
-    "élevage",              # animal farming context
-    "produits vétérinaires", "vétérinaire", "soins animaux", "accessoires animaux",
-    "bien-être animal", "bienêtre animal",
+    "Ã©levage",              # animal farming context
+    "produits vÃ©tÃ©rinaires", "vÃ©tÃ©rinaire", "soins animaux", "accessoires animaux",
+    "bien-Ãªtre animal", "bienÃªtre animal",
     "aquaculture", "pisciculture",
     "apiculture", "ruche",
 ]
 
-CA_MIN = 300_000    # légèrement sous 500K pour ne pas rater les borderlines
-CA_MAX = 7_000_000  # légèrement au-dessus de 5M
+CA_MIN = 300_000    # lÃ©gÃ¨rement sous 500K pour ne pas rater les borderlines
+CA_MAX = 7_000_000  # lÃ©gÃ¨rement au-dessus de 5M
 
 MAX_AGE_DAYS = 62   # ~2 mois
 
@@ -70,7 +70,7 @@ HEADERS = {
     "Cache-Control": "no-cache",
 }
 
-# ─── Utilities ─────────────────────────────────────────────────────────────────
+# âââ Utilities âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 def deal_id(url: str, title: str) -> str:
     key = f"{url.strip().lower()}{title.strip().lower()}"
@@ -94,11 +94,11 @@ def matches_sector_broad(title: str, desc: str) -> bool:
 
 
 def parse_ca(text: str) -> Optional[int]:
-    """Parse CA strings: '1.2M€', '800 K€', '1 200 000 €', 'de 500 à 1000 k€' → int"""
+    """Parse CA strings: '1.2Mâ¬', '800 Kâ¬', '1 200 000 â¬', 'de 500 Ã  1000 kâ¬' â int"""
     if not text:
         return None
     t = text.replace("\u202f", "").replace("\xa0", "").replace(" ", "").lower()
-    range_match = re.search(r"(?:de\s*)?[\d.,]+\s*(?:à|a|-)\s*([\d.,]+)\s*([mk€])", t)
+    range_match = re.search(r"(?:de\s*)?[\d.,]+\s*(?:Ã |a|-)\s*([\d.,]+)\s*([mkâ¬])", t)
     if range_match:
         try:
             val = float(range_match.group(1).replace(",", "."))
@@ -109,19 +109,19 @@ def parse_ca(text: str) -> Optional[int]:
                 return int(val * 1_000)
         except ValueError:
             pass
-    m = re.search(r"([\d.,]+)\s*m[€e]?", t)
+    m = re.search(r"([\d.,]+)\s*m[â¬e]?", t)
     if m:
         try:
             return int(float(m.group(1).replace(",", ".")) * 1_000_000)
         except ValueError:
             pass
-    m = re.search(r"([\d.,]+)\s*k[€e]?", t)
+    m = re.search(r"([\d.,]+)\s*k[â¬e]?", t)
     if m:
         try:
             return int(float(m.group(1).replace(",", ".")) * 1_000)
         except ValueError:
             pass
-    m = re.search(r"(\d[\d\s]*\d)[€e]", t)
+    m = re.search(r"(\d[\d\s]*\d)[â¬e]", t)
     if m:
         try:
             return int(m.group(1).replace(" ", ""))
@@ -147,7 +147,7 @@ def get_soup(session: requests.Session, url: str, retries: int = 2,
                 resp = session.get(url, timeout=25, allow_redirects=True, verify=False)
             if resp.status_code == 200:
                 return BeautifulSoup(resp.text, "lxml")
-            print(f"    HTTP {resp.status_code} — {url}")
+            print(f"    HTTP {resp.status_code} â {url}")
         except Exception as e:
             print(f"    Error fetching {url}: {e}")
         if attempt < retries - 1:
@@ -180,7 +180,7 @@ def save_deals(deals_by_id: dict):
     }
     with open(DEALS_FILE, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
-    print(f"\n✓ deals.json updated — {len(deals_list)} total deals")
+    print(f"\nâ deals.json updated â {len(deals_list)} total deals")
 
 
 def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="") -> dict:
@@ -201,11 +201,11 @@ def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="") -
     }
 
 
-# ─── Scraper: Transentreprise ───────────────────────────────────────────────────
+# âââ Scraper: Transentreprise âââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 def scrape_transentreprise(existing: dict, session: requests.Session) -> list:
     """
-    Transentreprise.com — POST search to set server session, then parse results.
+    Transentreprise.com â POST search to set server session, then parse results.
     Card structure: div.row.mb-3 > [div.col-sm-5 (image), div.col-sm-7 (details)]
     """
     new_deals = []
@@ -219,13 +219,13 @@ def scrape_transentreprise(existing: dict, session: requests.Session) -> list:
         "petfood",
         "animalerie",
         "provenderie",
-        "volailles élevage",
-        "équin cheval",
-        "élevage bovin",
+        "volailles Ã©levage",
+        "Ã©quin cheval",
+        "Ã©levage bovin",
     ]
 
     for kw in keywords:
-        print(f"    🔍 Searching: {kw}")
+        print(f"    ð Searching: {kw}")
         soup = get_soup(session, search_url, method="POST", data={
             "int-activitie": kw,
             "int-localisations": "",
@@ -298,18 +298,18 @@ def scrape_transentreprise(existing: dict, session: requests.Session) -> list:
             deal = make_deal(title, href or search_url, "Transentreprise",
                              region, ca_txt, desc, date_pub)
             new_deals.append(deal)
-            print(f"    ✚ {title[:65]}")
+            print(f"    â {title[:65]}")
 
         time.sleep(3)
 
     return new_deals
 
 
-# ─── Scraper: BPI France Transmission ──────────────────────────────────────────
+# âââ Scraper: BPI France Transmission ââââââââââââââââââââââââââââââââââââââââââ
 
 def scrape_bpi(existing: dict, session: requests.Session) -> list:
     """
-    reprise-entreprise.bpifrance.fr — Bourse de la Transmission
+    reprise-entreprise.bpifrance.fr â Bourse de la Transmission
     URL: /production?searchText=KEYWORD  or  /commerce?searchText=KEYWORD
     Card: article.result  |  title: h3 a  |  link: a.info-annonce
     """
@@ -322,16 +322,16 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
         ("production", "petfood"),
         ("production", "nutrition animale"),
         ("production", "volailles"),
-        ("production", "élevage"),
+        ("production", "Ã©levage"),
         ("production", "provenderie"),
-        ("production", "équin"),
+        ("production", "Ã©quin"),
         ("commerce",   "animalerie"),
         ("commerce",   "alimentation animale"),
     ]
 
     for section, kw in search_configs:
         url = f"{base}/{section}?searchText={requests.utils.quote(kw)}"
-        print(f"    🔍 BPI {section}: {kw}")
+        print(f"    ð BPI {section}: {kw}")
         soup = get_soup(session, url)
         if not soup:
             time.sleep(2)
@@ -375,7 +375,7 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
             if card.get("data-prix"):
                 px = int(card["data-prix"])
                 if px > 0:
-                    ca_txt = ca_txt or f"{px // 1000} k€"
+                    ca_txt = ca_txt or f"{px // 1000} kâ¬"
 
             date_pub = ""
             date_el = card.select_one(".date, time, [class*='date']")
@@ -404,7 +404,7 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
             deal = make_deal(title, href or url, "BPI France",
                              region, ca_txt, desc, date_pub)
             new_deals.append(deal)
-            print(f"    ✚ {title[:65]}")
+            print(f"    â {title[:65]}")
 
         time.sleep(2)
 
@@ -412,11 +412,11 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
 
 
 
-# ─── Scraper: Fusacq ────────────────────────────────────────────────
+# âââ Scraper: Fusacq ââââââââââââââââââââââââââââââââââââââââââââââââ
 
 def scrape_fusacq(existing: dict, session: requests.Session) -> list:
     """
-    fusacq.com — Server-side rendered listing pages.
+    fusacq.com â Server-side rendered listing pages.
     Card: .card.no_shadow.mb-3  |  Title: .titre_annonce
     CA/date: .nowrap_custom x3  |  Location: text node after .fa-map-marker-alt
     """
@@ -429,17 +429,17 @@ def scrape_fusacq(existing: dict, session: requests.Session) -> list:
         "petfood",
         "alimentation animale",
         "cheval",
-        "élevage",
+        "Ã©levage",
         "animalerie",
         "provenderie",
         "nutrition animale",
-        "équin",
+        "Ã©quin",
         "volailles",
         "friandise",
     ]
 
     for kw in keywords:
-        print(f"    🔍 Fusacq: {kw}")
+        print(f"    ð Fusacq: {kw}")
         for page in range(1, 4):
             sep = "?"
             url = base + search_path + sep + "reference_mots_cles=" + requests.utils.quote(kw) + "&page=" + str(page)
@@ -502,7 +502,7 @@ def scrape_fusacq(existing: dict, session: requests.Session) -> list:
                 seen_ids.add(did)
                 deal = make_deal(title, href, "Fusacq", region, ca_txt, desc, date_pub)
                 new_deals.append(deal)
-                print(f"    ✚ {title[:65]}")
+                print(f"    â {title[:65]}")
                 found_new = True
 
             if not found_new and page > 1:
@@ -511,16 +511,100 @@ def scrape_fusacq(existing: dict, session: requests.Session) -> list:
 
     return new_deals
 
-# ─── Main ──────────────────────────────────────────────────────────────────────
+# âââ Main ââââ
+# ─── Scraper: CRA ──────────────────────────────────────────────────────────────
+
+def scrape_cra(existing: dict, session: requests.Session) -> list:
+    """
+    cra.asso.fr — Server-side rendered listing pages.
+    Card: article[class*='presAF']  |  Title: p.title a
+    Region: p.place  |  CA: p.price  |  Ref: p.identifier
+    Sector filter via NAF codes (fact param) + CA range (fCA param)
+    """
+    base = "https://www.cra.asso.fr"
+    # NAF codes relevant to our sectors:
+    # 422=prod.animale/chasse  424=aquaculture  430=ind.alimentaires
+    # 621=aliments betail  623=animaux vivants  628=volailles
+    # 705=animalerie + aliments animaux compagnie
+    fact_codes = ["422", "424", "430", "621", "623", "628", "705"]
+    ca_codes = ["1", "2", "3", "4"]
+    new_deals = []
+    seen_ids = set()
+
+    print(f"    \U0001f50d CRA: {len(fact_codes)} secteurs NAF cibles")
+
+    for page in range(1, 15):
+        params = [("page", str(page))]
+        for c in fact_codes:
+            params.append(("fact", c))
+        for ca in ca_codes:
+            params.append(("fCA", ca))
+        qs = "&".join(f"{k}={v}" for k, v in params)
+        url = base + "/liste-entreprises-a-reprendre.aspx?" + qs
+        soup = get_soup(session, url)
+        if not soup:
+            break
+
+        cards = soup.select("article[class*='presAF']")
+        if not cards:
+            break
+
+        found_any = False
+        for card in cards:
+            found_any = True
+
+            title_el = card.select_one("p.title a")
+            if not title_el:
+                continue
+            title = title_el.get_text(strip=True)
+            href = title_el.get("href", "")
+            if href and not href.startswith("http"):
+                href = base + href
+
+            place_el = card.select_one("p.place")
+            region = place_el.get_text(strip=True) if place_el else ""
+            if region and any(c in region for c in ["Suisse", "Belgique", "Canada", "Luxembourg"]):
+                continue
+
+            price_el = card.select_one("p.price")
+            price_txt = price_el.get_text(strip=True) if price_el else ""
+            ca_m = re.search(r"CA\s*:\s*([\d\s]+\u20ac)", price_txt, re.IGNORECASE)
+            ca_txt = ca_m.group(1).strip() if ca_m else ""
+
+            ca_val = parse_ca(ca_txt)
+            if not ca_in_range(ca_val):
+                continue
+
+            desc = card.get_text(separator=" ", strip=True)[:400]
+            if not matches_sector_strict(title):
+                if not matches_sector_broad(title, desc):
+                    continue
+
+            did = deal_id(href or title, title)
+            if did in existing or did in seen_ids:
+                continue
+
+            seen_ids.add(did)
+            deal = make_deal(title, href or url, "CRA", region, ca_txt, desc, "")
+            new_deals.append(deal)
+            print(f"    \u271a {title[:65]}")
+
+        if not found_any:
+            break
+        time.sleep(2)
+
+    return new_deals
+
+ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 def main():
     import urllib3
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     print(f"\n{'='*65}")
-    print(f"  🔍 Acquis Deal Flow Scraper v2.1 — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
-    print(f"  Sectors: petfood | nutrition animale | équin | NAC | volailles")
-    print(f"  CA range: {CA_MIN//1000}K€ — {CA_MAX//1_000_000}M€")
+    print(f"  ð Acquis Deal Flow Scraper v2.3 â {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
+    print(f"  Sectors: petfood | nutrition animale | Ã©quin | NAC | volailles")
+    print(f"  CA range: {CA_MIN//1000}Kâ¬ â {CA_MAX//1_000_000}Mâ¬")
     print(f"  Deals file: {DEALS_FILE}")
     print(f"{'='*65}\n")
 
@@ -536,16 +620,17 @@ def main():
         ("Transentreprise", lambda e: scrape_transentreprise(e, session)),
         ("BPI France",      lambda e: scrape_bpi(e, session)),
         ("Fusacq",          lambda e: scrape_fusacq(e, session)),
+        ("CRA",             lambda e: scrape_cra(e, session)),
     ]
 
     for name, fn in scrapers:
-        print(f"▶ {name}...")
+        print(f"â¶ {name}...")
         try:
             new = fn(existing)
             all_new.extend(new)
-            print(f"  → {len(new)} new deal(s) found")
+            print(f"  â {len(new)} new deal(s) found")
         except Exception as e:
-            print(f"  ✗ {name} failed: {e}")
+            print(f"  â {name} failed: {e}")
         print()
 
     print(f"{'='*65}")
@@ -557,7 +642,7 @@ def main():
     save_deals(existing)
 
     if all_new:
-        print(f"\n🆕 New opportunities today:")
+        print(f"\nð New opportunities today:")
         for d in sorted(all_new, key=lambda x: x["source"]):
             ca_str = d["ca"] if d["ca"] != "NC" else "CA?"
             print(f"  [{d['source']:15s}] {d['title'][:50]:50s} | "
