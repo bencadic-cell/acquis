@@ -490,7 +490,7 @@ def scrape_fusacq(existing: dict, session: requests.Session) -> list:
                 if not ca_in_range(ca_val):
                     continue
 
-                desc = card.get_text(separator" ", strip=True)[:400]
+                desc = card.get_text(separator=" ", strip=True)[:400]
                 if not matches_sector_strict(title):
                     if not matches_sector_broad(title, desc):
                         continue
