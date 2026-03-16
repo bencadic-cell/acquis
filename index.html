@@ -311,6 +311,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ════════════════════ SHARED UTILS ════════════════════ */
 .toast{position:fixed;bottom:20px;right:24px;background:var(--txt);color:#fff;padding:8px 18px;border-radius:8px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999}
 .toast.show{opacity:1}
+
+/* -- Next-action pills -- */
+.next-pill{font-size:11px;padding:2px 6px;border-radius:4px;margin:3px 0 2px;font-weight:600;display:inline-block}
+.next-overdue{background:#fee2e2;color:#b91c1c}
+.next-today{background:#fef9c3;color:#92400e}
+.next-future{background:#dbeafe;color:#1e40af}
+/* -- Relances panel -- */
+#relances-panel{margin-bottom:18px}
+.rp-title{font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.rp-empty{font-size:13px;color:#9ca3af;padding:6px 0}
+.relance-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:6px;cursor:pointer;transition:box-shadow .15s}
+.relance-item:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ri-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ri-overdue .ri-dot{background:#ef4444}
+.ri-today .ri-dot{background:#f59e0b}
+.ri-name{font-weight:600;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ri-note{font-size:12px;color:#6b7280;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ri-date{font-size:11px;color:#9ca3af;flex-shrink:0}
+.stat-rel .stat-val{color:#ef4444}
+.fg-row{display:flex;gap:12px;align-items:flex-start}
 </style>
 </head>
 <body>
@@ -452,6 +472,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <textarea class="fta" id="dd-notes" placeholder="Prochaine étape…" oninput="syncD()"></textarea>
       </div>
     </div>
+    <!-- Prochaine action -->
+    <div><div class="dsec">Prochaine action</div>
+      <div class="fg fg-row">
+        <div style="flex:0 0 160px">
+          <label>Date de relance</label>
+          <input type="date" class="finp" id="dd-next" oninput="syncD()">
+        </div>
+        <div style="flex:1">
+          <label>Note relance</label>
+          <input type="text" class="finp" id="dd-nextnote" placeholder="Objet de la relance..." oninput="syncD()">
+        </div>
+      </div>
+    </div>
     <!-- Activity log -->
     <div><div class="dsec">Journal d'activités</div>
       <div class="act-add-form">
@@ -568,6 +601,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="ph"><h2>📋 Aujourd'hui</h2><p id="ph-today-date"></p></div>
     <div class="ph-divider"></div>
     <div class="today-scroll">
+      <div id="relances-panel"></div>
       <div class="time-blocks">
         <div class="tb" id="tb-matin"><label>☀️ Matin — intentions</label><textarea id="block-matin" placeholder="Ce que je veux accomplir ce matin…" oninput="save()"></textarea></div>
         <div class="tb" id="tb-midi"> <label>🌤 Midi — bilan</label>      <textarea id="block-midi"  placeholder="Où j'en suis, ajustements…" oninput="save()"></textarea></div>
@@ -727,6 +761,28 @@ function fmtNum(n){
   return n+'€';
 }
 let toastT;
+function renderRelances(){
+  const el=document.getElementById('relances-panel');if(!el)return;
+  const todayStr=new Date().toISOString().slice(0,10);
+  const items=Object.entries(directData)
+    .filter(([,d])=>!d.archived&&d.next&&d.next<=todayStr)
+    .sort((a,b)=>a[1].next.localeCompare(b[1].next));
+  if(!items.length){el.innerHTML='<div class="rp-title">Relances</div><div class="rp-empty">Aucune relance pour aujourd\'hui</div>';return;}
+  let html='<div class="rp-title">Relances ('+items.length+')</div>';
+  items.forEach(([id,d])=>{
+    const isToday=d.next===todayStr;
+    const cls=isToday?'ri-today':'ri-overdue';
+    const lbl=isToday?'Aujourd\'hui':'En retard: '+d.next;
+    html+=`<div class="relance-item ${cls}" onclick="goTo('pipeline');setTimeout(()=>openDrawer('direct','${id}'),150)">
+      <span class="ri-dot"></span>
+      <span class="ri-name">${escH(d.societe)||'(sans nom)'}</span>
+      <span class="ri-note">${escH(d.nextNote)||escH(d.notesCRM)||''}</span>
+      <span class="ri-date">${lbl}</span>
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+
 function showToast(){const t=document.getElementById('toast');t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1600)}
 
 // ════════════════════════════════════════════════════
@@ -743,6 +799,7 @@ function goTo(id){
   if(id==='archives')renderArchives();
   if(id==='project')renderProject();
   if(id==='dealflow')loadDealsJson();
+  if(id==='today')renderRelances();
 }
 
 // ════════════════════════════════════════════════════
@@ -754,9 +811,12 @@ function renderStatsBar(){
   const active=nonArchived.filter(d=>!['No go','Abandonné'].includes(d.statutCRM));
   let totalCA=0; active.forEach(d=>totalCA+=parseCA(d.ca));
   const byCols=K_COLS.map((_,ci)=>nonArchived.filter(d=>d.col===ci).length);
+  const todayStr=new Date().toISOString().slice(0,10);
+  const relCount=active.filter(d=>d.next&&d.next<=todayStr).length;
   bar.innerHTML=`
     <div class="stat"><div class="stat-val">${active.length}</div><div class="stat-lbl">Deals actifs</div></div>
     <div class="stat"><div class="stat-val">${totalCA?fmtNum(totalCA):'—'}</div><div class="stat-lbl">CA pipeline</div></div>
+    ${relCount>0?`<div class="stat stat-rel"><div class="stat-val">${relCount}</div><div class="stat-lbl">Relances</div></div>`:''}
     ${K_COLS.map((col,ci)=>`<div class="stat"><div class="stat-val">${byCols[ci]}</div><div class="stat-lbl">${col}</div></div>`).join('')}
   `;
 }
@@ -764,7 +824,7 @@ function renderStatsBar(){
 // ════════════════════════════════════════════════════
 // DIRECT CARDS
 // ════════════════════════════════════════════════════
-function emptyD(){return{col:0,societe:'',contact:'',secteur:'',region:'',ca:'',ebitda:'',bfr:'',pax:'',premierContact:'',premierAppel:'',memo:'',financials:'',statutCRM:'À contacter',notesCRM:'',activities:[]}}
+function emptyD(){return{col:0,societe:'',contact:'',secteur:'',region:'',ca:'',ebitda:'',bfr:'',pax:'',premierContact:'',premierAppel:'',memo:'',financials:'',statutCRM:'À contacter',notesCRM:'',next:'',nextNote:'',activities:[]}}
 
 function buildDCard(id,d,ci){
   const el=document.createElement('div');
@@ -776,6 +836,15 @@ function buildDCard(id,d,ci){
     d.region ?`<span class="chip chip-green">${escH(d.region)}</span>`:'',
     d.ca     ?`<span class="chip chip-ca">CA: ${escH(d.ca)}</span>`:'',
   ].join('');
+  const today=new Date(); today.setHours(0,0,0,0);
+  let nextPill='';
+  if(d.next){
+    const nd=new Date(d.next); nd.setHours(0,0,0,0);
+    const diff=Math.round((nd-today)/(86400000));
+    if(diff<0)       nextPill=`<div class="next-pill next-overdue">&#9888; Relance: ${d.next}</div>`;
+    else if(diff===0)nextPill=`<div class="next-pill next-today">&#128197; Relance auj.</div>`;
+    else             nextPill=`<div class="next-pill next-future">&#128467; ${d.next}</div>`;
+  }
   const lA=ci>0              ?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',-1)">←</button>`:'';
   const rA=ci<K_COLS.length-1?`<button class="btn-mv" onclick="event.stopPropagation();moveDC('${id}',1)">→</button>`:'';
   el.innerHTML=`
@@ -785,6 +854,7 @@ function buildDCard(id,d,ci){
     </div>
     <div class="dc-contact">${escH(d.contact)||''}</div>
     <div class="dc-chips">${chips}<span class="crm-badge ${crmCls}">${escH(d.statutCRM)}</span></div>
+    ${nextPill}
     <div class="dc-footer">
       <span class="dc-age-label">${age.label}</span>
       <div class="dc-actions">
@@ -986,6 +1056,8 @@ function openDrawer(pipe,id){
     document.getElementById('dd-financials').value=d.financials||'';
     document.getElementById('dd-crm').value      =d.statutCRM||'À contacter';
     document.getElementById('dd-notes').value    =d.notesCRM||'';
+    document.getElementById('dd-next').value     =d.next||'';
+    document.getElementById('dd-nextnote').value =d.nextNote||'';
     document.getElementById('dh-direct-title').textContent=d.societe||'Nouvelle cible';
     document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' · ');
     actType='call';selectActType('call');
@@ -1033,6 +1105,8 @@ function syncD(){
   d.financials=document.getElementById('dd-financials').value;
   d.statutCRM=document.getElementById('dd-crm').value;
   d.notesCRM=document.getElementById('dd-notes').value;
+  d.next=document.getElementById('dd-next').value;
+  d.nextNote=document.getElementById('dd-nextnote').value;
   document.getElementById('dh-direct-title').textContent=d.societe||'Nouvelle cible';
   document.getElementById('dh-direct-sub').textContent=[d.contact,d.secteur].filter(Boolean).join(' · ');
   refreshDCard(id);renderStatsBar();save();
