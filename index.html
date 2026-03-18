@@ -550,6 +550,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <textarea class="fta" id="di-next" placeholder="Actions, relances…" oninput="syncI()"></textarea>
       </div>
     </div>
+    <!-- Journal indirect -->
+    <div><div class="dsec">Journal d'activités</div>
+      <div class="act-add-form">
+        <div class="act-types" id="ia-types-row">
+          <button class="act-type-btn active" id="iat-call"    onclick="selectIActType('call')">&#x1F4DE; Appel</button>
+          <button class="act-type-btn"        id="iat-email"   onclick="selectIActType('email')">&#x1F4E7; Email</button>
+          <button class="act-type-btn"        id="iat-meeting" onclick="selectIActType('meeting')">&#x1F4C5; RDV</button>
+          <button class="act-type-btn"        id="iat-note"    onclick="selectIActType('note')">&#x1F4DD; Note</button>
+        </div>
+        <div class="act-input-row">
+          <input class="act-ti" id="ia-input" placeholder="Résumé de l'activité…" onkeydown="if(event.key==='Enter')saveIActivity()"/>
+          <button class="act-save-btn" onclick="saveIActivity()">+ Log</button>
+        </div>
+      </div>
+      <div class="act-log" id="ia-log"></div>
+    </div>
   </div>
   <div class="df">
     <div class="df-mvs"><span style="font-size:11px;color:#aaa;margin-right:4px">Déplacer :</span><span id="df-mv-indirect"></span></div>
@@ -1034,6 +1050,36 @@ function renderActivityLog(id){
       </div>
     </div>`).join('');
 }
+let iActType='call';
+function selectIActType(t){
+  iActType=t;
+  ['call','email','meeting','note'].forEach(x=>{document.getElementById('iat-'+x)?.classList.remove('active')});
+  document.getElementById('iat-'+t)?.classList.add('active');
+}
+function saveIActivity(){
+  const id=activeCard.indirect;if(!id)return;
+  const d=indirectData[id];if(!d)return;
+  const text=document.getElementById('ia-input')?.value.trim();if(!text)return;
+  if(!d.activities)d.activities=[];
+  d.activities.unshift({type:iActType,text,ts:Date.now()});
+  document.getElementById('ia-input').value='';
+  renderIActivityLog(id);
+  save();showToast();
+}
+function renderIActivityLog(id){
+  const d=indirectData[id];
+  const log=document.getElementById('ia-log');if(!log)return;
+  const acts=d?.activities||[];
+  if(!acts.length){log.innerHTML='<div class="act-empty">Aucun échange — loggez votre premier contact</div>';return;}
+  log.innerHTML=acts.map(a=>`
+    <div class="act-entry">
+      <div class="act-icon">${ACT_ICONS[a.type]||'&#x1F4AC;'}</div>
+      <div class="act-body">
+        <div class="act-text">${escH(a.text)}</div>
+        <div class="act-date">${fmtTs(a.ts)}</div>
+      </div>
+    </div>`).join('');
+}
 
 // ════════════════════════════════════════════════════
 // DIRECT DRAWER
@@ -1077,6 +1123,7 @@ function openDrawer(pipe,id){
     const fn=[d.prenom,d.nom].filter(Boolean).join(' ');
     document.getElementById('dh-indirect-title').textContent=d.cabinet||'Nouveau contact';
     document.getElementById('dh-indirect-sub').textContent=[fn,d.loc].filter(Boolean).join(' · ');
+    iActType='call';selectIActType('call');renderIActivityLog(id);
     updateIMoveButtons(d.col);
   }
   document.getElementById('drawer-'+pipe).classList.add('open');
@@ -1149,7 +1196,7 @@ function updateIMoveButtons(ci){
 // ════════════════════════════════════════════════════
 // INDIRECT CONTACTS
 // ════════════════════════════════════════════════════
-function emptyI(){return{col:0,cabinet:'',prenom:'',nom:'',tel:'',email:'',loc:'',last:'',next:'',statut:'Prospect'}}
+function emptyI(){return{col:0,cabinet:'',prenom:'',nom:'',tel:'',email:'',loc:'',last:'',next:'',statut:'Prospect',activities:[]}}
 
 function addIndirectCard(ci,data){
   cardCtr++;
