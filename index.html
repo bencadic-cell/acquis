@@ -301,6 +301,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .deal-add-btn:hover{background:var(--acc2)}
 .deal-link-btn{font-size:11px;color:var(--acc);text-decoration:none;padding:3px 7px;border:1px solid #ddd;border-radius:5px}
 .deal-link-btn:hover{background:#f0f4ff}
+.deal-go-btn{background:#22c55e;color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:700;font-family:inherit;margin-left:4px}
+.deal-go-btn:hover{background:#16a34a}
+.deal-nogo-btn{background:#e5e7eb;color:#6b7280;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;font-family:inherit;margin-left:4px}
+.deal-nogo-btn:hover{background:#d1d5db;color:#374151}
+.df-vert-head{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;padding:10px 12px 6px;background:#f0f9ff;color:#0369a1;border-top:3px solid #0ea5e9;margin-top:4px}
 .df-new-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
 .df-empty{padding:60px 40px;text-align:center;color:#9ca3af}
 .df-empty-icon{font-size:36px;margin-bottom:12px}
@@ -683,7 +688,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="page" id="page-dealflow">
     <div class="ph">
       <h2>🔍 Deal Flow</h2>
-      <p>Opportunités détectées automatiquement — Petfood · Nutrition animale · Équin · NAC &nbsp;·&nbsp; <span id="df-last-upd" style="color:#9ca3af"></span></p>
+      <p>Opportunités détectées automatiquement — 🐾 Nutrition animale &nbsp;·&nbsp; 🚗 Pièces détachées auto &nbsp;·&nbsp; <span id="df-last-upd" style="color:#9ca3af"></span></p>
     </div>
     <div class="ph-divider"></div>
     <div class="df-toolbar">
@@ -696,6 +701,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <option>CRA</option>
         <option>CessionPME</option>
         <option>MaCession</option>
+      </select>
+      <select class="filter-select" id="df-vert" onchange="renderDealFlow()">
+        <option value="">Toutes les verticales</option>
+        <option>Nutrition animale</option>
+        <option>Pièces détachées auto</option>
       </select>
       <button class="proj-filter-btn" id="df-new-btn" onclick="toggleDfNew()" style="flex-shrink:0">🆕 Nouvelles</button>
       <span class="ct-count" id="df-count" style="margin-left:auto"></span>
@@ -1926,118 +1936,167 @@ function loadDealsJson(force=false){
     });
 }
 
-function renderDealFlow(){
-  const list=document.getElementById('df-list');if(!list)return;
-  const q=(document.getElementById('df-search')?.value||'').toLowerCase();
-  const src=document.getElementById('df-source')?.value||'';
-  const filtered=dealsData.filter(d=>{
-    if(src&&d.source!==src)return false;
-    if(dfNewOnly&&d.seen)return false;
-    if(q){const t=(d.title+' '+d.region+' '+d.description+' '+d.ca).toLowerCase();if(!t.includes(q))return false;}
-    return true;
-  });
-  const cnt=document.getElementById('df-count');
-  if(cnt)cnt.textContent=filtered.length+' deal'+(filtered.length!==1?'s':'');
-  if(!filtered.length){
-    list.innerHTML='<div class="df-empty"><div class="df-empty-icon">🔍</div><div class="df-empty-sub">'+(dealsData.length?'Aucun résultat pour ces filtres':'Aucun deal trouvé — lance le scraper depuis GitHub Actions')+'</div></div>';
+function renderDealFlow() {
+  const q = (document.getElementById('df-search')?.value || '').toLowerCase();
+  const srcF = document.getElementById('df-source')?.value || '';
+  const vertF = document.getElementById('df-vert')?.value || '';
+  const newOnly = document.getElementById('df-new-btn')?.classList.contains('active');
+  const el = document.getElementById('df-list');
+  if (!el) return;
+  if (!dealsData || !dealsData.length) {
+    el.innerHTML = '<div style="padding:40px;text-align:center;color:#9ca3af">Aucune opportunité chargée — cliquez sur 🔄 Actualiser</div>';
     return;
   }
-  const newDeals=filtered.filter(d=>!d.seen);
-  const seenDeals=filtered.filter(d=>d.seen);
-  const renderRow=d=>{
-    const [bg,fg]=(SRC_COLORS[d.source]||'#f3f4f6,#374151').split(',');
-    const added=localStorage.getItem('df_added_'+d.id);
-    return '<tr class="deal-row'+(d.seen?' df-seen':'')+'" onclick="markDealSeen(\''+d.id+'\')">'+
-      '<td style="width:14px">'+(d.seen?'':'<span class="df-new-dot"></span>')+'</td>'+
-      '<td><div class="irow-name">'+escH(d.title)+'</div>'+(d.description?'<div class="irow-sub" style="max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(d.description.substring(0,110))+'</div>':'')+'</td>'+
-      '<td><span class="deal-src-tag" style="background:'+bg+';color:'+fg+'">'+escH(d.source)+'</span></td>'+
-      '<td style="font-size:12px">'+escH(d.region||'—')+'</td>'+
-      '<td><span class="chip chip-ca">'+escH(d.ca)+'</span></td>'+
-      '<td style="font-size:11px;color:#9ca3af">'+escH(d.date_scraped||'')+'</td>'+
-      '<td style="white-space:nowrap">'+
-        (d.url?'<a class="deal-link-btn" href="'+escH(d.url)+'" target="_blank" onclick="event.stopPropagation()">🔗 Voir</a>':'')+
-        (!added?'<button class="deal-add-btn" onclick="event.stopPropagation();addDealToPipeline(\''+escH(d.id)+'\')">🎯 Pipeline</button>':'<span style="font-size:10px;color:#22c55e;font-weight:600;margin-left:6px">✓ Ajouté</span>')+
-      '</td>'+
-    '</tr>';
-  };
-  let html='<table class="df-table"><thead><tr><th></th><th>Société / Activité</th><th>Source</th><th>Région</th><th>CA estimé</th><th>Détecté</th><th></th></tr></thead><tbody>';
-  if(newDeals.length){html+='<tr><td colspan="7" class="df-group-head">🆕 Nouvelles — '+newDeals.length+'</td></tr>';newDeals.forEach(d=>{html+=renderRow(d);});}
-  if(seenDeals.length){html+='<tr><td colspan="7" class="df-group-head" style="color:#9ca3af">Vues — '+seenDeals.length+'</td></tr>';seenDeals.forEach(d=>{html+=renderRow(d);});}
-  html+='</tbody></table>';
-  list.innerHTML=html;
+
+  // Filter
+  let deals = dealsData.filter(d => {
+    const nogo = localStorage.getItem('df_nogo_' + d.id);
+    if (nogo) return false;
+    if (srcF && d.source !== srcF) return false;
+    if (vertF && (d.verticale || 'Nutrition animale') !== vertF) return false;
+    if (newOnly && d.seen) return false;
+    if (q) {
+      const hay = (d.title + ' ' + d.source + ' ' + (d.region || '') + ' ' + (d.description || '')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // Group by verticale, then new/seen within each
+  const VERT_ORDER = ['Nutrition animale', 'Pièces détachées auto'];
+  const VERT_ICONS = {'Nutrition animale': '🐾', 'Pièces détachées auto': '🚗'};
+
+  let html = '';
+  let totalShown = 0;
+
+  VERT_ORDER.forEach(vname => {
+    const vDeals = deals.filter(d => (d.verticale || 'Nutrition animale') === vname);
+    if (!vDeals.length) return;
+    const newD = vDeals.filter(d => !d.seen);
+    const seenD = vDeals.filter(d => d.seen);
+
+    html += '<div class="df-vert-head">' + (VERT_ICONS[vname] || '') + ' ' + vname + ' <span style="font-weight:400;opacity:.7">(' + vDeals.length + ' deals)</span></div>';
+
+    const renderGroup = (group, label) => {
+      if (!group.length) return '';
+      let out = '<div class="df-group-head">' + label + ' — ' + group.length + '</div>';
+      out += '<table class="df-table"><thead><tr>';
+      out += '<th>Société</th><th>Source</th><th>Région</th><th>CA</th><th>Actions</th>';
+      out += '</tr></thead><tbody>';
+      group.forEach(d => {
+        const added = localStorage.getItem('df_added_' + d.id);
+        const [bg, col] = SRC_COLORS[d.source] || ['#f3f4f6','#374151'];
+        out += '<tr' + (d.seen ? '' : ' style="font-weight:600"') + '>';
+        out += '<td><span class="df-new-dot" style="' + (d.seen ? 'display:none' : '') + '"></span>' + (d.title || '') + '<br><small style="color:#9ca3af;font-weight:400">' + (d.description || '').slice(0, 80) + '</small></td>';
+        out += '<td><span class="deal-src-tag" style="background:' + bg + ';color:' + col + '">' + d.source + '</span></td>';
+        out += '<td>' + (d.region || '—') + '</td>';
+        out += '<td>' + (d.ca || 'NC') + '</td>';
+        out += '<td style="white-space:nowrap">';
+        out += '<a class="deal-link-btn" href="' + d.url + '" target="_blank" onclick="markDealSeen('' + d.id + '')">🔗 Voir</a>';
+        if (added) {
+          out += '<span style="color:#22c55e;font-size:11px;margin-left:6px">✓ Pipeline</span>';
+        } else {
+          out += '<button class="deal-go-btn" onclick="goDeal('' + d.id + '')">GO →</button>';
+        }
+        out += '<button class="deal-nogo-btn" onclick="nogoDeal('' + d.id + '')">NOGO</button>';
+        out += '</td></tr>';
+      });
+      out += '</tbody></table>';
+      return out;
+    };
+
+    if (newD.length) html += renderGroup(newD, '🔔 Nouvelles');
+    if (seenD.length) html += renderGroup(seenD, '✓ Vues');
+    totalShown += vDeals.length;
+  });
+
+  // Any deals with unknown verticale
+  const unknownD = deals.filter(d => !VERT_ORDER.includes(d.verticale || 'Nutrition animale'));
+  if (unknownD.length) {
+    const renderGroup = (group, label) => {
+      if (!group.length) return '';
+      let out = '<div class="df-group-head">' + label + ' — ' + group.length + '</div>';
+      out += '<table class="df-table"><thead><tr>';
+      out += '<th>Société</th><th>Source</th><th>Région</th><th>CA</th><th>Actions</th>';
+      out += '</tr></thead><tbody>';
+      group.forEach(d => {
+        const added = localStorage.getItem('df_added_' + d.id);
+        const [bg, col] = SRC_COLORS[d.source] || ['#f3f4f6','#374151'];
+        out += '<tr>';
+        out += '<td>' + (d.title || '') + '</td>';
+        out += '<td><span class="deal-src-tag" style="background:' + bg + ';color:' + col + '">' + d.source + '</span></td>';
+        out += '<td>' + (d.region || '—') + '</td>';
+        out += '<td>' + (d.ca || 'NC') + '</td>';
+        out += '<td style="white-space:nowrap">';
+        out += '<a class="deal-link-btn" href="' + d.url + '" target="_blank">🔗 Voir</a>';
+        if (!added) out += '<button class="deal-go-btn" onclick="goDeal('' + d.id + '')">GO →</button>';
+        out += '<button class="deal-nogo-btn" onclick="nogoDeal('' + d.id + '')">NOGO</button>';
+        out += '</td></tr>';
+      });
+      out += '</tbody></table>';
+      return out;
+    };
+    html += '<div class="df-vert-head">❔ Autres (' + unknownD.length + ')</div>';
+    html += renderGroup(unknownD.filter(d=>!d.seen), '🔔 Nouvelles');
+    html += renderGroup(unknownD.filter(d=>d.seen), '✓ Vues');
+    totalShown += unknownD.length;
+  }
+
+  if (!totalShown) html = '<div style="padding:40px;text-align:center;color:#9ca3af">Aucun résultat</div>';
+
+  el.innerHTML = html;
+  const countEl = document.getElementById('df-count');
+  if (countEl) countEl.textContent = totalShown + ' deal' + (totalShown !== 1 ? 's' : '');
+  updateDealFlowBadge();
 }
 
-function markDealSeen(id){
-  const deal=dealsData.find(d=>d.id===id);
-  if(deal&&!deal.seen){deal.seen=true;renderDealFlow();updateDealFlowBadge();}
+function markDealSeen(id) {
+  const d = dealsData.find(x => x.id === id);
+  if (d) { d.seen = true; renderDealFlow(); updateDealFlowBadge(); }
 }
 
-function addDealToPipeline(id){
-  const deal=dealsData.find(d=>d.id===id);if(!deal)return;
-  const newCard={
-    societe:deal.title,
-    secteur:deal.source,
-    region:deal.region||'',
-    ca:deal.ca!=='NC'?deal.ca:'',
-    notesCRM:(deal.description||'')+(deal.url?'\n\nSource: '+deal.url:''),
-    statutCRM:'À contacter',
-    col:0
+function goDeal(id) {
+  const deal = dealsData.find(d => d.id === id);
+  if (!deal) return;
+  const newCard = {
+    societe: deal.title,
+    secteur: deal.source + (deal.verticale ? ' — ' + deal.verticale : ''),
+    region: deal.region || '',
+    ca: deal.ca !== 'NC' ? deal.ca : '',
+    notesCRM: (deal.description || '') + (deal.url ? '\n\nSource: ' + deal.url : ''),
+    statutCRM: 'À contacter', col: 0
   };
-  const cid=addDCard(0,newCard);
-  localStorage.setItem('df_added_'+id,'1');
+  const cid = addDCard(0, newCard);
+  localStorage.setItem('df_added_' + id, '1');
   markDealSeen(id);
-  setTimeout(()=>openDrawer('direct',cid),80);
+  setTimeout(() => openDrawer('direct', cid), 80);
   goTo('pipeline');
 }
 
-function updateDealFlowBadge(){
-  const unseen=dealsData.filter(d=>!d.seen).length;
-  const b=document.getElementById('badge-dealflow');
-  if(b){
-    b.textContent=unseen>0?unseen:'';
-    if(unseen>0){b.classList.add('badge-red');}else{b.classList.remove('badge-red');}
-  }
+// Keep legacy alias
+function addDealToPipeline(id) { goDeal(id); }
+
+function nogoDeal(id) {
+  localStorage.setItem('df_nogo_' + id, '1');
+  const d = dealsData.find(x => x.id === id);
+  if (d) d.seen = true;
+  renderDealFlow();
+  updateDealFlowBadge();
 }
 
-
-  // ===== EXPORT & AUTO-BACKUP =====
-  function exportCRM() {
-    var raw = localStorage.getItem('reprise_crm_v1');
-    if (!raw) { alert('Aucune donnée à exporter.'); return; }
-    var today = new Date().toISOString().slice(0,10);
-    var blob = new Blob([raw], {type:'application/json'});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'acquis-backup-' + today + '.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    localStorage.setItem('reprise_last_backup', today);
+function updateDealFlowBadge() {
+  const unseen = (dealsData || []).filter(d => {
+    if (localStorage.getItem('df_nogo_' + d.id)) return false;
+    return !d.seen;
+  }).length;
+  const badge = document.getElementById('nav-df-badge');
+  if (badge) {
+    badge.textContent = unseen > 0 ? unseen : '';
+    badge.style.display = unseen > 0 ? 'inline-flex' : 'none';
   }
-
-  function autoBackupIfNeeded() {
-    var today = new Date().toISOString().slice(0,10);
-    var last = localStorage.getItem('reprise_last_backup') || '';
-    if (last !== today) {
-      var raw = localStorage.getItem('reprise_crm_v1');
-      if (raw) {
-        var blob = new Blob([raw], {type:'application/json'});
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'acquis-backup-' + today + '.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        localStorage.setItem('reprise_last_backup', today);
-      }
-    }
-  }
-
-  window.addEventListener('load', function() { setTimeout(autoBackupIfNeeded, 2000); });
+  const btn = document.getElementById('df-new-btn');
+  if (btn) btn.textContent = '🆕 Nouvelles' + (unseen > 0 ? ' (' + unseen + ')' : '');
+}
 
 </script>
 </body>
