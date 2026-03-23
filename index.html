@@ -1937,117 +1937,54 @@ function loadDealsJson(force=false){
 }
 
 function renderDealFlow() {
-  const q = (document.getElementById('df-search')?.value || '').toLowerCase();
-  const srcF = document.getElementById('df-source')?.value || '';
-  const vertF = document.getElementById('df-vert')?.value || '';
-  const newOnly = document.getElementById('df-new-btn')?.classList.contains('active');
-  const el = document.getElementById('df-list');
-  if (!el) return;
-  if (!dealsData || !dealsData.length) {
-    el.innerHTML = '<div style="padding:40px;text-align:center;color:#9ca3af">Aucune opportunité chargée — cliquez sur 🔄 Actualiser</div>';
-    return;
+  const deals = JSON.parse(localStorage.getItem("dealflow") || "[]");
+  const seen = JSON.parse(localStorage.getItem("df_seen") || "[]");
+  const nogo = JSON.parse(localStorage.getItem("df_nogo") || "[]");
+  const fEl = document.getElementById("df-vert-filter");
+  const filterVert = fEl ? fEl.value : "";
+  const active = deals.filter(function(d) { return !nogo.includes(d.id); });
+  const filtered = filterVert ? active.filter(function(d) { return d.verticale === filterVert; }) : active;
+  const vertSet = {};
+  filtered.forEach(function(d) { var v = d.verticale || "Autre"; if(!vertSet[v]) vertSet[v]=[]; vertSet[v].push(d); });
+  const verts = Object.keys(vertSet);
+  if (verts.length === 0) {
+    document.getElementById("deal-flow-list").innerHTML = "<div style=\"padding:20px;text-align:center;color:#9ca3af\">Aucun deal actif</div>";
+    updateDealFlowBadge(); return;
   }
-
-  // Filter
-  let deals = dealsData.filter(d => {
-    const nogo = localStorage.getItem('df_nogo_' + d.id);
-    if (nogo) return false;
-    if (srcF && d.source !== srcF) return false;
-    if (vertF && (d.verticale || 'Nutrition animale') !== vertF) return false;
-    if (newOnly && d.seen) return false;
-    if (q) {
-      const hay = (d.title + ' ' + d.source + ' ' + (d.region || '') + ' ' + (d.description || '')).toLowerCase();
-      if (!hay.includes(q)) return false;
+  var h = "";
+  verts.forEach(function(vert) {
+    var vDeals = vertSet[vert];
+    var newDeals = vDeals.filter(function(d) { return !seen.includes(d.id); });
+    var seenDeals = vDeals.filter(function(d) { return seen.includes(d.id); });
+    h += "<div class=\"df-vert-head\">" + vert + "</div>";
+    if (newDeals.length > 0) {
+      h += "<div style=\"padding:4px 12px 2px;font-size:10px;color:#6b7280;font-weight:700;text-transform:uppercase\">Nouveaux (" + newDeals.length + ")</div>";
+      newDeals.forEach(function(d) { h += buildDealRow(d, false); });
     }
-    return true;
+    if (seenDeals.length > 0) {
+      h += "<div style=\"padding:4px 12px 2px;font-size:10px;color:#6b7280;font-weight:700;text-transform:uppercase\">Vus (" + seenDeals.length + ")</div>";
+      seenDeals.forEach(function(d) { h += buildDealRow(d, true); });
+    }
   });
-
-  // Group by verticale, then new/seen within each
-  const VERT_ORDER = ['Nutrition animale', 'Pièces détachées auto'];
-  const VERT_ICONS = {'Nutrition animale': '🐾', 'Pièces détachées auto': '🚗'};
-
-  let html = '';
-  let totalShown = 0;
-
-  VERT_ORDER.forEach(vname => {
-    const vDeals = deals.filter(d => (d.verticale || 'Nutrition animale') === vname);
-    if (!vDeals.length) return;
-    const newD = vDeals.filter(d => !d.seen);
-    const seenD = vDeals.filter(d => d.seen);
-
-    html += '<div class="df-vert-head">' + (VERT_ICONS[vname] || '') + ' ' + vname + ' <span style="font-weight:400;opacity:.7">(' + vDeals.length + ' deals)</span></div>';
-
-    const renderGroup = (group, label) => {
-      if (!group.length) return '';
-      let out = '<div class="df-group-head">' + label + ' — ' + group.length + '</div>';
-      out += '<table class="df-table"><thead><tr>';
-      out += '<th>Société</th><th>Source</th><th>Région</th><th>CA</th><th>Actions</th>';
-      out += '</tr></thead><tbody>';
-      group.forEach(d => {
-        const added = localStorage.getItem('df_added_' + d.id);
-        const [bg, col] = SRC_COLORS[d.source] || ['#f3f4f6','#374151'];
-        out += '<tr' + (d.seen ? '' : ' style="font-weight:600"') + '>';
-        out += '<td><span class="df-new-dot" style="' + (d.seen ? 'display:none' : '') + '"></span>' + (d.title || '') + '<br><small style="color:#9ca3af;font-weight:400">' + (d.description || '').slice(0, 80) + '</small></td>';
-        out += '<td><span class="deal-src-tag" style="background:' + bg + ';color:' + col + '">' + d.source + '</span></td>';
-        out += '<td>' + (d.region || '—') + '</td>';
-        out += '<td>' + (d.ca || 'NC') + '</td>';
-        out += '<td style="white-space:nowrap">';
-        out += '<a class="deal-link-btn" href="' + d.url + '" target="_blank" onclick="markDealSeen(this.dataset.id)" data-id="' + d.id + '">🔗 Voir</a>';
-        if (added) {
-          out += '<span style="color:#22c55e;font-size:11px;margin-left:6px">✓ Pipeline</span>';
-        } else {
-          out += '<button class="deal-go-btn" onclick="goDeal(this.dataset.id)" data-id="' + d.id + '">GO →</button>';
-        }
-        out += '<button class="deal-nogo-btn" onclick="nogoDeal(this.dataset.id)" data-id="' + d.id + '">NOGO</button>';
-        out += '</td></tr>';
-      });
-      out += '</tbody></table>';
-      return out;
-    };
-
-    if (newD.length) html += renderGroup(newD, '🔔 Nouvelles');
-    if (seenD.length) html += renderGroup(seenD, '✓ Vues');
-    totalShown += vDeals.length;
-  });
-
-  // Any deals with unknown verticale
-  const unknownD = deals.filter(d => !VERT_ORDER.includes(d.verticale || 'Nutrition animale'));
-  if (unknownD.length) {
-    const renderGroup = (group, label) => {
-      if (!group.length) return '';
-      let out = '<div class="df-group-head">' + label + ' — ' + group.length + '</div>';
-      out += '<table class="df-table"><thead><tr>';
-      out += '<th>Société</th><th>Source</th><th>Région</th><th>CA</th><th>Actions</th>';
-      out += '</tr></thead><tbody>';
-      group.forEach(d => {
-        const added = localStorage.getItem('df_added_' + d.id);
-        const [bg, col] = SRC_COLORS[d.source] || ['#f3f4f6','#374151'];
-        out += '<tr>';
-        out += '<td>' + (d.title || '') + '</td>';
-        out += '<td><span class="deal-src-tag" style="background:' + bg + ';color:' + col + '">' + d.source + '</span></td>';
-        out += '<td>' + (d.region || '—') + '</td>';
-        out += '<td>' + (d.ca || 'NC') + '</td>';
-        out += '<td style="white-space:nowrap">';
-        out += '<a class="deal-link-btn" href="' + d.url + '" target="_blank">🔗 Voir</a>';
-        if (!added) out += '<button class="deal-go-btn" onclick="goDeal(this.dataset.id)" data-id="' + d.id + '">GO →</button>';
-        out += '<button class="deal-nogo-btn" onclick="nogoDeal(this.dataset.id)" data-id="' + d.id + '">NOGO</button>';
-        out += '</td></tr>';
-      });
-      out += '</tbody></table>';
-      return out;
-    };
-    html += '<div class="df-vert-head">❔ Autres (' + unknownD.length + ')</div>';
-    html += renderGroup(unknownD.filter(d=>!d.seen), '🔔 Nouvelles');
-    html += renderGroup(unknownD.filter(d=>d.seen), '✓ Vues');
-    totalShown += unknownD.length;
-  }
-
-  if (!totalShown) html = '<div style="padding:40px;text-align:center;color:#9ca3af">Aucun résultat</div>';
-
-  el.innerHTML = html;
-  const countEl = document.getElementById('df-count');
-  if (countEl) countEl.textContent = totalShown + ' deal' + (totalShown !== 1 ? 's' : '');
+  document.getElementById("deal-flow-list").innerHTML = h;
   updateDealFlowBadge();
+}
+
+function buildDealRow(d, isSeen) {
+  var op = isSeen ? "0.65" : "1";
+  var r = "<div class=\"deal-item\" data-id=\"" + d.id + "\" style=\"opacity:" + op + "\">";
+  r += "<div class=\"deal-item-header\">";
+  r += "<span class=\"deal-source\">" + (d.source || "") + "</span>";
+  r += "<span class=\"deal-ca\">" + (d.ca_display || "") + "</span>";
+  r += "</div>";
+  r += "<div class=\"deal-title\">" + (d.title || "") + "</div>";
+  if (d.location) r += "<div class=\"deal-location\">📍 " + d.location + "</div>";
+  r += "<div class=\"deal-actions\">";
+  r += "<a class=\"deal-link-btn\" href=\"" + (d.url || "#") + "\" target=\"_blank\" onclick=\"markDealSeen(\x27" + d.id + "\x27)\">Voir</a>";
+  r += "<button class=\"deal-go-btn\" data-id=\"" + d.id + "\" onclick=\"goDeal(this.dataset.id)\">GO</button>";
+  r += "<button class=\"deal-nogo-btn\" data-id=\"" + d.id + "\" onclick=\"nogoDeal(this.dataset.id)\">NOGO</button>";
+  r += "</div></div>";
+  return r;
 }
 
 function markDealSeen(id) {
