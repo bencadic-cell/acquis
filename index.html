@@ -1992,13 +1992,13 @@ function renderDealFlow() {
         out += '<td>' + (d.region || '—') + '</td>';
         out += '<td>' + (d.ca || 'NC') + '</td>';
         out += '<td style="white-space:nowrap">';
-        out += '<a class="deal-link-btn" href="' + d.url + '" target="_blank" onclick="markDealSeen('' + d.id + '')">🔗 Voir</a>';
+        out += '<a class="deal-link-btn" href="' + d.url + '" target="_blank" onclick="markDealSeen(\'' + d.id + \'')">🔗 Voir</a>';
         if (added) {
           out += '<span style="color:#22c55e;font-size:11px;margin-left:6px">✓ Pipeline</span>';
         } else {
-          out += '<button class="deal-go-btn" onclick="goDeal('' + d.id + '')">GO →</button>';
+          out += '<button class="deal-go-btn" onclick="goDeal(\'' + d.id + \'')">GO →</button>';
         }
-        out += '<button class="deal-nogo-btn" onclick="nogoDeal('' + d.id + '')">NOGO</button>';
+        out += '<button class="deal-nogo-btn" onclick="nogoDeal(\'' + d.id + \'')">NOGO</button>';
         out += '</td></tr>';
       });
       out += '</tbody></table>';
@@ -2029,8 +2029,8 @@ function renderDealFlow() {
         out += '<td>' + (d.ca || 'NC') + '</td>';
         out += '<td style="white-space:nowrap">';
         out += '<a class="deal-link-btn" href="' + d.url + '" target="_blank">🔗 Voir</a>';
-        if (!added) out += '<button class="deal-go-btn" onclick="goDeal('' + d.id + '')">GO →</button>';
-        out += '<button class="deal-nogo-btn" onclick="nogoDeal('' + d.id + '')">NOGO</button>';
+        if (!added) out += '<button class="deal-go-btn" onclick="goDeal(\'' + d.id + \'')">GO →</button>';
+        out += '<button class="deal-nogo-btn" onclick="nogoDeal(\'' + d.id + \'')">NOGO</button>';
         out += '</td></tr>';
       });
       out += '</tbody></table>';
