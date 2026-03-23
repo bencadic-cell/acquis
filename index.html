@@ -1976,7 +1976,7 @@ function buildDealRow(d) {
   var r = "<div class=\"deal-item\" data-id=\"" + d.id + "\" style=\"opacity:" + op + "\">";
   r += "<div class=\"deal-item-header\">";
   r += "<span class=\"deal-source\">" + (d.source||"") + "</span>";
-  r += "<span class=\"deal-ca\">" + (d.ca_display||d.ca||"") + "</span>";
+  if (d.ca_display||d.ca) r += "<span style=\"margin:0 4px;color:#d1d5db\">·</span><span class=\"deal-ca\">" + (d.ca_display||d.ca) + "</span>";
   r += "</div>";
   r += "<div class=\"deal-title\">" + (d.title||"") + "</div>";
   if (d.region||d.location) r += "<div class=\"deal-location\">📍 " + (d.region||d.location) + "</div>";
