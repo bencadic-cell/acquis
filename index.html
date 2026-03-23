@@ -1938,7 +1938,7 @@ function loadDealsJson(force=false){
 
 function renderDealFlow() {
   var LS = window["local"+"Storage"];
-  var allDeals = window.dealsData || [];
+  var allDeals = dealsData || [];
   var active = allDeals.filter(function(d) { return !LS.getItem("df_nogo_" + d.id); });
   var fEl = document.getElementById("df-vert-filter");
   var filterVert = fEl ? fEl.value : "";
