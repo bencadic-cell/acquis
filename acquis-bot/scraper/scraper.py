@@ -20,36 +20,99 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-# ─── Target Criteria ───────────────────────────────────────────────────────────
+# ─── Verticales & Target Criteria ─────────────────────────────────────
 
-# Tier 1 — strong signal: title MUST contain at least one of these
-SECTOR_KEYWORDS_TITLE = [
-    "petfood", "pet food",
-    "alimentation animale", "nutrition animale", "aliment animal", "aliments animaux",
-    "nourriture animale", "nourriture pour animaux",
-    "croquettes", "pâtée",
-    "ruminant", "bovin", "ovin", "caprin", "volaille", "volailles", "aviculture",
-    "provenderie", "fabrication aliments", "aliments du bétail",
-    "nac", "nouveaux animaux de compagnie", "reptile", "aquariophilie",
-    "équin", "équine", "équitation", "cheval", "chevaux", "hippique",
-    "nutrition équine", "aliment cheval",
-    "animalerie", "jardinerie animalerie",
-    "élevage porcin", "porcin", "porc",
-    "friandise",  # friandises pour animaux
-    "snack chien", "snack chat",
-]
+VERTICALES = {
+    "Nutrition animale": {
+        "keywords_title": [
+            "petfood", "pet food",
+            "alimentation animale", "nutrition animale", "aliment animal", "aliments animaux",
+            "nourriture animale", "nourriture pour animaux",
+            "croquettes", "pâtée",
+            "ruminant", "bovin", "ovin", "caprin", "volaille", "volailles", "aviculture",
+            "provenderie", "fabrication aliments", "aliments du bétail",
+            "nac", "nouveaux animaux de compagnie", "reptile", "aquariophilie",
+            "équin", "équine", "équitation", "cheval", "chevaux", "hippique",
+            "nutrition équine", "aliment cheval",
+            "animalerie", "jardinerie animalerie",
+            "élevage porcin", "porcin", "porc",
+            "friandise", "snack chien", "snack chat",
+        ],
+        "keywords_broad": [
+            "petfood", "pet food",
+            "alimentation animale", "nutrition animale", "aliment animal", "aliments animaux",
+            "nourriture animale", "croquettes", "pâtée",
+            "ruminant", "bovin", "ovin", "caprin", "volaille", "volailles", "aviculture",
+            "provenderie", "fabrication aliments", "aliments du bétail",
+            "nac", "nouveaux animaux de compagnie", "reptile", "aquariophilie",
+            "équin", "équine", "équitation", "cheval", "chevaux", "hippique",
+            "nutrition équine", "aliment cheval",
+            "animalerie", "jardinerie animalerie",
+            "élevage porcin", "porcin", "porc", "friandise",
+            "élevage", "vétérinaire", "aquaculture", "apiculture",
+            "bétail", "fourrage", "foin", "insecte", "larve", "ver de farine",
+            "jardinerie",
+        ],
+        "ca_min": 300_000,
+        "ca_max": 7_000_000,
+        "bpi_configs": [
+            ("production", "alimentation animale"),
+            ("production", "petfood"),
+            ("production", "nutrition animale"),
+            ("production", "volailles"),
+            ("production", "élevage"),
+            ("production", "provenderie"),
+            ("production", "équin"),
+            ("commerce",   "animalerie"),
+            ("commerce",   "alimentation animale"),
+        ],
+        "bpi_sectors": [],
+        "fusacq_kw": [
+            "petfood", "alimentation animale", "cheval", "élevage",
+            "animalerie", "provenderie", "nutrition animale", "équin",
+            "volailles", "friandise",
+        ],
+        "cra_naf": ["422", "424", "430", "621", "623", "628", "705"],
+    },
+    "Pièces détachées auto": {
+        "keywords_title": [
+            "pièces détachées", "pièces auto", "pièces automobiles",
+            "équipement automobile", "équipements automobiles",
+            "accessoires auto", "accessoires automobile",
+            "rechange auto", "pièces de rechange",
+            "carrosserie", "pneumatique", "pneu",
+            "mécanique auto", "entretien auto",
+            "démontage auto", "épaviste",
+            "distributeur auto", "grossiste auto", "fournitures auto",
+        ],
+        "keywords_broad": [
+            "pièces détachées", "pièces auto", "pièces automobiles",
+            "équipement automobile", "équipements automobiles",
+            "accessoires auto", "rechange auto",
+            "carrosserie", "pneumatique", "pneu",
+            "mécanique auto", "démontage auto",
+            "distributeur auto", "grossiste auto", "automobile",
+        ],
+        "ca_min": 300_000,
+        "ca_max": 7_000_000,
+        "bpi_configs": [
+            ("commerce", "pièces détachées automobile"),
+            ("commerce", "pièces auto"),
+            ("production", "équipement automobile"),
+        ],
+        "bpi_sectors": ["24B"],
+        "fusacq_kw": [
+            "pièces détachées", "pièces auto",
+            "équipement automobile", "accessoires auto",
+            "rechange auto", "pneumatique", "carrosserie",
+        ],
+        "cra_naf": ["453", "293", "383"],
+    },
+}
 
-# Tier 2 — broader, checked in title+description (animal-specific only, no generic food terms)
-SECTOR_KEYWORDS_BROAD = SECTOR_KEYWORDS_TITLE + [
-    "élevage",              # animal farming context
-    "produits vétérinaires", "vétérinaire", "soins animaux", "accessoires animaux",
-    "bien-être animal", "bienêtre animal",
-    "aquaculture", "pisciculture",
-    "apiculture", "ruche",
-]
-
-CA_MIN = 300_000    # légèrement sous 500K pour ne pas rater les borderlines
-CA_MAX = 7_000_000  # légèrement au-dessus de 5M
+# Back-compat constants
+CA_MIN = 300_000
+CA_MAX = 7_000_000
 
 MAX_AGE_DAYS = 62   # ~2 mois
 
@@ -81,16 +144,25 @@ def normalize(text: str) -> str:
     return " ".join(text.lower().split())
 
 
+def detect_verticale(title: str, desc: str) -> Optional[str]:
+    """Returns the first matching verticale name, or None."""
+    n_title = normalize(title)
+    n_both = normalize(f"{title} {desc}")
+    for vname, vert in VERTICALES.items():
+        if any(kw in n_title for kw in vert["keywords_title"]):
+            return vname
+        if any(kw in n_both for kw in vert["keywords_broad"]):
+            return vname
+    return None
+
+
+# Back-compat shims
 def matches_sector_strict(title: str) -> bool:
-    """Title must contain a strong sector keyword."""
-    n = normalize(title)
-    return any(kw in n for kw in SECTOR_KEYWORDS_TITLE)
+    return detect_verticale(title, "") is not None
 
 
 def matches_sector_broad(title: str, desc: str) -> bool:
-    """Title OR description contains a sector keyword."""
-    n = normalize(f"{title} {desc}")
-    return any(kw in n for kw in SECTOR_KEYWORDS_BROAD)
+    return detect_verticale(title, desc) is not None
 
 
 def parse_ca(text: str) -> Optional[int]:
@@ -183,7 +255,7 @@ def save_deals(deals_by_id: dict):
     print(f"\n✓ deals.json updated — {len(deals_list)} total deals")
 
 
-def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="") -> dict:
+def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="", verticale="") -> dict:
     ca_val = parse_ca(ca_text + " " + desc)
     return {
         "id": deal_id(url, title),
@@ -198,6 +270,7 @@ def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="") -
         "date_scraped": datetime.utcnow().date().isoformat(),
         "seen": False,
         "added_to_crm": False,
+        "verticale": verticale or list(VERTICALES.keys())[0],
     }
 
 
@@ -282,10 +355,10 @@ def scrape_transentreprise(existing: dict, session: requests.Session) -> list:
             if not title or len(title) < 5:
                 continue
 
-            # Strict: title must match a sector keyword
-            if not matches_sector_strict(title):
-                if not matches_sector_broad(title, desc):
-                    continue
+            # Match verticale: title or description must contain sector keywords
+            vert_name = detect_verticale(title, desc)
+            if not vert_name:
+                continue
 
             if not ca_in_range(parse_ca(ca_txt + " " + desc)):
                 continue
@@ -296,7 +369,7 @@ def scrape_transentreprise(existing: dict, session: requests.Session) -> list:
 
             seen_ids.add(did)
             deal = make_deal(title, href or search_url, "Transentreprise",
-                             region, ca_txt, desc, date_pub)
+                             region, ca_txt, desc, date_pub, vert_name)
             new_deals.append(deal)
             print(f"    ✚ {title[:65]}")
 
@@ -317,21 +390,21 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
     base = "https://reprise-entreprise.bpifrance.fr"
     seen_ids = set()
 
-    search_configs = [
-        ("production", "alimentation animale"),
-        ("production", "petfood"),
-        ("production", "nutrition animale"),
-        ("production", "volailles"),
-        ("production", "élevage"),
-        ("production", "provenderie"),
-        ("production", "équin"),
-        ("commerce",   "animalerie"),
-        ("commerce",   "alimentation animale"),
-    ]
+    # Build search configs from all verticales: (section, kw, sector_code, vert_hint)
+    search_configs = []
+    for vname, vert in VERTICALES.items():
+        for section, kw in vert["bpi_configs"]:
+            search_configs.append((section, kw, None, vname))
+        for code in vert["bpi_sectors"]:
+            search_configs.append(("commerce", None, code, vname))
 
-    for section, kw in search_configs:
-        url = f"{base}/{section}?searchText={requests.utils.quote(kw)}"
-        print(f"    🔍 BPI {section}: {kw}")
+    for section, kw, sector_code, vert_hint in search_configs:
+        if sector_code:
+            url = f"{base}/commerce?secteur_activite={sector_code}"
+            print(f"    🔍 BPI secteur {sector_code} ({vert_hint})")
+        else:
+            url = f"{base}/{section}?searchText={requests.utils.quote(kw)}"
+            print(f"    🔍 BPI {section}: {kw} ({vert_hint})")
         soup = get_soup(session, url)
         if not soup:
             time.sleep(2)
@@ -390,9 +463,7 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
 
             if not title or len(title) < 5:
                 continue
-            if not matches_sector_strict(title):
-                if not matches_sector_broad(title, desc):
-                    continue
+            vert_name = detect_verticale(title, desc) or vert_hint
             if not ca_in_range(parse_ca(ca_txt + " " + desc)):
                 continue
 
@@ -402,7 +473,7 @@ def scrape_bpi(existing: dict, session: requests.Session) -> list:
 
             seen_ids.add(did)
             deal = make_deal(title, href or url, "BPI France",
-                             region, ca_txt, desc, date_pub)
+                             region, ca_txt, desc, date_pub, vert_name)
             new_deals.append(deal)
             print(f"    ✚ {title[:65]}")
 
@@ -425,18 +496,11 @@ def scrape_fusacq(existing: dict, session: requests.Session) -> list:
     new_deals = []
     seen_ids = set()
 
-    keywords = [
-        "petfood",
-        "alimentation animale",
-        "cheval",
-        "élevage",
-        "animalerie",
-        "provenderie",
-        "nutrition animale",
-        "équin",
-        "volailles",
-        "friandise",
-    ]
+    keywords = []
+    for _vname, _vert in VERTICALES.items():
+        for _kw in _vert["fusacq_kw"]:
+            if _kw not in keywords:
+                keywords.append(_kw)
 
     for kw in keywords:
         print(f"    🔍 Fusacq: {kw}")
@@ -491,16 +555,16 @@ def scrape_fusacq(existing: dict, session: requests.Session) -> list:
                     continue
 
                 desc = card.get_text(separator=" ", strip=True)[:400]
-                if not matches_sector_strict(title):
-                    if not matches_sector_broad(title, desc):
-                        continue
+                vert_name = detect_verticale(title, desc)
+                if not vert_name:
+                    continue
 
                 did = deal_id(href, title)
                 if did in existing or did in seen_ids:
                     continue
 
                 seen_ids.add(did)
-                deal = make_deal(title, href, "Fusacq", region, ca_txt, desc, date_pub)
+                deal = make_deal(title, href, "Fusacq", region, ca_txt, desc, date_pub, vert_name)
                 new_deals.append(deal)
                 print(f"    ✚ {title[:65]}")
                 found_new = True
@@ -525,7 +589,9 @@ def scrape_cra(existing: dict, session: requests.Session) -> list:
     # NAF codes: 422=prod.animale  424=aquaculture  430=ind.alim
     #            621=aliments betail  623=animaux vivants  628=volailles
     #            705=animalerie + aliments animaux compagnie
-    fact_codes = ["422", "424", "430", "621", "623", "628", "705"]
+    fact_codes = list(dict.fromkeys(
+        code for vert in VERTICALES.values() for code in vert["cra_naf"]
+    ))
     ca_codes = ["1", "2", "3", "4"]
     new_deals = []
     seen_ids = set()
@@ -576,16 +642,16 @@ def scrape_cra(existing: dict, session: requests.Session) -> list:
                 continue
 
             desc = card.get_text(separator=" ", strip=True)[:400]
-            if not matches_sector_strict(title):
-                if not matches_sector_broad(title, desc):
-                    continue
+            vert_name = detect_verticale(title, desc)
+            if not vert_name:
+                continue
 
             did = deal_id(href or title, title)
             if did in existing or did in seen_ids:
                 continue
 
             seen_ids.add(did)
-            deal = make_deal(title, href or url, "CRA", region, ca_txt, desc, "")
+            deal = make_deal(title, href or url, "CRA", region, ca_txt, desc, "", vert_name)
             new_deals.append(deal)
             print(f"    ✚ {title[:65]}")
 
@@ -603,7 +669,7 @@ def main():
 
     print(f"\n{'='*65}")
     print(f"  🔍 Acquis Deal Flow Scraper v2.3 — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
-    print(f"  Sectors: petfood | nutrition animale | équin | NAC | volailles")
+    print(f"  Verticales: {', '.join(VERTICALES.keys())}")
     print(f"  CA range: {CA_MIN//1000}K€ — {CA_MAX//1_000_000}M€")
     print(f"  Deals file: {DEALS_FILE}")
     print(f"{'='*65}\n")
