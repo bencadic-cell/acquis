@@ -2368,11 +2368,12 @@ function radarUpdateStats(){
     '<div class="radar-stat"><div class="radar-stat-val" style="color:#fbbf24">'+_radarFiltered.length+'</div><div class="radar-stat-lbl">Affichés</div></div>';
 }
 
-async function radarFetchPage(where,offset,total){
+async function radarFetchPage(where,offset,total,kw){
   var url='https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records'+
     '?where='+encodeURIComponent(where)+
-    '&select=idweb,objet,dateparution,datelimitereponse,nomacheteur,famille_libelle,descripteur_libelle,url_avis,nature_libelle,code_departement'+
-    '&order_by=datelimitereponse+ASC&limit=100&offset='+offset;
+    '&select=idweb,objet,dateparution,datelimitereponse,nomacheteur,famille_libelle,descripteur_libelle,nature_libelle,url_avis,code_departement'+
+    (kw?'&q='+encodeURIComponent(kw):'')+
+    '&order_by=datelimitereponse ASC&limit=100&offset='+offset;
   radarLog('Chargement offset '+offset+(total?' / ~'+total:'')+'...');
   var resp=await fetch(url);
   if(!resp.ok)throw new Error('HTTP '+resp.status);
@@ -2391,40 +2392,41 @@ async function radarStartScan(){
     var fut=new Date();fut.setMonth(fut.getMonth()+12);
     var futStr=fut.toISOString().split('T')[0];
     var where='datelimitereponse >= "'+today+'" AND datelimitereponse <= "'+futStr+'"';
-    var deptInput=((document.getElementById('radar-dept-filter')||{}).value||'').trim();
+    var deptInput=((document.getElementById('radar-dept-filter')||{}).value||''). trim();
     if(deptInput){
       var depts=deptInput.split(/[,;\s]+/).map(function(d){return d.trim();}).filter(Boolean);
-      if(depts.length){where+=' AND ('+depts.map(function(d){return 'code_departement="'+d+'"';}).join(' OR ')+')';}
+      if(depts.length){where+=' AND ('+depts.map(function(d){return 'code_departement="'+d+'"';}). join(' OR ')+')';}  
     }
-    radarLog('Requête: '+where);
-    var first=await radarFetchPage(where,0,null);
+    var kw=((document.getElementById('radar-search')||{}).value||''). trim();
+    radarLog('Requ\u00eate: '+where+(kw?' | Mot-cl\u00e9 API: "'+kw+'"':''));
+    var first=await radarFetchPage(where,0,null,kw);
     var total=first.total_count||0;
-    radarLog('Total AOs disponibles: '+total);
+    var MAX=Math.min(total,3000);
+    radarLog('Total AOs disponibles: '+total+(total>MAX?' (chargement limit\u00e9 \u00e0 '+MAX+')':''));
     var records=first.results||[];
     records.forEach(function(ao){
       ao._vert=radarDetectVert(ao);ao._signals=radarDetectSignals(ao);ao._score=radarScore(ao);
       _radarData.push(ao);
     });
-    var MAX=600;var fetched=records.length;
+    var fetched=records.length;
     while(fetched<Math.min(total,MAX)){
-      var page=await radarFetchPage(where,fetched,total);
+      var page=await radarFetchPage(where,fetched,total,kw);
       var recs=page.results||[];if(!recs.length)break;
       recs.forEach(function(ao){
         ao._vert=radarDetectVert(ao);ao._signals=radarDetectSignals(ao);ao._score=radarScore(ao);
         _radarData.push(ao);
       });
       fetched+=recs.length;
-      radarLog('Chargés: '+fetched+' / '+Math.min(total,MAX));
+      radarLog('Charg\u00e9s: '+fetched+' / '+Math.min(total,MAX));
     }
     _radarData.sort(function(a,b){return b._score-a._score;});
-    radarLog('✅ Scan terminé — '+_radarData.length+' AOs');
-  }catch(e){radarLog('❌ Erreur: '+e.message);}
+    radarLog('\u2705 Scan termin\u00e9 \u2014 '+_radarData.length+' AOs'+(total>_radarData.length?' (sur '+total+' disponibles)':''));
+  }catch(e){radarLog('\u274c Erreur: '+e.message);}
   _radarScanning=false;
   document.getElementById('radar-scan-btn').disabled=false;
   radarApplyFilters();radarUpdateStats();
 }
-
-// ═══ AO PIPELINE MODULE ═══
+═══ AO PIPELINE MODULE ═══
 var _aoModalAO=null;
 var AO_STAGES=[
   {key:'analyse',label:'🔍 Analyse',color:'#1e40af'},
