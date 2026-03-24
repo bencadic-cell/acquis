@@ -1,8 +1,23 @@
 {
-  "last_updated": "2026-03-23T10:17:32Z",
-  "count": 31,
-  "new_today": 25,
+  "last_updated": "2026-03-24T09:44:39Z",
+  "count": 32,
+  "new_today": 1,
   "deals": [
+    {
+      "id": "29fa39ea7026",
+      "title": "GARAGE AUTOMOBILE COMPLETPays Haut Limousin (87)",
+      "url": "https://www.transentreprise.com/offres/fiche/NAQ263839C/garage-automobile-complet/nouvelle-aquitaine/haute-vienne/pays-haut-limousin",
+      "source": "Transentreprise",
+      "region": "Prix :350 000 €",
+      "ca": "de 1,5 à 3 M€",
+      "ca_value": 3000000,
+      "description": "NAQ263839C GARAGE AUTOMOBILE COMPLET Pays Haut Limousin (87) Prix : 350 000 € C.A. : de 1,5 à 3 M€ Effectif : 6 à 9",
+      "date_pub": "",
+      "date_scraped": "2026-03-24",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Pièces détachées auto"
+    },
     {
       "id": "0883ccc73960",
       "title": "",
