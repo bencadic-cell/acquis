@@ -386,6 +386,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 #radar-pagination button.active{background:#1a6641;color:#fff;border-color:#1a6641}
 .radar-apikey-row{display:flex;gap:8px;align-items:center;margin-top:6px;font-size:11px;color:#64748b}
 
+
+/* ── AO PIPELINE + MODAL ── */
+
+#page-ao-pipeline{overflow-y:auto!important}
+.aopipe-wrap{padding:16px;max-width:1200px;margin:0 auto}
+.aopipe-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.aopipe-kanban{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;min-height:200px}
+.aopipe-col{flex:0 0 200px;background:#071810;border:1px solid #1a3a1a;border-radius:8px;padding:8px}
+.aopipe-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:4px 0 8px;border-bottom:1px solid #1a3a1a;margin-bottom:8px;white-space:nowrap}
+.aopipe-card{background:#0d1e15;border:1px solid #1a3a1a;border-radius:6px;padding:8px;margin-bottom:6px;cursor:pointer;transition:border-color .15s}
+.aopipe-card:hover{border-color:#2a6641}
+.aopipe-card-title{font-size:11px;font-weight:600;color:#e2e8f0;margin-bottom:4px;line-height:1.35}
+.aopipe-card-meta{font-size:10px;color:#64748b;line-height:1.5}
+.aopipe-card-progress{margin-top:5px;height:4px;background:#1a3a1a;border-radius:2px}
+.aopipe-card-progress-bar{height:100%;background:#2a8041;border-radius:2px}
+.aopipe-empty{color:#334155;font-size:10px;text-align:center;padding:10px 4px;font-style:italic}
+.ao-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;display:none;align-items:center;justify-content:center;padding:10px}
+.ao-modal{background:#071810;border:1px solid #2a4e3d;border-radius:12px;width:min(860px,100%);max-height:92vh;overflow-y:auto}
+.ao-modal-head{padding:16px 20px 12px;border-bottom:1px solid #1a3a1a;display:flex;align-items:flex-start;gap:12px;position:sticky;top:0;background:#071810;z-index:1}
+.ao-modal-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:600px){.ao-modal-body{grid-template-columns:1fr}}
+.ao-modal-left,.ao-modal-right{padding:16px 20px}
+.ao-modal-left{border-right:1px solid #1a3a1a}
+.ao-modal-foot{padding:12px 20px;border-top:1px solid #1a3a1a;display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:#071810}
+.ao-stitle{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4ade80;margin:0 0 8px}
+.ao-checklist-item{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px;font-size:12px;color:#cbd5e1;cursor:pointer;user-select:none;line-height:1.35}
+.ao-checklist-item input[type=checkbox]{width:13px;height:13px;accent-color:#2a8041;flex-shrink:0;margin-top:2px}
+.ao-checklist-item.done span{color:#475569;text-decoration:line-through}
+.ao-form-row{margin-bottom:9px}
+.ao-form-row label{font-size:10px;color:#64748b;display:block;margin-bottom:2px}
+.ao-form-row input,.ao-form-row textarea{width:100%;background:#040f09;border:1px solid #1a3a1a;border-radius:5px;color:#e2e8f0;padding:5px 8px;font-size:12px;box-sizing:border-box}
+.ao-form-row textarea{height:60px;resize:none}
+.ao-renta-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.ao-renta-box{background:#040f09;border:1px solid #1a3a1a;border-radius:6px;padding:8px;text-align:center;margin-top:6px}
+.ao-renta-box .rv{font-size:17px;font-weight:700;color:#4ade80}
+.ao-renta-box .rl{font-size:9px;color:#64748b;margin-top:1px}
+.btn-ao-confirm{background:#16a34a;color:#fff;border:none;border-radius:6px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-ao-confirm:hover{background:#15803d}
+.btn-ao-cancel{background:#0d1e15;color:#94a3b8;border:1px solid #1a3a1a;border-radius:6px;padding:8px 14px;font-size:12px;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -439,6 +479,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="sb-item" id="nav-radar" onclick="goTo('radar')">
     📡 Radar AO
     <span class="sb-badge" id="badge-radar"></span>
+  </div>
+  <div class="sb-item" id="nav-ao-pipeline" onclick="goTo('ao-pipeline')">
+    📋 AO Pipeline
+    <span class="sb-badge" id="badge-ao-pipeline" style="display:none"></span>
   </div>
   <div class="sb-divider"></div>
   <div class="sb-item" id="nav-archives" onclick="goTo('archives')">
@@ -817,6 +861,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+
+<!-- AO PIPELINE PAGE -->
+<div class="page" id="page-ao-pipeline">
+  <div class="aopipe-wrap">
+    <div class="aopipe-header">
+      <h2 style="font-size:18px;font-weight:700;color:#e2e8f0;margin:0">📋 Pipeline Appels d’Offres</h2>
+      <button onclick="aoPipelineClear()" style="margin-left:auto;background:#0d1e15;border:1px solid #1a3a1a;color:#64748b;border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer">🧹 Retirer gagnés/perdus</button>
+    </div>
+    <div class="aopipe-kanban" id="aopipe-kanban"><div class="aopipe-empty" style="width:100%;color:#334155;font-size:12px">Aucun AO dans le pipeline. Utilisez "GO Pipeline" depuis le Radar AO pour ajouter des déals.</div></div>
+  </div>
+</div>
+
+<!-- AO MODAL -->
+<div class="ao-modal-overlay" id="ao-modal-overlay" onclick="if(event.target===this)aoModalClose()">
+  <div class="ao-modal" onclick="event.stopPropagation()">
+    <div class="ao-modal-head" id="ao-modal-head"></div>
+    <div class="ao-modal-body">
+      <div class="ao-modal-left" id="ao-modal-left"></div>
+      <div class="ao-modal-right" id="ao-modal-right"></div>
+    </div>
+    <div class="ao-modal-foot">
+      <button class="btn-ao-cancel" onclick="aoModalClose()">Annuler</button>
+      <button class="btn-ao-confirm" onclick="aoModalConfirm()">✅ Ajouter au Pipeline</button>
+    </div>
+  </div>
+</div>
+
 <!-- ARCHIVES PAGE -->
   <div class="page" id="page-archives">
     <div class="ph"><h2>📦 Archives</h2><p>Contacts et cibles clôturés — plus rien à en tirer</p></div>
@@ -927,6 +998,7 @@ function goTo(id){
   if(id==='project')renderProject();
   if(id==='dealflow')loadDealsJson();
       if(id==='radar')radarInit();
+      if(id==='ao-pipeline'){aoPipelineRender();aoPipelineUpdateBadge();}
   if(id==='today')renderRelances();
 }
 
@@ -2350,6 +2422,237 @@ async function radarStartScan(){
   _radarScanning=false;
   document.getElementById('radar-scan-btn').disabled=false;
   radarApplyFilters();radarUpdateStats();
+}
+
+// ═══ AO PIPELINE MODULE ═══
+
+var _aoModalAO=null;var _aoEditDealId=null;
+
+var AO_STAGES=[
+  {key:'analyse',label:'🔍 Analyse',color:'#1e40af'},
+  {key:'dossier',label:'📝 Dossier',color:'#d97706'},
+  {key:'validation',label:'✅ Validation',color:'#7c3aed'},
+  {key:'soumis',label:'📤 Soumis',color:'#0891b2'},
+  {key:'gagne',label:'🏆 Gagné',color:'#16a34a'},
+  {key:'perdu',label:'❌ Perdu',color:'#dc2626'}
+];
+
+var AO_CHECKLIST=[
+  'Accéder et lire le CCTP / RC complet',
+  'Vérifier les critères d’éligibilité',
+  'Évaluer la faisabilité technique',
+  'Valorisation de rentabilité (CA, marge, coûts)',
+  'Identifier l’équipe et les sous-traitants',
+  'Rédiger le mémoire technique',
+  'Rédiger l’offre financière',
+  'Rassembler les pièces admin. (DC1, DC2, Kbis…)',
+  'Relecture et validation interne',
+  'Soumettre sur le portail DUME / Acheteur'
+];
+
+function radarGoToPipeline(id,title){
+  var ao=(_radarData||[]).filter(function(a){return a.idweb===id;})[0];
+  if(!ao)return;
+  _aoEditDealId=null;
+  aoModalOpen(ao);
+}
+
+function aoModalOpen(ao){
+  _aoModalAO=ao;
+  var sc=radarScoreColor(ao._score);
+  var days=ao.datelimitereponse?Math.round((new Date(ao.datelimitereponse)-new Date())/86400000):null;
+  var dlColor=days===null?'#64748b':days<=0?'#f87171':days<=14?'#fbbf24':'#4ade80';
+  var dlText=days===null?'—':days<=0?'EXPIRÉ':days===1?'Demain':'J-'+days;
+  document.getElementById('ao-modal-head').innerHTML=
+    '<div style="background:'+sc.bg+';color:'+sc.color+';padding:8px 14px;border-radius:6px;font-size:22px;font-weight:700;flex-shrink:0">'+ao._score+'</div>'+
+    '<div style="flex:1;min-width:0">'+
+      '<div style="font-size:14px;font-weight:700;color:#e2e8f0;line-height:1.3">'+ao.objet+'</div>'+
+      '<div style="font-size:11px;color:#64748b;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap">'+
+        '🏛 '+(ao.nomacheteur||'—')+
+        (ao.code_departement?' · <span style="color:#38bdf8">Dept '+ao.code_departement+'</span>':'')+
+        (ao.datelimitereponse?' · 📅 Deadline: <b style="color:'+dlColor+'">'+ao.datelimitereponse.substring(0,10)+' ('+dlText+')</b>':'')+
+      '</div>'+
+      (ao.url_avis?'<a href="'+ao.url_avis+'" target="_blank" style="font-size:10px;color:#4ade80;text-decoration:none">🔗 Voir BOAMP</a>':'')+
+    '</div>';
+
+  var checkHtml=AO_CHECKLIST.map(function(lbl,i){
+    return '<label class="ao-checklist-item" id="aocl-'+i+'">'+
+      '<input type="checkbox" id="aocb-'+i+'" onchange="aoCheckUpdate('+i+')">'+
+      '<span>'+lbl+'</span></label>';
+  }).join('');
+  document.getElementById('ao-modal-left').innerHTML=
+    '<div class="ao-stitle">📋 Plan d’action — Checklist</div>'+checkHtml+
+    '<div style="margin-top:12px"><div class="ao-stitle">📝 Notes</div>'+
+    '<div class="ao-form-row"><textarea id="ao-notes-input" placeholder="Contacts identifiés, remarques, infos RC…"></textarea></div></div>';
+
+  document.getElementById('ao-modal-right').innerHTML=
+    '<div class="ao-stitle">💰 Valorisation Rentabilité</div>'+
+    '<div class="ao-renta-row">'+
+      '<div class="ao-form-row"><label>CA estimé (€)</label><input type="number" id="ao-ca" placeholder="0" oninput="aoRentaCalc()"></div>'+
+      '<div class="ao-form-row"><label>Marge brute (%)</label><input type="number" id="ao-marge" placeholder="30" oninput="aoRentaCalc()"></div>'+
+      '<div class="ao-form-row"><label>Coûts internes (€)</label><input type="number" id="ao-couts" placeholder="0" oninput="aoRentaCalc()"></div>'+
+    '</div>'+
+    '<div class="ao-renta-box"><div class="rv" id="ao-renta-val">—</div><div class="rl">Marge nette estimée</div></div>'+
+    '<div style="margin-top:14px"><div class="ao-stitle">👥 Équipe à mobiliser</div>'+
+    '<div class="ao-form-row"><textarea id="ao-equipe" placeholder="Chef de projet, Expert technique, Juriste marché public, Sous-traitant X…"></textarea></div></div>'+
+    '<div style="margin-top:10px"><div class="ao-stitle">⚠️ Points de vigilance</div>'+
+    '<div class="ao-form-row"><textarea id="ao-vigilance" placeholder="Délai court, certifications requises, concurrents identifiés…"></textarea></div></div>';
+
+  document.getElementById('ao-modal-overlay').style.display='flex';
+}
+
+function aoCheckUpdate(i){
+  var item=document.getElementById('aocl-'+i);
+  var cb=document.getElementById('aocb-'+i);
+  if(item&&cb)item.classList.toggle('done',cb.checked);
+}
+
+function aoRentaCalc(){
+  var ca=parseFloat((document.getElementById('ao-ca')||{}).value)||0;
+  var m=parseFloat((document.getElementById('ao-marge')||{}).value)||0;
+  var c=parseFloat((document.getElementById('ao-couts')||{}).value)||0;
+  var net=ca*m/100-c;
+  var el=document.getElementById('ao-renta-val');
+  if(el){
+    el.textContent=net!==0?(net>0?'+':'')+Math.round(net).toLocaleString('fr-FR')+' €':'—';
+    el.style.color=net>0?'#4ade80':net<0?'#f87171':'#94a3b8';
+  }
+}
+
+function aoModalClose(){
+  document.getElementById('ao-modal-overlay').style.display='none';
+  _aoModalAO=null;_aoEditDealId=null;
+}
+
+function aoModalConfirm(){
+  if(!_aoModalAO)return;
+  var ao=_aoModalAO;
+  var checklist=AO_CHECKLIST.map(function(lbl,i){
+    return{id:'c'+i,label:lbl,done:!!((document.getElementById('aocb-'+i)||{}).checked)};
+  });
+  var deal={
+    id:_aoEditDealId||('ao_'+Date.now()),
+    aoId:ao.idweb,title:ao.objet,acheteur:ao.nomacheteur||'—',
+    deadline:ao.datelimitereponse||'',dept:ao.code_departement||'',
+    score:ao._score,vert:ao._vert,
+    stage:_aoEditDealId?((aoPipelineLoad().find(function(d){return d.id===_aoEditDealId;})||{}).stage||'analyse'):'analyse',
+    checklist:checklist,
+    rentabilite:{
+      ca:(document.getElementById('ao-ca')||{}).value||'',
+      marge:(document.getElementById('ao-marge')||{}).value||'',
+      couts:(document.getElementById('ao-couts')||{}).value||''
+    },
+    equipe:((document.getElementById('ao-equipe')||{}).value||'').trim(),
+    vigilance:((document.getElementById('ao-vigilance')||{}).value||'').trim(),
+    notes:((document.getElementById('ao-notes-input')||{}).value||'').trim(),
+    boampUrl:ao.url_avis||('https://www.boamp.fr/avis/detail/'+ao.idweb),
+    createdAt:_aoEditDealId?((aoPipelineLoad().find(function(d){return d.id===_aoEditDealId;})||{}).createdAt||new Date().toISOString()):new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  var deals=aoPipelineLoad();
+  var idx=deals.findIndex(function(d){return d.id===deal.id;});
+  if(idx>=0)deals[idx]=deal;else deals.push(deal);
+  aoPipelineSave(deals);
+  aoModalClose();
+  aoPipelineUpdateBadge();
+  goTo('ao-pipeline');
+}
+
+function aoPipelineLoad(){return JSON.parse(localStorage.getItem('ao_pipeline')||'[]');}
+function aoPipelineSave(d){localStorage.setItem('ao_pipeline',JSON.stringify(d));}
+
+function aoPipelineUpdateBadge(){
+  var deals=aoPipelineLoad();
+  var active=deals.filter(function(d){return d.stage!=='gagne'&&d.stage!=='perdu';}).length;
+  var badge=document.getElementById('badge-ao-pipeline');
+  if(badge){badge.textContent=active>0?active:'';badge.style.display=active>0?'':'none';}
+}
+
+function aoPipelineRender(){
+  var deals=aoPipelineLoad();
+  var kanban=document.getElementById('aopipe-kanban');
+  if(!kanban)return;
+  if(!deals.length){
+    kanban.innerHTML='<div style="color:#334155;font-size:12px;padding:20px;text-align:center;width:100%">Aucun AO dans le pipeline. Utilisez «GO Pipeline» depuis le Radar AO.</div>';
+    aoPipelineUpdateBadge();return;
+  }
+  kanban.innerHTML=AO_STAGES.map(function(stage){
+    var sd=deals.filter(function(d){return d.stage===stage.key;});
+    var cards=sd.length?sd.map(aoPipelineCard).join(''):'<div class="aopipe-empty">Vide</div>';
+    return '<div class="aopipe-col">'+
+      '<div class="aopipe-col-title" style="color:'+stage.color+'">'+stage.label+
+        ' <span style="color:#475569;font-weight:400">('+sd.length+')</span></div>'+
+      cards+'</div>';
+  }).join('');
+  aoPipelineUpdateBadge();
+}
+
+function aoPipelineCard(deal){
+  var done=(deal.checklist||[]).filter(function(c){return c.done;}).length;
+  var total=(deal.checklist||[]).length||1;
+  var pct=Math.round(done/total*100);
+  var days=deal.deadline?Math.round((new Date(deal.deadline)-new Date())/86400000):null;
+  var dlColor=days===null?'#64748b':days<=0?'#f87171':days<=14?'#fbbf24':'#4ade80';
+  var dlText=days===null?'—':days<=0?'EXPIRÉ ('+deal.deadline.substring(0,10)+')':days===1?'Demain':'J-'+days+' ('+deal.deadline.substring(0,10)+')';
+  var ca=deal.rentabilite&&deal.rentabilite.ca?deal.rentabilite.ca:'?';
+  var marge=deal.rentabilite&&deal.rentabilite.marge?deal.rentabilite.marge+'%':'?';
+  var stageOpts=AO_STAGES.map(function(s){
+    return '<option value="'+s.key+'"'+(s.key===deal.stage?' selected':'')+'>'+s.label+'</option>';
+  }).join('');
+  var safeId=deal.id.replace(/[^a-z0-9_]/gi,'_');
+  return '<div class="aopipe-card" id="aodeal-'+safeId+'">'+
+    '<div class="aopipe-card-title" onclick="aoPipelineCardClick(''+deal.id+'')">'+deal.title.substring(0,80)+(deal.title.length>80?'…':'')+'</div>'+
+    '<div class="aopipe-card-meta">'+
+      '🏛 '+deal.acheteur.substring(0,28)+(deal.acheteur.length>28?'…':'')+'<br>'+
+      (deal.dept?'<span style="color:#38bdf8">Dept '+deal.dept+'</span> · ':'')+
+      '<span style="color:'+dlColor+'">'+dlText+'</span><br>'+
+      '<span style="color:#64748b">CA: '+ca+'€ | Marge: '+marge+'</span>'+
+      (deal.equipe?'<br>👥 '+deal.equipe.substring(0,35):'')+
+    '</div>'+
+    '<div class="aopipe-card-progress"><div class="aopipe-card-progress-bar" style="width:'+pct+'%"></div></div>'+
+    '<div style="font-size:9px;color:#475569;margin-top:2px;margin-bottom:6px">'+done+'/'+total+' étapes (✓'+pct+'%)</div>'+
+    '<select onclick="event.stopPropagation()" onchange="aoPipelineMoveStage(''+deal.id+'',this.value)" '+
+      'style="width:100%;background:#040f09;border:1px solid #1a3a1a;color:#94a3b8;border-radius:4px;font-size:10px;padding:3px 4px">'+
+      stageOpts+'</select>'+
+  '</div>';
+}
+
+function aoPipelineMoveStage(dealId,newStage){
+  var deals=aoPipelineLoad();
+  var d=deals.find(function(x){return x.id===dealId;});
+  if(d){d.stage=newStage;aoPipelineSave(deals);aoPipelineRender();}
+}
+
+function aoPipelineCardClick(dealId){
+  var deals=aoPipelineLoad();
+  var deal=deals.find(function(d){return d.id===dealId;});
+  if(!deal)return;
+  _aoEditDealId=dealId;
+  var fakeAo={
+    idweb:deal.aoId,objet:deal.title,nomacheteur:deal.acheteur,
+    datelimitereponse:deal.deadline,code_departement:deal.dept,
+    _score:deal.score,_vert:deal.vert||'autre',
+    url_avis:deal.boampUrl,_signals:[]
+  };
+  aoModalOpen(fakeAo);
+  setTimeout(function(){
+    if(deal.checklist)deal.checklist.forEach(function(c,i){
+      var cb=document.getElementById('aocb-'+i);
+      if(cb){cb.checked=!!c.done;aoCheckUpdate(i);}
+    });
+    var r=deal.rentabilite||{};
+    var ca=document.getElementById('ao-ca'),mg=document.getElementById('ao-marge'),ct=document.getElementById('ao-couts');
+    if(ca)ca.value=r.ca||'';if(mg)mg.value=r.marge||'';if(ct)ct.value=r.couts||'';
+    aoRentaCalc();
+    var eq=document.getElementById('ao-equipe'),vi=document.getElementById('ao-vigilance'),nt=document.getElementById('ao-notes-input');
+    if(eq)eq.value=deal.equipe||'';if(vi)vi.value=deal.vigilance||'';if(nt)nt.value=deal.notes||'';
+  },60);
+}
+
+function aoPipelineClear(){
+  if(!confirm('Retirer tous les deals gagnés et perdus ?'))return;
+  aoPipelineSave(aoPipelineLoad().filter(function(d){return d.stage!=='gagne'&&d.stage!=='perdu';}));
+  aoPipelineRender();
 }
 </script>
 </body>
