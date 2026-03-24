@@ -2446,12 +2446,28 @@ var AO_CHECKLIST=[
   'Relecture et validation interne',
   'Soumettre sur le portail DUME / Acheteur'
 ];
-function radarGoToPipeline(aoId){
+function radarGoToPipeline(aoId,_title){
   var ao=null;
-  if(window._aoCache){ao=window._aoCache.find(function(a){return a.id===aoId||a.fields&&a.fields.ID===aoId;});}
+  if(window._radarData){ao=window._radarData.find(function(a){return a.idweb===aoId;});}
+  if(!ao&&window._aoCache){ao=window._aoCache.find(function(a){return a.id===aoId||a.fields&&a.fields.ID===aoId;});}
   if(!ao&&window._lastRadarResults){ao=window._lastRadarResults.find(function(a){return a.id===aoId||a.fields&&a.fields.ID===aoId;});}
   if(!ao){alert('AO introuvable: '+aoId);return;}
-  aoModalOpen(ao);
+  var f=ao.fields||{};
+  var norm={
+    id:ao.idweb||ao.id||aoId,
+    fields:{
+      ID:ao.idweb||ao.id||aoId,
+      OBJET:ao.objet||f.OBJET||_title||'Sans titre',
+      ACHETEUR_NOM:ao.nomacheteur||f.ACHETEUR_NOM||'',
+      DATE_LIMITE:ao.datelimitereponse||f.DATE_LIMITE||'',
+      DEPARTEMENT_NOM:ao.code_departement||f.DEPARTEMENT_NOM||'',
+      BUDGET_ESTIME:ao.montant_estime||f.BUDGET_ESTIME||'',
+      URL_DOCUMENT:ao.url_avis||f.URL_DOCUMENT||'',
+      score:ao._score||0,
+      vert:ao._vert||false
+    }
+  };
+  aoModalOpen(norm);
 }
 function aoModalOpen(ao){
   _aoModalAO=ao;
