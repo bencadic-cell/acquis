@@ -2308,7 +2308,7 @@ function radarRenderCard(ao){
     (sigHtml?'<div class="radar-card-signals">'+sigHtml+'</div>':'')+
     '<div class="radar-axes">'+axHtml+'</div>'+
     '<div class="radar-card-actions">'+
-      '<button class="btn-go" onclick="radarGoToPipeline(\'' +ao.idweb+ '\',\'' +safeTitle+ '\')">&#9989; GO Pipeline</button>'+
+      '<button class="btn-go" data-aoid="' +ao.idweb+ '" onclick="radarGoToPipeline(this.dataset.aoid)">&#9989; GO Pipeline</button>'+
       '<button class="btn-passer" onclick="radarPasser(\'' +ao.idweb+ '\')">&#9197; Passer</button>'+
       '<a class="btn-boamp" href="'+boampUrl+'" target="_blank">&#128279; BOAMP</a>'+
     '</div></div>';
