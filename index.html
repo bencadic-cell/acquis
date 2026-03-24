@@ -2425,7 +2425,140 @@ async function radarStartScan(){
 }
 
 // ═══ AO PIPELINE MODULE ═══
-undefined
+var _aoModalAO=null;
+var AO_STAGES=[
+  {key:'analyse',label:'🔍 Analyse',color:'#1e40af'},
+  {key:'dossier',label:'📝 Dossier',color:'#d97706'},
+  {key:'validation',label:'✅ Validation',color:'#7c3aed'},
+  {key:'soumis',label:'📤 Soumis',color:'#0891b2'},
+  {key:'gagne',label:'🏆 Gagné',color:'#16a34a'},
+  {key:'perdu',label:'❌ Perdu',color:'#dc2626'}
+];
+var AO_CHECKLIST=[
+  'Accéder et lire le CCTP / RC complet',
+  'Vérifier les critères d’éligibilité',
+  'Évaluer la faisabilité technique',
+  'Valorisation de rentabilité (CA, marge, coûts)',
+  'Identifier l’équipe et les sous-traitants',
+  'Rédiger le mémoire technique',
+  'Rédiger l’offre financière',
+  'Rassembler les pièces admin. (DC1, DC2, Kbis…)',
+  'Relecture et validation interne',
+  'Soumettre sur le portail DUME / Acheteur'
+];
+function radarGoToPipeline(aoId){
+  var ao=null;
+  if(window._aoCache){ao=window._aoCache.find(function(a){return a.id===aoId||a.fields&&a.fields.ID===aoId;});}
+  if(!ao&&window._lastRadarResults){ao=window._lastRadarResults.find(function(a){return a.id===aoId||a.fields&&a.fields.ID===aoId;});}
+  if(!ao){alert('AO introuvable: '+aoId);return;}
+  aoModalOpen(ao);
+}
+function aoModalOpen(ao){
+  _aoModalAO=ao;
+  var f=ao.fields||ao;
+  var title=f.OBJET||f.title||ao.id||'Sans titre';
+  var acheteur=f.ACHETEUR_NOM||f.acheteur||'';
+  var deadline=f.DATE_LIMITE||f.deadline||'';
+  var dept=f.DEPARTEMENT_NOM||f.dept||'';
+  var budget=f.BUDGET_ESTIME||f.budget||'';
+  var deadlineStr='';
+  if(deadline){
+    var dObj=new Date(deadline);
+    var now=new Date();
+    var diffDays=Math.ceil((dObj-now)/(1000*60*60*24));
+    var cls=diffDays<=7?'badge-red':diffDays<=30?'badge-orange':'badge-green';
+    deadlineStr='<span class="ao-badge '+cls+'">'+diffDays+'j</span>';
+  }
+  var head=document.getElementById('ao-modal-head');
+  if(head){head.innerHTML='<div class="ao-modal-title">'+title+'</div><div class="ao-modal-meta"><span>'+acheteur+'</span><span>'+dept+'</span>'+deadlineStr+'</div>';}
+  var left=document.getElementById('ao-modal-left');
+  if(left){
+    var items=AO_CHECKLIST.map(function(label,i){
+      return '<div class="ao-checklist-item" id="aochk-'+i+'" onclick="aoCheckUpdate('+i+')"><span class="ao-chk-box">□</span><span>'+label+'</span></div>';
+    }).join('');
+    left.innerHTML='<div class="ao-modal-section-title">📋 Checklist</div><div id="ao-checklist-wrap">'+items+'</div>';
+  }
+  var right=document.getElementById('ao-modal-right');
+  if(right){
+    right.innerHTML='<div class="ao-modal-section-title">💰 Valorisation</div>'+
+      '<div class="ao-renta-row"><label>CA estimé (€)</label><input type="number" id="ao-ca" placeholder="0" oninput="aoRentaCalc()"></div>'+
+      '<div class="ao-renta-row"><label>Marge (%)</label><input type="number" id="ao-marge" placeholder="30" oninput="aoRentaCalc()"></div>'+
+      '<div class="ao-renta-row"><label>Coûts directs (€)</label><input type="number" id="ao-couts" placeholder="0" oninput="aoRentaCalc()"></div>'+
+      '<div class="ao-renta-result" id="ao-renta-result">Renseignez les valeurs ci-dessus</div>'+
+      '<div class="ao-modal-section-title" style="margin-top:14px">👥 Équipe projet</div>'+
+      '<textarea id="ao-equipe" placeholder="Chef de projet, techniciens, sous-traitants..." rows="3" style="width:100%;background:#0a2010;border:1px solid #2a4e3d;border-radius:6px;color:#c8ffc8;padding:8px;resize:vertical"></textarea>'+
+      '<div class="ao-modal-section-title" style="margin-top:10px">⚠️ Points de vigilance</div>'+
+      '<textarea id="ao-vigilance" placeholder="Risques, contraintes, points d’attention..." rows="3" style="width:100%;background:#0a2010;border:1px solid #2a4e3d;border-radius:6px;color:#c8ffc8;padding:8px;resize:vertical"></textarea>';
+  }
+  var ov=document.getElementById('ao-modal-overlay');
+  if(ov){ov.style.display='flex';}
+}
+function aoCheckUpdate(i){
+  var el=document.getElementById('aochk-'+i);
+  if(!el)return;
+  el.classList.toggle('done');
+  var box=el.querySelector('.ao-chk-box');
+  if(box)box.textContent=el.classList.contains('done')?'☑':'□';
+}
+function aoRentaCalc(){
+  var ca=parseFloat(document.getElementById('ao-ca')?document.getElementById('ao-ca').value:0)||0;
+  var marge=parseFloat(document.getElementById('ao-marge')?document.getElementById('ao-marge').value:30)||30;
+  var couts=parseFloat(document.getElementById('ao-couts')?document.getElementById('ao-couts').value:0)||0;
+  var margeEur=ca*(marge/100);
+  var net=margeEur-couts;
+  var res=document.getElementById('ao-renta-result');
+  if(res){res.innerHTML='Marge brute: <strong>'+Math.round(margeEur).toLocaleString('fr-FR')+' €</strong> | Résultat net: <strong style="color:'+(net>=0?'#4ade80':'#f87171')+'">'+Math.round(net).toLocaleString('fr-FR')+' €</strong>';}
+}
+function aoModalClose(){
+  var ov=document.getElementById('ao-modal-overlay');
+  if(ov)ov.style.display='none';
+  _aoModalAO=null;
+}
+function aoModalConfirm(){
+  if(!_aoModalAO){aoModalClose();return;}
+  var f=_aoModalAO.fields||_aoModalAO;
+  var checklistState=AO_CHECKLIST.map(function(label,i){
+    var el=document.getElementById('aochk-'+i);
+    return {id:i,label:label,done:el?el.classList.contains('done'):false};
+  });
+  var ca=parseFloat(document.getElementById('ao-ca')?document.getElementById('ao-ca').value:0)||0;
+  var marge=parseFloat(document.getElementById('ao-marge')?document.getElementById('ao-marge').value:30)||30;
+  var couts=parseFloat(document.getElementById('ao-couts')?document.getElementById('ao-couts').value:0)||0;
+  var equipe=document.getElementById('ao-equipe')?document.getElementById('ao-equipe').value:'';
+  var vigilance=document.getElementById('ao-vigilance')?document.getElementById('ao-vigilance').value:'';
+  var aoId=f.ID||f.id||_aoModalAO.id||('ao_'+Date.now());
+  var pipeline=aoPipelineLoad();
+  var existing=pipeline.find(function(d){return d.aoId===aoId;});
+  if(existing){
+    aoModalClose();
+    alert('Cet AO est déjà dans le pipeline (stade: '+existing.stage+')');
+    return;
+  }
+  var deal={
+    id:'ao_'+Date.now(),
+    aoId:aoId,
+    title:f.OBJET||f.title||aoId,
+    acheteur:f.ACHETEUR_NOM||f.acheteur||'',
+    deadline:f.DATE_LIMITE||f.deadline||'',
+    dept:f.DEPARTEMENT_NOM||f.dept||'',
+    score:f.score||0,
+    vert:f.vert||false,
+    stage:'analyse',
+    checklist:checklistState,
+    rentabilite:{ca:ca,marge:marge,couts:couts},
+    equipe:equipe,
+    vigilance:vigilance,
+    notes:'',
+    boampUrl:f.URL_DOCUMENT||f.boampUrl||'',
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  pipeline.push(deal);
+  aoPipelineSave(pipeline);
+  aoModalClose();
+  if(typeof showPage==='function')showPage('ao-pipeline');
+  setTimeout(function(){aoPipelineRender();},100);
+}
 
 function aoPipelineLoad(){return JSON.parse(localStorage.getItem('ao_pipeline')||'[]');}
 function aoPipelineSave(d){localStorage.setItem('ao_pipeline',JSON.stringify(d));}
