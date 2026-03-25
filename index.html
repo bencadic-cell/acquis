@@ -2327,7 +2327,6 @@ function radarPasser(id){
 }
 
 function radarApplyFilters(){
-  var q=((document.getElementById('radar-search')||{}).value||'').toLowerCase();
   var vert=(document.getElementById('radar-vert-filter')||{}).value||'';
   var sig=(document.getElementById('radar-tag-filter')||{}).value||'';
   var minScore=parseInt(((document.getElementById('radar-score-min')||{}).value||'0'));
@@ -2337,7 +2336,7 @@ function radarApplyFilters(){
     if(ao._score<minScore)return false;
     if(vert&&ao._vert!==vert)return false;
     if(sig&&(ao._signals||[]).indexOf(sig)<0)return false;
-    if(q){var h=((ao.objet||'')+(ao.nomacheteur||'')+(ao.descripteur_libelle||'')).toLowerCase();if(h.indexOf(q)<0)return false;}
+    
     return true;
   });
   _radarPage=0;radarRenderPage(0);radarUpdateStats();
