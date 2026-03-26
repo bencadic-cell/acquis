@@ -1,8 +1,38 @@
 {
-  "last_updated": "2026-03-25T09:41:28Z",
-  "count": 32,
-  "new_today": 0,
+  "last_updated": "2026-03-26T09:50:48Z",
+  "count": 34,
+  "new_today": 2,
   "deals": [
+    {
+      "id": "2f5d46ca2fac",
+      "title": "Production de foie gras et de produits à base de canard",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "NC",
+      "ca_value": 2100000,
+      "description": "Production de foie gras et de produits à base de canard 25/03/2026 Département : NC (Occitanie) Simuler votre financement 2 100 k€ 15 NC Consulter sur...",
+      "date_pub": "25/03/2026",
+      "date_scraped": "2026-03-26",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
+    {
+      "id": "920e7f9766a2",
+      "title": "Recyclage automobile, pièces détachées neuves et occasion",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "76",
+      "ca_value": 383000,
+      "description": "Recyclage automobile, pièces détachées neuves et occasion 25/03/2026 Département : 76 Seine-Maritime Simuler votre financement 383 k€ NC 1 177 k€ Consulter sur...",
+      "date_pub": "25/03/2026",
+      "date_scraped": "2026-03-26",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Pièces détachées auto"
+    },
     {
       "id": "29fa39ea7026",
       "title": "GARAGE AUTOMOBILE COMPLETPays Haut Limousin (87)",
