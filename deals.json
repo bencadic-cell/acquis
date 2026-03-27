@@ -1,8 +1,38 @@
 {
-  "last_updated": "2026-03-26T09:50:48Z",
-  "count": 34,
+  "last_updated": "2026-03-27T09:16:06Z",
+  "count": 36,
   "new_today": 2,
   "deals": [
+    {
+      "id": "ca6ffa104620",
+      "title": "LOC. MATÉRIELS TP : PELLES, MINI-PELLES, NACELLESIlle-et-Vilaine",
+      "url": "https://www.transentreprise.com/offres/fiche/BRT258195P/loc-materiels-tp-:-pelles-mini-pelles-nacelles/bretagne/ille-et-vilaine",
+      "source": "Transentreprise",
+      "region": "Prix :NC",
+      "ca": "de 1,5 à 3 M€",
+      "ca_value": 3000000,
+      "description": "BRT258195P LOC. MATÉRIELS TP : PELLES, MINI-PELLES, NACELLES Ille-et-Vilaine Prix : NC C.A. : de 1,5 à 3 M€ Effectif : 21 à 50",
+      "date_pub": "",
+      "date_scraped": "2026-03-27",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
+    {
+      "id": "b75573754783",
+      "title": "Garage Pneumatiques & Mécanique | Réseau National | Équipe 5 personnes | Lot",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "46",
+      "ca_value": 1011000,
+      "description": "Garage Pneumatiques & Mécanique | Réseau National | Équipe 5 personnes | Lot 26/03/2026 Département : 46 Lot Simuler votre financement 1 011 k€ NC 385 k€ Consulter sur...",
+      "date_pub": "26/03/2026",
+      "date_scraped": "2026-03-27",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Pièces détachées auto"
+    },
     {
       "id": "2f5d46ca2fac",
       "title": "Production de foie gras et de produits à base de canard",
