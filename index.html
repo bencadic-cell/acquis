@@ -2318,7 +2318,9 @@ function radarDetectVert(ao){
     'equipement de jeux','jeux enfants','structure de jeux',
     'toboggan','portique','carrousel','bac a sable','jeux plein air'];
   var reve=['caoutchouc','dalle amortissante','sol amortissant',
-    'revetement sportif','surface amortissante','gazon synthetique'];
+    'sol souple','epdm','sbr','granules caoutchouc',
+    'revetement sportif','surface amortissante','gazon synthetique',
+    'revetement souple','paillasse caoutchouc','aire sportive'];
   var sports=['fitness','city stade','multisport','parcours sport',
     'equipement sportif','terrain sport','skate','boulodrome'];
   var publics=['espace public','amenagement urbain','mobilier urbain',
@@ -2486,7 +2488,8 @@ async function radarStartScan(){
       var depts=deptInput.split(/[,;\s]+/).map(function(d){return d.trim();}).filter(Boolean);
       if(depts.length){where+=' AND ('+depts.map(function(d){return 'code_departement="'+d+'"';}). join(' OR ')+')';}  
     }
-    var kw=((document.getElementById('radar-search')||{}).value||''). trim();
+    var kw=((document.getElementById('radar-search')||{}).value||'').trim();
+    if(!kw){kw='"aire de jeux" OR caoutchouc OR EPDM OR SBR OR "sol amortissant" OR "sol souple" OR "dalle amortissante" OR "surface amortissante" OR "revetement sportif" OR "gazon synthetique" OR toboggan OR portique';}
     radarLog('Requ\u00eate: '+where+(kw?' | Mot-cl\u00e9 API: "'+kw+'"':''));
     var first=await radarFetchPage(where,0,null,kw);
     var total=first.total_count||0;
