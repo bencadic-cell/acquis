@@ -451,6 +451,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </style>
 </head>
 <body>
+<div id="auth-gate" style="position:fixed;inset:0;z-index:99999;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:40px 36px;width:320px;box-shadow:0 25px 50px rgba(0,0,0,.5);text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">🔒</div>
+    <div style="font-size:18px;font-weight:700;color:#e2e8f0;margin-bottom:4px">Acquis CRM</div>
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:24px">Accès restreint</div>
+    <input id="auth-input" type="password" placeholder="Mot de passe" autocomplete="current-password"
+      style="width:100%;box-sizing:border-box;padding:10px 14px;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#e2e8f0;font-size:15px;outline:none;margin-bottom:12px"
+      onkeydown="if(event.key==='Enter')authCheck()"/>
+    <div id="auth-err" style="color:#f87171;font-size:12px;height:16px;margin-bottom:8px"></div>
+    <button onclick="authCheck()" style="width:100%;padding:10px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Accéder</button>
+  </div>
+</div>
+<script>
+(function(){
+  if(sessionStorage.getItem('acq_auth')==='1'){
+    document.getElementById('auth-gate').style.display='none';
+  }
+  setTimeout(function(){var el=document.getElementById('auth-input');if(el)el.focus();},100);
+})();
+function authCheck(){
+  var v=document.getElementById('auth-input').value;
+  var h=0;for(var i=0;i<v.length;i++){h=((h<<5)-h)+v.charCodeAt(i);h|=0;}
+  if(h===2147094813){
+    sessionStorage.setItem('acq_auth','1');
+    document.getElementById('auth-gate').style.display='none';
+  } else {
+    var err=document.getElementById('auth-err');
+    err.textContent='Mot de passe incorrect';
+    var inp=document.getElementById('auth-input');
+    inp.style.borderColor='#f87171';
+    inp.value='';
+    setTimeout(function(){err.textContent='';inp.style.borderColor='#475569';},2000);
+  }
+}
+</script>
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <nav class="sb">
