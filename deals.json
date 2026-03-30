@@ -1,8 +1,38 @@
 {
-  "last_updated": "2026-03-29T08:07:11Z",
-  "count": 36,
-  "new_today": 0,
+  "last_updated": "2026-03-30T10:51:04Z",
+  "count": 38,
+  "new_today": 2,
   "deals": [
+    {
+      "id": "4f14cbad2e74",
+      "title": "ATELIER MÉCANIQUE & CARROSSERIE GARAGE MULTIMARQUELA VOULTE SUR RHONE (07)",
+      "url": "https://www.transentreprise.com/offres/fiche/ARA262284C/atelier-mecanique-carrosserie-garage-multimarque/auvergne-rhone-alpes/ardeche/arrond-de-privas",
+      "source": "Transentreprise",
+      "region": "Prix :NC",
+      "ca": "de 500 à 750 k€",
+      "ca_value": 750000,
+      "description": "ARA262284C ATELIER MÉCANIQUE & CARROSSERIE GARAGE MULTIMARQUE LA VOULTE SUR RHONE (07) Prix : NC C.A. : de 500 à 750 k€ Effectif : 3 à 5",
+      "date_pub": "",
+      "date_scraped": "2026-03-30",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Pièces détachées auto"
+    },
+    {
+      "id": "d834a2523679",
+      "title": "Paysagiste - entretien d'espaces verts dans le Var (83)",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "83",
+      "ca_value": 421000,
+      "description": "Paysagiste - entretien d'espaces verts dans le Var (83) 28/03/2026 Département : 83 Var Simuler votre financement Franchise 421 k€ NC 112 k€ Consulter sur...",
+      "date_pub": "28/03/2026",
+      "date_scraped": "2026-03-30",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
     {
       "id": "ca6ffa104620",
       "title": "LOC. MATÉRIELS TP : PELLES, MINI-PELLES, NACELLESIlle-et-Vilaine",
