@@ -1557,10 +1557,17 @@ function renderContactTable(){
       <td>${escH(d.loc)||'—'}</td>
       <td>${escH(d.tel)||'—'}</td>
       <td><span class="crm-badge ${ISC_MAP[d.statut]||'crm-0'}">${escH(d.statut)}</span></td>
-      <td style="font-size:12px;color:#6b7280">${escH(d.next)||''}</td>`;
+      <td style="font-size:12px;color:#6b7280">${escH(d.next)||''}</td>
+      <td style="text-align:center;width:36px;padding:0"><button onclick="event.stopPropagation();deleteIC('${id}')" style="background:none;border:none;cursor:pointer;color:#ef4444;font-size:15px;padding:4px 8px;border-radius:4px;line-height:1" title="Supprimer">🗑</button></td>`;
     tr.addEventListener('click',()=>openDrawer('indirect',id));
     tbody.appendChild(tr);
   });
+}
+function deleteIC(id){
+  if(!window.confirm('Supprimer ce contact définitivement ?'))return;
+  delete indirectData[id];
+  renderContactTable();
+  save();
 }
 
 function updateContactRow(id,row){
@@ -1712,6 +1719,25 @@ function load(){
   } else {loadDefaultProject();}
   updateProjBadge();
   _loading=false;
+  // First-run seed: persist immediately if no saved state yet
+  if(!localStorage.getItem('reprise_crm_v1')){setTimeout(_save,800);}
+}
+function exportCRM(){
+  const data={};
+  data.moment=localStorage.getItem('crm_moment')||'matin';
+  ['matin','midi','soir'].forEach(function(b){const el=document.getElementById('block-'+b);if(el)data['block_'+b]=el.value;});
+  data.directCards=Object.entries(directData).map(([id,d])=>({id,...d}));
+  data.indirectCards=Object.entries(indirectData).map(([id,d])=>({id,...d}));
+  data.advisors=[];document.querySelectorAll('#tbody-advisors tr').forEach(function(tr){const i=tr.querySelectorAll('input'),s=tr.querySelector('select');data.advisors.push({f0:i[0]?.value||'',f1:i[1]?.value||'',status:s?.value||'',f3:i[2]?.value||'',f4:i[3]?.value||'',f5:i[4]?.value||'',archived:tr.dataset.archived==='true'});});
+  data.projectCats=projectCats.map(function(c){return{...c};});
+  data.projectTasks=projectTasks.map(function(t){return{...t};});
+  data.exportDate=new Date().toISOString();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='acquis-crm-'+new Date().toISOString().split('T')[0]+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ════════════════════════════════════════════════════
@@ -2905,6 +2931,7 @@ function addIC(col){var org=prompt("Organisme :");if(!org)return;var ct=prompt(
 (function(){var _og=goTo;goTo=function(id){_og(id);if(id==="interm")renderIntermPipeline();};})();
 _initInterm();
 
+window.addEventListener('beforeunload',function(){if(!_loading)_save();});
 </script>
 </body>
 </html>
