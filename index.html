@@ -891,8 +891,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <input type="text" id="radar-dept-filter" placeholder="Dépts: 22,29,35..." style="width:140px" title="Filtrer par département (ex: 22,29,35,56)">
       <select id="radar-vert-filter" onchange="radarApplyFilters()">
         <option value="">Toutes verticales</option>
-        <option value="nutrition">🐾 Nutrition animale</option>
-        <option value="auto">🚗 Pièces auto</option>
+        <option value="aires-jeux">🎠 Aires de jeux</option>
+        <option value="sports">⚽ Équipements sportifs</option>
+        <option value="revetement">🗔 Revêtements amortissants</option>
+        <option value="espaces-publics">🌳 Espaces publics</option>
+        <option value="scolaire">🏫 Établissements scolaires</option>
         <option value="autre">📦 Autre</option>
       </select>
       <select id="radar-tag-filter" onchange="radarApplyFilters()">
@@ -2295,14 +2298,27 @@ function radarLog(msg){
 }
 
 function radarDetectVert(ao){
-  var txt=((ao.objet||'')+(ao.famille_libelle||'')+(ao.descripteur_libelle||'')).toLowerCase();
-  var nutri=['aliment','nutrit','fourrage','foin','paille','betail','élevage','animal','vétérinaire','véto','croquette'];
-  var auto=['véhicule','automobile','voiture','pièce','carrosserie','pneumatique','pneu','mécanique','garage','entretien véhic'];
-  for(var i=0;i<nutri.length;i++)if(txt.indexOf(nutri[i])>=0)return 'nutrition';
-  for(var i=0;i<auto.length;i++)if(txt.indexOf(auto[i])>=0)return 'auto';
+  var txt=((ao.objet||'')+
+    (ao.famille_libelle||'')+
+    (ao.descripteur_libelle||'')).toLowerCase();
+  var jeux=['aire de jeux','terrain de jeux','espace jeux',
+    'equipement de jeux','jeux enfants','structure de jeux',
+    'toboggan','portique','carrousel','bac a sable','jeux plein air'];
+  var reve=['caoutchouc','dalle amortissante','sol amortissant',
+    'revetement sportif','surface amortissante','gazon synthetique'];
+  var sports=['fitness','city stade','multisport','parcours sport',
+    'equipement sportif','terrain sport','skate','boulodrome'];
+  var publics=['espace public','amenagement urbain','mobilier urbain',
+    'jardin public','square','parc municipal','promenade'];
+  var scolaire=['scolaire','maternelle','creche',
+    'etablissement scolaire','primaire','cantine'];
+  for(var i=0;i<jeux.length;i++) if(txt.indexOf(jeux[i])>=0) return 'aires-jeux';
+  for(var i=0;i<reve.length;i++) if(txt.indexOf(reve[i])>=0) return 'revetement';
+  for(var i=0;i<sports.length;i++) if(txt.indexOf(sports[i])>=0) return 'sports';
+  for(var i=0;i<publics.length;i++) if(txt.indexOf(publics[i])>=0) return 'espaces-publics';
+  for(var i=0;i<scolaire.length;i++) if(txt.indexOf(scolaire[i])>=0) return 'scolaire';
   return 'autre';
 }
-
 function radarDetectSignals(ao){
   var sigs=[];
   var txt=((ao.objet||'')+(ao.nature_libelle||'')+(ao.famille_libelle||'')).toLowerCase();
@@ -2315,7 +2331,7 @@ function radarDetectSignals(ao){
 }
 
 function radarScore(ao){
-  var score=50;if(ao._vert!=='autre')score+=20;
+  var score=50;var _vb={'aires-jeux':25,'revetement':25,'sports':15,'espaces-publics':10,'scolaire':10};score+=(_vb[ao._vert]||0);
   var txt=(ao.objet||'').toLowerCase();
   ['accord-cadre','bon de commande','fourniture','prestation'].forEach(function(w){if(txt.indexOf(w)>=0)score+=5;});
   var sigs=ao._signals||[];
