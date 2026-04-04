@@ -1,8 +1,38 @@
 {
-  "last_updated": "2026-04-03T09:43:48Z",
-  "count": 56,
-  "new_today": 4,
+  "last_updated": "2026-04-04T08:08:46Z",
+  "count": 58,
+  "new_today": 2,
   "deals": [
+    {
+      "id": "f39886ebc69e",
+      "title": "REPARATION AUTOMOBILE ET VENTE DE PIECES DETACHEESSect. Lens (62)",
+      "url": "https://www.transentreprise.com/offres/fiche/HDF264095C/reparation-automobile-et-vente-de-pieces-detachees/hauts-de-france/pas-de-calais/sect-lens",
+      "source": "Transentreprise",
+      "region": "Prix :145 000 €",
+      "ca": "de 350 à 500 k€",
+      "ca_value": 500000,
+      "description": "HDF264095C REPARATION AUTOMOBILE ET VENTE DE PIECES DETACHEES Sect. Lens (62) Prix : 145 000 € C.A. : de 350 à 500 k€ Effectif : 3 à 5",
+      "date_pub": "",
+      "date_scraped": "2026-04-04",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Pièces détachées auto"
+    },
+    {
+      "id": "7c158bcedf95",
+      "title": "Vente Jardinerie Fleuristerie Horticulture Nord Gironde",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "33",
+      "ca_value": 435000,
+      "description": "Vente Jardinerie Fleuristerie Horticulture Nord Gironde 03/04/2026 Département : 33 Gironde Simuler votre financement 435 k€ NC 313 k€ Consulter sur...",
+      "date_pub": "03/04/2026",
+      "date_scraped": "2026-04-04",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
     {
       "id": "1d79852151e1",
       "title": "MECANIQUE GENERALE AUTOMOBILELittoral/Moyen Pays-Ouest (06)",
