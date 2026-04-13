@@ -1,8 +1,23 @@
 {
-  "last_updated": "2026-04-12T09:12:09Z",
-  "count": 59,
-  "new_today": 0,
+  "last_updated": "2026-04-13T11:08:48Z",
+  "count": 60,
+  "new_today": 1,
   "deals": [
+    {
+      "id": "6388e4f51c50",
+      "title": "GARAGE AUTOMOBILESect. Cambrai (59)",
+      "url": "https://www.transentreprise.com/offres/fiche/HDF264181C/garage-automobile/hauts-de-france/nord/sect-cambrai",
+      "source": "Transentreprise",
+      "region": "Prix :170 000 €",
+      "ca": "de 350 à 500 k€",
+      "ca_value": 500000,
+      "description": "HDF264181C GARAGE AUTOMOBILE Sect. Cambrai (59) Prix : 170 000 € C.A. : de 350 à 500 k€ Effectif : 2",
+      "date_pub": "",
+      "date_scraped": "2026-04-13",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Pièces détachées auto"
+    },
     {
       "id": "7496f98d342e",
       "title": "GARAGE AUTOMOBILE INDÉPENDANT ESCHAUArrond. Strasbourg (67)",
