@@ -1,8 +1,23 @@
 {
-  "last_updated": "2026-04-14T08:15:48Z",
-  "count": 60,
-  "new_today": 0,
+  "last_updated": "2026-04-15T08:17:41Z",
+  "count": 61,
+  "new_today": 1,
   "deals": [
+    {
+      "id": "393ed5713727",
+      "title": "Jardinerie dans les Pyrénées Orientales (66)",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "66",
+      "ca_value": 312000,
+      "description": "Jardinerie dans les Pyrénées Orientales (66) 09/04/2026 Département : 66 Pyrénées-Orientales Simuler votre financement 312 k€ NC 737 k€ Consulter sur...",
+      "date_pub": "09/04/2026",
+      "date_scraped": "2026-04-15",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
     {
       "id": "6388e4f51c50",
       "title": "GARAGE AUTOMOBILESect. Cambrai (59)",
