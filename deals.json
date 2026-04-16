@@ -1,8 +1,38 @@
 {
-  "last_updated": "2026-04-15T08:17:41Z",
-  "count": 61,
-  "new_today": 1,
+  "last_updated": "2026-04-16T08:17:51Z",
+  "count": 63,
+  "new_today": 2,
   "deals": [
+    {
+      "id": "08a035ac478f",
+      "title": "Animalerie, Alimentation, Accessoire en Ardèche (07)",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "07",
+      "ca_value": 1012000,
+      "description": "Animalerie, Alimentation, Accessoire en Ardèche (07) 30/03/2026 Département : 07 Ardèche Simuler votre financement 1 012 k€ NC 1 310 k€ Consulter sur...",
+      "date_pub": "30/03/2026",
+      "date_scraped": "2026-04-16",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
+    {
+      "id": "396cc256539c",
+      "title": "Commerce d'équipements automobiles et pièces détachées 07",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "07",
+      "ca_value": 1633000,
+      "description": "Commerce d'équipements automobiles et pièces détachées 07 15/04/2026 Département : 07 Ardèche Simuler votre financement 1 633 k€ NC 545 k€ Consulter sur...",
+      "date_pub": "15/04/2026",
+      "date_scraped": "2026-04-16",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Pièces détachées auto"
+    },
     {
       "id": "393ed5713727",
       "title": "Jardinerie dans les Pyrénées Orientales (66)",
