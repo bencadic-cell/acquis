@@ -1,8 +1,23 @@
 {
-  "last_updated": "2026-04-22T08:20:34Z",
-  "count": 63,
-  "new_today": 0,
+  "last_updated": "2026-04-23T08:24:39Z",
+  "count": 64,
+  "new_today": 1,
   "deals": [
+    {
+      "id": "be9d7fb868ed",
+      "title": "DISTRIBUTION BOÎTES MÉTALLIQUES ALIMENTAIRESArrond. de Provins (77)",
+      "url": "https://www.transentreprise.com/offres/fiche/IDF264352C/distribution-boites-metalliques-alimentaires/ile-de-france/seine-et-marne/arrond-de-provins",
+      "source": "Transentreprise",
+      "region": "Prix :78 000 €",
+      "ca": "de 200 à 350 k€",
+      "ca_value": 350000,
+      "description": "IDF264352C DISTRIBUTION BOÎTES MÉTALLIQUES ALIMENTAIRES Arrond. de Provins (77) Prix : 78 000 € C.A. : de 200 à 350 k€ Effectif : 1",
+      "date_pub": "",
+      "date_scraped": "2026-04-23",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
     {
       "id": "08a035ac478f",
       "title": "Animalerie, Alimentation, Accessoire en Ardèche (07)",
