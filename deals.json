@@ -1,8 +1,23 @@
 {
-  "last_updated": "2026-04-23T08:24:39Z",
-  "count": 64,
+  "last_updated": "2026-04-24T08:35:49Z",
+  "count": 65,
   "new_today": 1,
   "deals": [
+    {
+      "id": "58f171c48e84",
+      "title": "Jardinerie, 300 m2 en Vendée (85)",
+      "url": "https://reprise-entreprise.bpifrance.fr#",
+      "source": "BPI France",
+      "region": "",
+      "ca": "85",
+      "ca_value": 300000,
+      "description": "Jardinerie, 300 m2 en Vendée (85) 23/04/2026 Département : 85 Vendée Simuler votre financement 891 k€ NC 699 k€ Consulter sur...",
+      "date_pub": "23/04/2026",
+      "date_scraped": "2026-04-24",
+      "seen": false,
+      "added_to_crm": false,
+      "verticale": "Nutrition animale"
+    },
     {
       "id": "be9d7fb868ed",
       "title": "DISTRIBUTION BOÎTES MÉTALLIQUES ALIMENTAIRESArrond. de Provins (77)",
