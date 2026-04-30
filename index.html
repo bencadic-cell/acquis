@@ -473,6 +473,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .k-col-dot.dot-4{background:#22c55e}
 .k-col-dot.dot-x{background:#ef4444}
 
+/* Application drawer canal buttons */
+.app-canal-btn{background:#1e293b;color:#94a3b8;border:1px solid #334155;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;transition:.15s}
+.app-canal-btn:hover{background:#334155;color:#cbd5e1}
+.app-canal-btn.active{background:#6366f1;color:#fff;border-color:#6366f1}
+
+/* Application status pill on job cards */
+.app-pill{display:inline-flex;align-items:center;gap:3px;font-size:9px;padding:2px 6px;border-radius:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
+.app-pill-none{background:#1e293b;color:#64748b}
+.app-pill-draft{background:#fef3c7;color:#92400e}
+.app-pill-reviewed{background:#dbeafe;color:#1e40af}
+.app-pill-sent{background:#dcfce7;color:#166534}
+
 </style>
 </head>
 <body>
@@ -581,6 +593,9 @@ function authCheck(){
   <div class="sb-item" id="nav-archives" onclick="goTo('archives')">
     <span class="si">📦</span> Archives
     <span class="sb-badge" id="badge-archives"></span>
+  </div>
+  <div class="sb-item" id="nav-settings" onclick="goTo('settings')">
+    <span class="si">⚙️</span> Réglages
   </div>
 
   <div class="sb-divider"></div>
@@ -1097,6 +1112,86 @@ function authCheck(){
     <div class="ph"><h2>📦 Archives</h2><p>Contacts et cibles clôturés — plus rien à en tirer</p></div>
     <div class="ph-divider"></div>
     <div class="arch-page-scroll" id="arch-content"></div>
+  </div>
+
+  <!-- ═════════ RÉGLAGES PAGE ═════════ -->
+  <div class="page" id="page-settings">
+    <div class="ph"><h2>⚙️ Réglages</h2><p>Auto-candidature — clé API Claude · CV link · signatures</p></div>
+    <div class="ph-divider"></div>
+    <div style="padding:18px;max-width:760px">
+      <h3 style="color:#cbd5e1;font-size:14px;margin:0 0 10px;font-weight:600">🤖 Claude API</h3>
+      <p style="font-size:11px;color:#64748b;margin-bottom:6px">Clé API pour générer les cover letters. Obtenir une clé sur <a href="https://console.anthropic.com" target="_blank" style="color:#a5b4fc">console.anthropic.com</a> (modèle conseillé : claude-sonnet-4-5).</p>
+      <input type="password" id="settings-api-key" placeholder="sk-ant-api..." style="width:100%;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-family:monospace;font-size:12px"/>
+
+      <h3 style="color:#cbd5e1;font-size:14px;margin:24px 0 10px;font-weight:600">📄 CV (link externe)</h3>
+      <p style="font-size:11px;color:#64748b;margin-bottom:6px">Lien public vers ton CV (Google Drive / Dropbox / OneDrive — visible avec le lien). Sera référencé dans les emails de candidature.</p>
+      <input type="url" id="settings-cv-link" placeholder="https://drive.google.com/file/d/..." style="width:100%;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:12px"/>
+
+      <h3 style="color:#cbd5e1;font-size:14px;margin:24px 0 10px;font-weight:600">📝 Contenu du CV pour Claude</h3>
+      <p style="font-size:11px;color:#64748b;margin-bottom:6px">Coller le texte intégral du CV. Claude l'utilisera pour personnaliser les cover letters et identifier les bullets pertinents par offre.</p>
+      <textarea id="settings-cv-text" placeholder="Profil, expériences, achievements..." style="width:100%;height:160px;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:12px;font-family:inherit;resize:vertical"></textarea>
+
+      <h3 style="color:#cbd5e1;font-size:14px;margin:24px 0 10px;font-weight:600">✍️ Signature FR</h3>
+      <textarea id="settings-sig-fr" placeholder="Bien à vous,&#10;&#10;Ben Cadic&#10;06 38 93 19 70 — ben.cadic@gmail.com" style="width:100%;height:80px;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:12px;font-family:inherit;resize:vertical"></textarea>
+
+      <h3 style="color:#cbd5e1;font-size:14px;margin:24px 0 10px;font-weight:600">✍️ Signature EN</h3>
+      <textarea id="settings-sig-en" placeholder="Best regards,&#10;&#10;Ben Cadic&#10;+33 6 38 93 19 70 — ben.cadic@gmail.com" style="width:100%;height:80px;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:12px;font-family:inherit;resize:vertical"></textarea>
+
+      <div style="margin-top:24px;display:flex;gap:10px">
+        <button onclick="saveSettings()" style="background:#16a34a;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer">💾 Enregistrer</button>
+        <button onclick="testClaudeApi()" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;padding:10px 20px;border-radius:6px;cursor:pointer">🧪 Tester la clé API</button>
+        <span id="settings-status" style="margin-left:auto;color:#94a3b8;font-size:12px;align-self:center"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ APPLICATION DRAWER (auto-candidature) ═════════ -->
+  <div id="app-drawer-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9000;display:none" onclick="if(event.target===this)closeAppDrawer()">
+    <div id="app-drawer" style="position:absolute;right:0;top:0;height:100vh;width:760px;max-width:95vw;background:#0f172a;border-left:1px solid #1e293b;overflow-y:auto;padding:20px;box-shadow:-8px 0 32px rgba(0,0,0,0.4)">
+      <div style="display:flex;align-items:start;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-size:11px;letter-spacing:1px;color:#a5b4fc;text-transform:uppercase">Auto-candidature</div>
+          <div id="app-drawer-title" style="font-size:18px;font-weight:700;color:#e2e8f0;margin-top:4px"></div>
+          <div id="app-drawer-sub" style="color:#94a3b8;font-size:12px;margin-top:2px"></div>
+        </div>
+        <button onclick="closeAppDrawer()" style="background:transparent;border:none;color:#94a3b8;cursor:pointer;font-size:18px">✕</button>
+      </div>
+
+      <div style="border-top:1px solid #1e293b;margin:8px 0 16px"></div>
+
+      <h4 style="color:#cbd5e1;font-size:12px;margin:8px 0 6px;text-transform:uppercase;letter-spacing:0.5px">📄 Description de l'offre</h4>
+      <textarea id="app-job-desc" placeholder="Coller la description complète de l'offre ici..." style="width:100%;height:140px;padding:10px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:12px;font-family:inherit;resize:vertical"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <button onclick="generateApplicationDraft()" id="app-gen-btn" style="background:#6366f1;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer">🤖 Générer draft</button>
+        <span id="app-lang-badge" style="background:#1e293b;color:#a5b4fc;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600">Langue: —</span>
+        <span id="app-status-badge" style="background:#1e293b;color:#94a3b8;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:auto">Statut: aucun</span>
+      </div>
+
+      <h4 style="color:#cbd5e1;font-size:12px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:0.5px">✉️ Cover letter (modifiable)</h4>
+      <textarea id="app-cover" placeholder="(Cliquer 'Générer draft' pour pré-remplir)" style="width:100%;height:240px;padding:10px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:12px;font-family:inherit;resize:vertical"></textarea>
+
+      <h4 style="color:#cbd5e1;font-size:12px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:0.5px">⭐ Bullets CV à mettre en avant</h4>
+      <textarea id="app-cv-notes" placeholder="(Bullets sélectionnés du CV pour ce poste)" style="width:100%;height:100px;padding:10px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:12px;font-family:inherit;resize:vertical"></textarea>
+
+      <h4 style="color:#cbd5e1;font-size:12px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:0.5px">📤 Canal d'envoi</h4>
+      <div style="display:flex;gap:6px;margin-bottom:8px" id="app-canal-buttons">
+        <button class="app-canal-btn" data-canal="email" onclick="setAppCanal('email')">✉️ Email</button>
+        <button class="app-canal-btn" data-canal="linkedin" onclick="setAppCanal('linkedin')">🔗 LinkedIn</button>
+        <button class="app-canal-btn" data-canal="portail" onclick="setAppCanal('portail')">🌐 Portail</button>
+      </div>
+
+      <div id="app-canal-email" style="display:none;background:#1e293b;padding:12px;border-radius:6px;margin-top:6px">
+        <input type="email" id="app-email-to" placeholder="recruteur@entreprise.com" style="width:100%;padding:8px;background:#0f172a;border:1px solid #334155;border-radius:4px;color:#e2e8f0;font-size:12px;margin-bottom:6px"/>
+        <input type="text" id="app-email-sujet" placeholder="Objet de l'email" style="width:100%;padding:8px;background:#0f172a;border:1px solid #334155;border-radius:4px;color:#e2e8f0;font-size:12px;margin-bottom:6px"/>
+        <textarea id="app-email-body" placeholder="Corps de l'email" style="width:100%;height:100px;padding:8px;background:#0f172a;border:1px solid #334155;border-radius:4px;color:#e2e8f0;font-size:12px;font-family:inherit"></textarea>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:10px;align-items:center;border-top:1px solid #1e293b;padding-top:18px">
+        <button onclick="saveApplication()" style="background:#16a34a;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-weight:600;cursor:pointer">💾 Enregistrer</button>
+        <button onclick="sendApplication()" style="background:#dc2626;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-weight:600;cursor:pointer">🚀 Préparer envoi</button>
+        <span id="app-feedback" style="margin-left:auto;color:#94a3b8;font-size:11px"></span>
+      </div>
+    </div>
   </div>
 
 </div><!-- /main -->
@@ -3141,15 +3236,22 @@ function buildJobCard(id,j,ci){
     j.salaire     ?`<span class="chip chip-ca">${escH(j.salaire)}</span>`:'',
     j.source      ?`<span class="chip chip-gray">${escH(j.source)}</span>`:'',
   ].join('');
+  const appStatus=j.application?.status||'none';
+  const appPillLabel={none:'Pas préparé',draft:'Draft prêt',reviewed:'Validé',sent:'Envoyé'}[appStatus]||'Pas préparé';
+  const appPill=`<span class="app-pill app-pill-${appStatus}">${appPillLabel}</span>`;
   const lA=ci>0              ?`<button class="btn-mv" onclick="event.stopPropagation();moveJobCard('${id}',-1)">←</button>`:'';
   const rA=ci<J_COLS.length-1?`<button class="btn-mv" onclick="event.stopPropagation();moveJobCard('${id}',1)">→</button>`:'';
   el.innerHTML=`
     <div class="dc-top"><div class="dc-name">${escH(j.societe)||'<span style="color:#d1d5db">Nouvelle offre</span>'}</div></div>
     <div class="dc-contact">${escH(j.poste)||''}</div>
     <div class="dc-chips">${chips}<span class="crm-badge ${cls}">${escH(j.statutCRM)}</span></div>
+    <div>${appPill}</div>
     <div class="dc-footer">
       <span class="dc-age-label">${j.next?'📅 '+escH(j.next):''}</span>
-      <div class="dc-actions">${lA}${rA}<button class="btn-del" onclick="event.stopPropagation();delJobCard('${id}')">✕</button></div>
+      <div class="dc-actions">
+        <button class="btn-log" onclick="event.stopPropagation();openAppDrawer('${id}')" title="Préparer candidature">📝</button>
+        ${lA}${rA}<button class="btn-del" onclick="event.stopPropagation();delJobCard('${id}')">✕</button>
+      </div>
     </div>`;
   el.addEventListener('click',()=>openJobDrawer(id));
   return el;
@@ -3437,8 +3539,301 @@ function markJfNoGo(id){
 // ──────────── INIT NEW SECTIONS ────────────
 (function(){
   // Init kanban Jobs after DOM ready
-  setTimeout(()=>{initJobsKanban();renderJobsPipeline();renderConsultingTable();renderAgenda7();},100);
+  setTimeout(()=>{initJobsKanban();renderJobsPipeline();renderConsultingTable();renderAgenda7();loadSettings();},100);
 })();
+
+// ════════════════════════════════════════════════════
+// SETTINGS + AUTO-CANDIDATURE (refonte 30/04/2026)
+// ════════════════════════════════════════════════════
+
+const SETTINGS_KEY = 'ben_settings_v1';
+let _appOpenJobId = null;
+
+function loadSettings(){
+  try{
+    const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');
+    if(document.getElementById('settings-api-key'))document.getElementById('settings-api-key').value=s.claudeApiKey||'';
+    if(document.getElementById('settings-cv-link'))document.getElementById('settings-cv-link').value=s.cvLink||'';
+    if(document.getElementById('settings-cv-text'))document.getElementById('settings-cv-text').value=s.cvBaseText||'';
+    if(document.getElementById('settings-sig-fr'))document.getElementById('settings-sig-fr').value=s.signatureFr||'';
+    if(document.getElementById('settings-sig-en'))document.getElementById('settings-sig-en').value=s.signatureEn||'';
+  }catch(e){console.warn('settings load failed',e);}
+}
+
+function getSettings(){
+  try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');}catch(e){return{};}
+}
+
+function saveSettings(){
+  const s={
+    claudeApiKey:document.getElementById('settings-api-key')?.value||'',
+    cvLink:document.getElementById('settings-cv-link')?.value||'',
+    cvBaseText:document.getElementById('settings-cv-text')?.value||'',
+    signatureFr:document.getElementById('settings-sig-fr')?.value||'',
+    signatureEn:document.getElementById('settings-sig-en')?.value||'',
+  };
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));
+  const st=document.getElementById('settings-status');if(st){st.textContent='✓ Sauvegardé';st.style.color='#22c55e';setTimeout(()=>st.textContent='',2500);}
+}
+
+async function testClaudeApi(){
+  const s=getSettings();
+  if(!s.claudeApiKey){alert('Clé API manquante.');return;}
+  const st=document.getElementById('settings-status');if(st){st.textContent='⏳ Test en cours...';st.style.color='#94a3b8';}
+  try{
+    const r=await callClaudeApi(s.claudeApiKey,'claude-haiku-4-5-20251001',[{role:'user',content:'Réponds juste OK.'}],50);
+    if(r&&r.content&&r.content[0]?.text){
+      if(st){st.textContent='✅ Clé valide — réponse: '+r.content[0].text.substring(0,30);st.style.color='#22c55e';}
+    }else{
+      if(st){st.textContent='❌ Réponse invalide';st.style.color='#ef4444';}
+    }
+  }catch(e){
+    if(st){st.textContent='❌ '+(e.message||'erreur');st.style.color='#ef4444';}
+  }
+}
+
+// Direct browser call to Anthropic API
+async function callClaudeApi(apiKey, model, messages, maxTokens){
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true',
+      'content-type':'application/json'
+    },
+    body:JSON.stringify({model:model||'claude-sonnet-4-5',max_tokens:maxTokens||1500,messages:messages})
+  });
+  if(!resp.ok){
+    const txt=await resp.text();
+    throw new Error('API '+resp.status+': '+txt.substring(0,200));
+  }
+  return await resp.json();
+}
+
+// Detect language of an offer text — simple heuristic + verification
+function detectLang(text){
+  if(!text)return 'FR';
+  const t=text.toLowerCase();
+  const fr=['nous recherchons','poste','expérience','vous','rejoignez','entreprise','salaire','compétences','responsabilités','candidat'];
+  const en=['we are looking','position','experience','you','join','company','salary','skills','responsibilities','candidate'];
+  let frScore=0,enScore=0;
+  fr.forEach(w=>{if(t.includes(w))frScore++;});
+  en.forEach(w=>{if(t.includes(w))enScore++;});
+  return enScore>frScore?'EN':'FR';
+}
+
+// Open application drawer
+function openAppDrawer(jobId){
+  const j=jobsData[jobId];if(!j)return;
+  _appOpenJobId=jobId;
+  document.getElementById('app-drawer-title').textContent=(j.poste||'(poste)')+' — '+(j.societe||'(société)');
+  document.getElementById('app-drawer-sub').textContent=[j.localisation,j.source,j.salaire].filter(Boolean).join(' · ');
+  const a=j.application||{};
+  document.getElementById('app-job-desc').value=a.jobDescription||'';
+  document.getElementById('app-cover').value=a.coverLetter||'';
+  document.getElementById('app-cv-notes').value=a.cvVariantNotes||'';
+  document.getElementById('app-email-to').value=a.emailDestinataire||'';
+  document.getElementById('app-email-sujet').value=a.emailSujet||'';
+  document.getElementById('app-email-body').value=a.emailBody||'';
+  document.getElementById('app-lang-badge').textContent='Langue: '+(a.detectedLang||'—');
+  document.getElementById('app-status-badge').textContent='Statut: '+(a.status||'aucun');
+  setAppCanal(a.canalEnvoi||'',true);
+  document.getElementById('app-drawer-overlay').style.display='block';
+  document.getElementById('app-feedback').textContent='';
+}
+
+function closeAppDrawer(){
+  document.getElementById('app-drawer-overlay').style.display='none';
+  _appOpenJobId=null;
+}
+
+function setAppCanal(canal, silent){
+  document.querySelectorAll('.app-canal-btn').forEach(b=>b.classList.toggle('active',b.dataset.canal===canal));
+  document.getElementById('app-canal-email').style.display=canal==='email'?'block':'none';
+  if(!silent && _appOpenJobId){
+    const j=jobsData[_appOpenJobId];
+    if(j){j.application=j.application||{};j.application.canalEnvoi=canal;}
+  }
+}
+
+async function generateApplicationDraft(){
+  const s=getSettings();
+  if(!s.claudeApiKey){alert('Configure d\'abord la clé API dans Réglages.');return;}
+  if(!_appOpenJobId)return;
+  const j=jobsData[_appOpenJobId];if(!j)return;
+  const desc=document.getElementById('app-job-desc').value.trim();
+  if(!desc){alert('Colle d\'abord la description de l\'offre.');return;}
+
+  const lang=detectLang(desc);
+  document.getElementById('app-lang-badge').textContent='Langue: '+lang+' (auto)';
+
+  const btn=document.getElementById('app-gen-btn');
+  btn.disabled=true;btn.textContent='⏳ Génération...';
+  document.getElementById('app-feedback').textContent='Génération en cours...';
+
+  const sigFr=s.signatureFr||'Bien à vous,\n\nBen Cadic\n06 38 93 19 70 — ben.cadic@gmail.com';
+  const sigEn=s.signatureEn||'Best regards,\n\nBen Cadic\n+33 6 38 93 19 70 — ben.cadic@gmail.com';
+  const cvText=s.cvBaseText||'(CV à compléter dans Réglages)';
+
+  const promptFr=`Tu es Ben Cadic, ancien CEO industriel C-level (15 ans d'expérience, ex-Sogefi P&L €500M, 1200 employés, 6 usines). Profil : achats stratégiques, transformation, e-mobility, négo C-suite, M&A.
+
+Voici l'offre d'emploi :
+"""
+${desc}
+"""
+
+Voici ton CV pour contexte :
+"""
+${cvText}
+"""
+
+Tâche en 2 parties (réponds STRICTEMENT en JSON) :
+1. Une cover letter de 280-350 mots, ton direct C-level (factuel, chiffré, sans pathos), structurée :
+   - Accroche personnalisée (référence à l'entreprise/poste/contexte spécifique de l'offre)
+   - 2-3 achievements pertinents du CV avec chiffres
+   - Pourquoi ce poste matche votre trajectoire
+   - Demande de RDV
+   - Signature : "${sigFr}"
+2. Identifier 4-6 bullets du CV qui matchent le mieux ce poste (à mettre en avant dans le CV variant). Lister les bullets verbatim depuis le CV.
+
+Format réponse OBLIGATOIRE (JSON valide uniquement, pas de markdown autour) :
+{"coverLetter":"...","cvBullets":["bullet 1","bullet 2",...]}`;
+
+  const promptEn=`You are Ben Cadic, former industrial C-level CEO (15 years experience, ex-Sogefi P&L €500M, 1200 employees, 6 plants). Profile: strategic purchasing, transformation, e-mobility, C-suite negotiation, M&A.
+
+Here is the job offer:
+"""
+${desc}
+"""
+
+Here is your CV for context:
+"""
+${cvText}
+"""
+
+Task in 2 parts (reply STRICTLY in JSON):
+1. A cover letter of 280-350 words, direct C-level tone (factual, numbers-driven, no pathos), structured:
+   - Personalized opening (reference to specific company/role/context from offer)
+   - 2-3 relevant CV achievements with numbers
+   - Why this role fits your trajectory
+   - Request for a meeting
+   - Signature: "${sigEn}"
+2. Identify 4-6 CV bullets that best match this position (to highlight in CV variant). List bullets verbatim from CV.
+
+Required response format (valid JSON only, no markdown around):
+{"coverLetter":"...","cvBullets":["bullet 1","bullet 2",...]}`;
+
+  try{
+    const resp=await callClaudeApi(s.claudeApiKey,'claude-sonnet-4-5',[{role:'user',content:lang==='EN'?promptEn:promptFr}],2000);
+    const rawText=resp.content[0].text;
+    let parsed;
+    try{
+      // Strip potential markdown code fences
+      const clean=rawText.replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/,'').trim();
+      parsed=JSON.parse(clean);
+    }catch(e){
+      // Fallback: regex extraction
+      const m=rawText.match(/\{[\s\S]*\}/);
+      parsed=m?JSON.parse(m[0]):{coverLetter:rawText,cvBullets:[]};
+    }
+    document.getElementById('app-cover').value=parsed.coverLetter||'';
+    document.getElementById('app-cv-notes').value=(parsed.cvBullets||[]).map(b=>'• '+b).join('\n');
+
+    // Pre-fill email subject + body if email canal
+    const subjectFr=`Candidature ${j.poste} — Benjamin Cadic`;
+    const subjectEn=`Application ${j.poste} — Benjamin Cadic`;
+    document.getElementById('app-email-sujet').value=lang==='EN'?subjectEn:subjectFr;
+    const cvLink=s.cvLink?'\n\n📎 CV : '+s.cvLink:'';
+    document.getElementById('app-email-body').value=parsed.coverLetter+cvLink;
+
+    document.getElementById('app-status-badge').textContent='Statut: draft';
+    document.getElementById('app-feedback').textContent='✓ Draft généré — à reviewer';
+    document.getElementById('app-feedback').style.color='#22c55e';
+
+    // Persist immediately
+    j.application=Object.assign({},j.application||{},{
+      jobDescription:desc,detectedLang:lang,
+      coverLetter:parsed.coverLetter||'',
+      cvVariantNotes:(parsed.cvBullets||[]).map(b=>'• '+b).join('\n'),
+      status:'draft',
+      emailSujet:document.getElementById('app-email-sujet').value,
+      emailBody:document.getElementById('app-email-body').value,
+    });
+    save();
+    refreshJobCardPill(_appOpenJobId);
+  }catch(e){
+    document.getElementById('app-feedback').textContent='❌ '+e.message;
+    document.getElementById('app-feedback').style.color='#ef4444';
+    console.error(e);
+  }finally{
+    btn.disabled=false;btn.textContent='🤖 Générer draft';
+  }
+}
+
+function saveApplication(){
+  if(!_appOpenJobId)return;
+  const j=jobsData[_appOpenJobId];if(!j)return;
+  j.application=Object.assign({},j.application||{},{
+    jobDescription:document.getElementById('app-job-desc').value,
+    coverLetter:document.getElementById('app-cover').value,
+    cvVariantNotes:document.getElementById('app-cv-notes').value,
+    emailDestinataire:document.getElementById('app-email-to').value,
+    emailSujet:document.getElementById('app-email-sujet').value,
+    emailBody:document.getElementById('app-email-body').value,
+    status:'reviewed',
+  });
+  save();
+  refreshJobCardPill(_appOpenJobId);
+  document.getElementById('app-status-badge').textContent='Statut: reviewed';
+  document.getElementById('app-feedback').textContent='✓ Sauvegardé — statut reviewed';
+  document.getElementById('app-feedback').style.color='#22c55e';
+}
+
+function sendApplication(){
+  if(!_appOpenJobId)return;
+  const j=jobsData[_appOpenJobId];if(!j)return;
+  const a=j.application||{};
+  const canal=a.canalEnvoi||document.querySelector('.app-canal-btn.active')?.dataset.canal;
+  if(!canal){alert('Choisis un canal d\'envoi.');return;}
+
+  if(canal==='email'){
+    const to=document.getElementById('app-email-to').value.trim();
+    const sujet=document.getElementById('app-email-sujet').value.trim();
+    const body=document.getElementById('app-email-body').value;
+    if(!to){alert('Email destinataire manquant.');return;}
+    // Open mailto: in default mail client (or Gmail web compose)
+    const mailto=`mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(body)}`;
+    window.open(mailto,'_blank');
+    document.getElementById('app-feedback').textContent='✉️ Email ouvert dans ton client mail — vérifie + envoie manuellement';
+    document.getElementById('app-feedback').style.color='#a5b4fc';
+  }else if(canal==='linkedin'){
+    if(!j.url){alert('URL de l\'offre manquante.');return;}
+    // Copy cover letter to clipboard, then open URL
+    navigator.clipboard.writeText(a.coverLetter||document.getElementById('app-cover').value).then(()=>{
+      window.open(j.url,'_blank');
+      document.getElementById('app-feedback').textContent='🔗 LinkedIn ouvert — cover letter copiée dans le presse-papier';
+      document.getElementById('app-feedback').style.color='#a5b4fc';
+    });
+  }else if(canal==='portail'){
+    if(!j.url){alert('URL du portail manquante.');return;}
+    navigator.clipboard.writeText(a.coverLetter||document.getElementById('app-cover').value).then(()=>{
+      window.open(j.url,'_blank');
+      document.getElementById('app-feedback').textContent='🌐 Portail ouvert — cover letter copiée';
+      document.getElementById('app-feedback').style.color='#a5b4fc';
+    });
+  }
+
+  j.application=Object.assign({},a,{status:'sent',sentAt:new Date().toISOString(),canalEnvoi:canal});
+  save();
+  document.getElementById('app-status-badge').textContent='Statut: sent';
+  refreshJobCardPill(_appOpenJobId);
+}
+
+function refreshJobCardPill(jobId){
+  const old=document.getElementById(jobId);
+  if(old){const j=jobsData[jobId];if(j)old.replaceWith(buildJobCard(jobId,j,j.col||0));}
+}
 
 window.addEventListener('beforeunload',function(){if(!_loading)_save();});
 </script>
