@@ -50,12 +50,17 @@ VERTICALES = {
             "transformation métallique", "assemblage industriel",
         ],
         "keywords_broad": [
-            "industrie", "industriel", "production industrielle", "pme industrielle",
-            "atelier", "manufacturing", "fabrication industrielle", "précision",
-            "cnc", "tournage", "fraisage", "rectification", "peinture industrielle",
-            "intégration mécanique", "automatisme industriel",
-            "plasturgie", "caoutchouc", "métal", "metal", "mécanique", "mecanique",
-            "chaudronnerie", "fonderie", "tôlerie", "usinage",
+            # SCRAPER REFONTE 30/04/2026 — broad list TIGHTENED, removed generic terms
+            # like "industrie", "industriel", "atelier", "fabrication" alone which were
+            # matching butcher shops, garages etc.
+            "plasturgie", "caoutchouc", "élastomère", "elastomere",
+            "métallurgie", "metallurgie", "chaudronnerie", "tôlerie", "tolerie",
+            "mécanique de précision", "mecanique de precision",
+            "usinage", "décolletage", "decolletage",
+            "fonderie", "outillage industriel",
+            "sous-traitance", "sous-traitant industriel",
+            "transformation métallique",
+            "cnc", "tournage industriel", "fraisage industriel",
         ],
         "ca_min": 3_000_000,
         "ca_max": 10_000_000,
@@ -81,14 +86,18 @@ VERTICALES = {
             "équipementier", "equipementier", "biens d'équipement",
             "équipement industriel", "equipement industriel",
             "machine outil", "machine-outil",
-            "robotique industrielle", "automatisme",
+            "robotique industrielle", "automatisme industriel",
             "convoyeur", "convoyage", "manutention industrielle",
             "ligne de production", "ligne d'assemblage",
             "intégrateur industriel", "integrateur industriel",
         ],
         "keywords_broad": [
-            "b2b", "industriel", "équipement", "equipement",
-            "machines", "industrie mécanique", "industrie automatisme",
+            # TIGHTENED — removed generic "industriel"/"équipement"/"machines"/"b2b"
+            # that were polluting results. Now only specific compound keywords.
+            "machine outil", "machine-outil",
+            "robotique industrielle", "automatisme industriel",
+            "intégrateur industriel", "integrateur industriel",
+            "ligne de production", "ligne d'assemblage",
         ],
         "ca_min": 3_000_000,
         "ca_max": 10_000_000,
@@ -112,7 +121,7 @@ VERTICALES = {
         ],
         "keywords_broad": [
             "petfood", "alimentation animale", "nutrition animale",
-            "élevage", "animalerie",
+            "provenderie",
         ],
         "ca_min": 3_000_000,
         "ca_max": 10_000_000,
@@ -177,13 +186,21 @@ def normalize(text: str) -> str:
 
 
 def detect_verticale(title: str, desc: str) -> Optional[str]:
-    """Returns the first matching verticale name, or None."""
+    """Returns the first matching verticale name, or None.
+    REFONTE 30/04/2026: strict matching on title only — broad keywords
+    were causing false positives like 'boucherie' classified as sous-traitance industrielle.
+    """
     n_title = normalize(title)
-    n_both = normalize(f"{title} {desc}")
     for vname, vert in VERTICALES.items():
         if any(kw in n_title for kw in vert["keywords_title"]):
             return vname
-        if any(kw in n_both for kw in vert["keywords_broad"]):
+    # Fallback: broad match BOTH in title AND description (require 1 match in each side)
+    # This catches edge cases without exploding false positives
+    n_desc = normalize(desc)
+    for vname, vert in VERTICALES.items():
+        broad_in_title = any(kw in n_title for kw in vert["keywords_broad"])
+        broad_in_desc = any(kw in n_desc for kw in vert["keywords_broad"])
+        if broad_in_title and broad_in_desc:
             return vname
     return None
 
@@ -271,9 +288,22 @@ def load_existing() -> dict:
 
 
 def save_deals(deals_by_id: dict):
+    """Save deals to JSON. REFONTE 30/04/2026:
+    - Drop deals classified as legacy verticales (Pièces auto, Mapping, old Nutrition)
+    - Drop deals with region_priority='OUT' (off-thesis geo)
+    - Keep only last 90 days
+    """
+    LEGACY_VERTICALES = {"Pièces détachées auto", "Mapping concurrentiel", "Nutrition animale"}
     deals_list = list(deals_by_id.values())
+    # Filter 1: drop legacy verticales (force re-scraping under new ones)
+    deals_list = [d for d in deals_list
+                  if (d.get("verticale") or "") not in LEGACY_VERTICALES]
+    # Filter 2: drop off-thesis geographies
+    deals_list = [d for d in deals_list
+                  if d.get("region_priority", "P1") in ("P1", "P2")]
+    # Filter 3: drop too-old entries
     deals_list.sort(key=lambda d: (d.get("date_scraped", ""), d.get("source", "")), reverse=True)
-    cutoff = (datetime.utcnow() - timedelta(days=120)).date().isoformat()
+    cutoff = (datetime.utcnow() - timedelta(days=90)).date().isoformat()
     deals_list = [d for d in deals_list if d.get("date_scraped", "9999") >= cutoff]
     payload = {
         "last_updated": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -284,7 +314,7 @@ def save_deals(deals_by_id: dict):
     }
     with open(DEALS_FILE, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
-    print(f"\n✓ deals.json updated — {len(deals_list)} total deals")
+    print(f"\n✓ deals.json updated — {len(deals_list)} on-thesis deals (legacy + OUT dropped)")
 
 
 def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="", verticale="") -> dict:

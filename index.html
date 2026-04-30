@@ -517,10 +517,11 @@ function authCheck(){
   <div class="sb-brand"><span class="sb-brand-icon">🎯</span><span class="sb-brand-name">Acquis</span></div>
   <div class="sb-date" id="sb-date"></div>
 
-  <div class="sb-moment">
-    <button class="sb-mbtn" id="mb-matin" onclick="setMoment('matin')">☀️ Matin</button>
-    <button class="sb-mbtn" id="mb-midi"  onclick="setMoment('midi')">🌤 Midi</button>
-    <button class="sb-mbtn" id="mb-soir"  onclick="setMoment('soir')">🌙 Soir</button>
+  <!-- (matin/midi/soir retirés — refonte 30/04/2026) -->
+  <div style="display:none">
+    <button id="mb-matin"></button>
+    <button id="mb-midi"></button>
+    <button id="mb-soir"></button>
   </div>
 
   <div class="sb-divider"></div>
@@ -1002,9 +1003,15 @@ function authCheck(){
       </select>
       <select class="filter-select" id="df-vert" onchange="renderDealFlow()">
         <option value="">Toutes les verticales</option>
-        <option>Nutrition animale</option>
-        <option>Pièces détachées auto</option>
-        <option>Mapping concurrentiel</option>
+        <option>Sous-traitance industrielle</option>
+        <option>Mécanique B2B / Industrie</option>
+        <option>Nutrition animale (P3 — pipeline secondaire)</option>
+      </select>
+      <select class="filter-select" id="df-prio" onchange="renderDealFlow()" title="Priorité géographique">
+        <option value="P1+P2">P1+P2 (Alsace + 35/13/83)</option>
+        <option value="P1">P1 seulement (Alsace 67/68)</option>
+        <option value="P2">P2 seulement (35/13/83)</option>
+        <option value="">Toutes régions</option>
       </select>
       <button class="proj-filter-btn" id="df-new-btn" onclick="toggleDfNew()" style="flex-shrink:0">🆕 Nouvelles</button>
       <span class="ct-count" id="df-count" style="margin-left:auto"></span>
@@ -2399,9 +2406,33 @@ function renderDealFlow() {
   var LS = window["local"+"Storage"];
   var allDeals = dealsData || [];
   var active = allDeals.filter(function(d) { return !LS.getItem("df_nogo_" + d.id); });
-  var fEl = document.getElementById("df-vert-filter");
+  // Verticale filter (legacy id "df-vert-filter" + new id "df-vert" both supported)
+  var fEl = document.getElementById("df-vert") || document.getElementById("df-vert-filter");
   var filterVert = fEl ? fEl.value : "";
-  var filtered = filterVert ? active.filter(function(d) { return (d.verticale||"Autre") === filterVert; }) : active;
+  // Source filter
+  var sEl = document.getElementById("df-source");
+  var filterSrc = sEl ? sEl.value : "";
+  // Search filter
+  var qEl = document.getElementById("df-search");
+  var filterQ = qEl ? (qEl.value || "").toLowerCase() : "";
+  // Region priority filter (refonte 30/04/2026)
+  var pEl = document.getElementById("df-prio");
+  var filterPrio = pEl ? pEl.value : "P1+P2";  // default to P1+P2
+  var filtered = active.filter(function(d) {
+    if (filterVert && (d.verticale||"Autre") !== filterVert) return false;
+    if (filterSrc && d.source !== filterSrc) return false;
+    if (filterQ) {
+      var blob = ((d.title||"") + " " + (d.region||"") + " " + (d.description||"")).toLowerCase();
+      if (blob.indexOf(filterQ) === -1) return false;
+    }
+    if (filterPrio) {
+      var prio = d.region_priority || "OUT";
+      if (filterPrio === "P1+P2" && prio !== "P1" && prio !== "P2") return false;
+      if (filterPrio === "P1" && prio !== "P1") return false;
+      if (filterPrio === "P2" && prio !== "P2") return false;
+    }
+    return true;
+  });
   var vertSet = {};
   filtered.forEach(function(d) { var v = d.verticale||"Autre"; if(!vertSet[v]) vertSet[v]=[]; vertSet[v].push(d); });
   var verts = Object.keys(vertSet);
