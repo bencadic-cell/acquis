@@ -1,13 +1,16 @@
-name: Deal Flow Daily Scraper
+name: Acquis Deal Flow + Job Flow 2x daily
 
 on:
   schedule:
+    # 2x/day: 06:30 UTC (07:30 Paris winter / 08:30 summer)
+    #         16:30 UTC (17:30 Paris winter / 18:30 summer)
     - cron: '30 6 * * *'
+    - cron: '30 16 * * *'
   workflow_dispatch:
 
 jobs:
   scrape:
-    name: Scrape MA platforms
+    name: Scrape M and A platforms plus job boards
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,17 +27,24 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4 lxml
 
-      - name: Run scraper
+      - name: Run Deal Flow scraper
         run: python acquis-bot/scraper/scraper.py
+        continue-on-error: true
 
-      - name: Commit updated deals.json
+      - name: Run Job Flow scraper
+        run: python acquis-bot/scraper/job_scraper.py
+        continue-on-error: true
+
+      - name: Commit updated deals.json and jobs.json
         run: |
           git config --local user.email "acquis-bot@users.noreply.github.com"
           git config --local user.name "Acquis Bot"
-          git add deals.json
+          git add deals.json jobs.json 2>/dev/null || true
           if git diff --staged --quiet; then
-            echo "No new deals found"
+            echo "No new deals/jobs found this run"
           else
-            git commit -m "Deal flow $(date +%Y-%m-%d)"
+            NEW_DEALS=$(python3 -c "import json,os; p='deals.json'; d=json.load(open(p)) if os.path.exists(p) else {}; print(d.get('new_today', 0))" 2>/dev/null || echo "?")
+            NEW_JOBS=$(python3 -c "import json,os; p='jobs.json'; d=json.load(open(p)) if os.path.exists(p) else {}; print(d.get('new_today', 0))" 2>/dev/null || echo "?")
+            git commit -m "Acquis flow $(date -u +%Y-%m-%dT%H:%MZ) — ${NEW_DEALS} deal(s), ${NEW_JOBS} job(s)"
             git push
           fi

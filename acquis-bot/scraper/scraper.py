@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 """
-Acquis Deal Flow Scraper v2.3
-Scrapes French M&A platforms daily for business acquisition opportunities
-matching Lughanor's target criteria.
+Acquis Deal Flow Scraper v3.0 — REFONTE 30/04/2026
+Scrapes French M&A platforms 2x/day for Lughanor's new thesis :
+sous-traitance industrielle (NAF 22-28) + industrie/mécanique B2B.
 
-Sources (confirmed working):
-- Transentreprise.com      — POST search, parse div.row.mb-3 cards
-- BPI France Transmission  — GET production?searchText=KEYWORD, parse article.result
+Geographic priority :
+  P1 = Alsace (départements 67 + 68)
+  P2 = 35 (Ille-et-Vilaine), 13 (Bouches-du-Rhône), 83 (Var)
+  Out = anything else (still scraped, but flagged "out_of_scope")
+
+Sources (confirmed):
+- Transentreprise.com           — POST search (équivalent Actify CCI)
+- BPI France Transmission       — alias "Actify" / Reprise & Transmission
+- Fusacq                        — Marketplace Fusions & Acquisitions
+- CRA / CessionPME              — Conseil National des Repreneurs (CRA) + listings PME
 """
 
 import json
@@ -20,99 +27,124 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-# ─── Verticales & Target Criteria ─────────────────────────────────────
+# ─── Verticales & Target Criteria — REFONTE 30/04/2026 ──────────────────────
 
 VERTICALES = {
-    "Nutrition animale": {
+    "Sous-traitance industrielle": {
         "keywords_title": [
-            "petfood", "pet food",
-            "alimentation animale", "nutrition animale", "aliment animal", "aliments animaux",
-            "nourriture animale", "nourriture pour animaux",
-            "croquettes", "pâtée",
-            "ruminant", "bovin", "ovin", "caprin", "volaille", "volailles", "aviculture",
-            "provenderie", "fabrication aliments", "aliments du bétail",
-            "nac", "nouveaux animaux de compagnie", "reptile", "aquariophilie",
-            "équin", "équine", "équitation", "cheval", "chevaux", "hippique",
-            "nutrition équine", "aliment cheval",
-            "animalerie", "jardinerie animalerie",
-            "élevage porcin", "porcin", "porc",
-            "friandise", "snack chien", "snack chat",
+            # Plasturgie / caoutchouc (NAF 22)
+            "plasturgie", "plastique technique", "injection plastique", "injection",
+            "extrusion", "thermoformage", "soufflage", "rotomoulage",
+            "caoutchouc", "élastomère", "elastomère", "elastomere",
+            # Métallurgie / chaudronnerie / mécanique (NAF 24-28)
+            "métallurgie", "metallurgie", "chaudronnerie", "chaudronnier",
+            "tôlerie", "tolerie", "découpe métal", "decoupe metal", "emboutissage",
+            "soudure", "soudage", "usinage", "décolletage", "decolletage",
+            "mécanique de précision", "mecanique de precision",
+            "mécanique générale", "mecanique generale",
+            "fonderie", "forge", "outillage", "moule", "moulage",
+            "traitement de surface", "anodisation", "galvanisation",
+            "machine spéciale", "machine speciale", "machines speciales",
+            # Sous-traitance industrielle
+            "sous-traitance industrielle", "sous-traitant industriel",
+            "transformation métallique", "assemblage industriel",
         ],
         "keywords_broad": [
-            "petfood", "pet food",
-            "alimentation animale", "nutrition animale", "aliment animal", "aliments animaux",
-            "nourriture animale", "croquettes", "pâtée",
-            "ruminant", "bovin", "ovin", "caprin", "volaille", "volailles", "aviculture",
-            "provenderie", "fabrication aliments", "aliments du bétail",
-            "nac", "nouveaux animaux de compagnie", "reptile", "aquariophilie",
-            "équin", "équine", "équitation", "cheval", "chevaux", "hippique",
-            "nutrition équine", "aliment cheval",
-            "animalerie", "jardinerie animalerie",
-            "élevage porcin", "porcin", "porc", "friandise",
-            "élevage", "vétérinaire", "aquaculture", "apiculture",
-            "bétail", "fourrage", "foin", "insecte", "larve", "ver de farine",
-            "jardinerie",
+            "industrie", "industriel", "production industrielle", "pme industrielle",
+            "atelier", "manufacturing", "fabrication industrielle", "précision",
+            "cnc", "tournage", "fraisage", "rectification", "peinture industrielle",
+            "intégration mécanique", "automatisme industriel",
+            "plasturgie", "caoutchouc", "métal", "metal", "mécanique", "mecanique",
+            "chaudronnerie", "fonderie", "tôlerie", "usinage",
         ],
-        "ca_min": 300_000,
-        "ca_max": 7_000_000,
+        "ca_min": 3_000_000,
+        "ca_max": 10_000_000,
+        "bpi_configs": [
+            ("production", "sous-traitance industrielle"),
+            ("production", "plasturgie"),
+            ("production", "chaudronnerie"),
+            ("production", "mécanique de précision"),
+            ("production", "métallurgie"),
+            ("production", "usinage"),
+            ("production", "découpe métal"),
+            ("production", "fonderie"),
+        ],
+        "bpi_sectors": ["22", "24", "25", "28"],  # NAF 22 plastique, 24 métallurgie, 25 fabrication métallique, 28 machines
+        "fusacq_kw": [
+            "sous-traitance", "plasturgie", "chaudronnerie", "mécanique",
+            "usinage", "métallurgie", "fonderie", "tôlerie", "décolletage",
+        ],
+        "cra_naf": ["22", "24", "25", "28"],
+    },
+    "Mécanique B2B / Industrie": {
+        "keywords_title": [
+            "équipementier", "equipementier", "biens d'équipement",
+            "équipement industriel", "equipement industriel",
+            "machine outil", "machine-outil",
+            "robotique industrielle", "automatisme",
+            "convoyeur", "convoyage", "manutention industrielle",
+            "ligne de production", "ligne d'assemblage",
+            "intégrateur industriel", "integrateur industriel",
+        ],
+        "keywords_broad": [
+            "b2b", "industriel", "équipement", "equipement",
+            "machines", "industrie mécanique", "industrie automatisme",
+        ],
+        "ca_min": 3_000_000,
+        "ca_max": 10_000_000,
+        "bpi_configs": [
+            ("production", "équipement industriel"),
+            ("production", "machine outil"),
+            ("production", "robotique industrielle"),
+        ],
+        "bpi_sectors": ["28", "29"],
+        "fusacq_kw": [
+            "équipementier", "machine outil", "robotique", "automatisme",
+            "convoyeur", "intégrateur", "équipement industriel",
+        ],
+        "cra_naf": ["28", "29"],
+    },
+    "Nutrition animale (P3 — pipeline secondaire)": {
+        # Conservé en P3 — pipeline secondaire, en pause focus principal
+        "keywords_title": [
+            "petfood", "alimentation animale", "nutrition animale",
+            "croquettes", "provenderie", "aliment animal",
+        ],
+        "keywords_broad": [
+            "petfood", "alimentation animale", "nutrition animale",
+            "élevage", "animalerie",
+        ],
+        "ca_min": 3_000_000,
+        "ca_max": 10_000_000,
         "bpi_configs": [
             ("production", "alimentation animale"),
-            ("production", "petfood"),
-            ("production", "nutrition animale"),
-            ("production", "volailles"),
-            ("production", "élevage"),
-            ("production", "provenderie"),
-            ("production", "équin"),
-            ("commerce",   "animalerie"),
-            ("commerce",   "alimentation animale"),
         ],
         "bpi_sectors": [],
-        "fusacq_kw": [
-            "petfood", "alimentation animale", "cheval", "élevage",
-            "animalerie", "provenderie", "nutrition animale", "équin",
-            "volailles", "friandise",
-        ],
-        "cra_naf": ["422", "424", "430", "621", "623", "628", "705"],
-    },
-    "Pièces détachées auto": {
-        "keywords_title": [
-            "pièces détachées", "pièces auto", "pièces automobiles",
-            "équipement automobile", "équipements automobiles",
-            "accessoires auto", "accessoires automobile",
-            "rechange auto", "pièces de rechange",
-            "carrosserie", "pneumatique", "pneu",
-            "mécanique auto", "entretien auto",
-            "démontage auto", "épaviste",
-            "distributeur auto", "grossiste auto", "fournitures auto",
-        ],
-        "keywords_broad": [
-            "pièces détachées", "pièces auto", "pièces automobiles",
-            "équipement automobile", "équipements automobiles",
-            "accessoires auto", "rechange auto",
-            "carrosserie", "pneumatique", "pneu",
-            "mécanique auto", "démontage auto",
-            "distributeur auto", "grossiste auto", "automobile",
-        ],
-        "ca_min": 300_000,
-        "ca_max": 7_000_000,
-        "bpi_configs": [
-            ("commerce", "pièces détachées automobile"),
-            ("commerce", "pièces auto"),
-            ("production", "équipement automobile"),
-        ],
-        "bpi_sectors": ["24B"],
-        "fusacq_kw": [
-            "pièces détachées", "pièces auto",
-            "équipement automobile", "accessoires auto",
-            "rechange auto", "pneumatique", "carrosserie",
-        ],
-        "cra_naf": ["453", "293", "383"],
+        "fusacq_kw": ["petfood", "alimentation animale"],
+        "cra_naf": ["108"],
     },
 }
 
-# Back-compat constants
-CA_MIN = 300_000
-CA_MAX = 7_000_000
+# Back-compat constants — aligned with new thesis
+CA_MIN = 3_000_000
+CA_MAX = 10_000_000
+
+# Geographic priority (per user request 30/04/2026)
+REGION_P1 = {"67", "68", "alsace", "bas-rhin", "haut-rhin", "strasbourg", "mulhouse", "colmar"}
+REGION_P2 = {"35", "13", "83", "ille-et-vilaine", "rennes", "bouches-du-rhône",
+             "marseille", "aix-en-provence", "var", "toulon"}
+
+def detect_region_priority(text: str) -> str:
+    """Returns 'P1' | 'P2' | 'OUT' based on region keywords / department codes."""
+    n = (text or "").lower()
+    # Match on word boundaries for dept codes
+    for kw in REGION_P1:
+        if re.search(r'\b' + re.escape(kw) + r'\b', n):
+            return "P1"
+    for kw in REGION_P2:
+        if re.search(r'\b' + re.escape(kw) + r'\b', n):
+            return "P2"
+    return "OUT"
 
 MAX_AGE_DAYS = 62   # ~2 mois
 
@@ -257,17 +289,20 @@ def save_deals(deals_by_id: dict):
 
 def make_deal(title, url, source, region="", ca_text="", desc="", date_pub="", verticale="") -> dict:
     ca_val = parse_ca(ca_text + " " + desc)
+    region_prio = detect_region_priority(f"{region} {title} {desc}")
     return {
         "id": deal_id(url, title),
         "title": title.strip(),
         "url": url.strip(),
         "source": source,
         "region": region.strip(),
+        "region_priority": region_prio,  # P1 / P2 / OUT (refonte 30/04/2026)
         "ca": ca_text.strip() or "NC",
         "ca_value": ca_val,
         "description": desc[:400].strip() if desc else "",
         "date_pub": date_pub.strip(),
         "date_scraped": datetime.utcnow().date().isoformat(),
+        "date_scraped_iso": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "seen": False,
         "added_to_crm": False,
         "verticale": verticale or list(VERTICALES.keys())[0],
@@ -661,6 +696,17 @@ def scrape_cra(existing: dict, session: requests.Session) -> list:
 
     return new_deals
 
+# ─── Scraper: CessionPME (stub — to wire up when site structure confirmed) ─────
+
+def scrape_cessionpme(existing: dict, session: requests.Session) -> list:
+    """
+    CessionPME.com — Stub scraper. Site has anti-bot protection (Cloudflare).
+    To be wired up properly with sitemap or RSS feed when accessible.
+    """
+    print("    (stub — CessionPME scraping pending integration)")
+    return []
+
+
 # ─── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -668,9 +714,11 @@ def main():
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     print(f"\n{'='*65}")
-    print(f"  🔍 Acquis Deal Flow Scraper v2.3 — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
+    print(f"  🔍 Acquis Deal Flow Scraper v3.0 — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
+    print(f"  Thesis: Lughanor — Sous-traitance industrielle + Mécanique B2B")
     print(f"  Verticales: {', '.join(VERTICALES.keys())}")
-    print(f"  CA range: {CA_MIN//1000}K€ — {CA_MAX//1_000_000}M€")
+    print(f"  CA range: {CA_MIN//1_000_000}M€ — {CA_MAX//1_000_000}M€")
+    print(f"  Geo P1: Alsace 67/68 | P2: 35/13/83 | other: tagged out_of_scope")
     print(f"  Deals file: {DEALS_FILE}")
     print(f"{'='*65}\n")
 
@@ -683,10 +731,11 @@ def main():
     all_new = []
 
     scrapers = [
-        ("Transentreprise", lambda e: scrape_transentreprise(e, session)),
-        ("BPI France",      lambda e: scrape_bpi(e, session)),
-        ("Fusacq",          lambda e: scrape_fusacq(e, session)),
-        ("CRA",             lambda e: scrape_cra(e, session)),
+        ("Transentreprise (Actify CCI)", lambda e: scrape_transentreprise(e, session)),
+        ("BPI France (Reprise & Transmission)", lambda e: scrape_bpi(e, session)),
+        ("Fusacq",              lambda e: scrape_fusacq(e, session)),
+        ("CRA",                 lambda e: scrape_cra(e, session)),
+        ("CessionPME",          lambda e: scrape_cessionpme(e, session)),
     ]
 
     for name, fn in scrapers:
@@ -702,17 +751,23 @@ def main():
     print(f"{'='*65}")
     print(f"  Total new: {len(all_new)} deal(s)")
 
+    # Stats by region priority
+    prio_counts = {"P1": 0, "P2": 0, "OUT": 0}
     for deal in all_new:
         existing[deal["id"]] = deal
+        prio_counts[deal.get("region_priority", "OUT")] += 1
+    print(f"  Region priority — P1 (Alsace): {prio_counts['P1']} | "
+          f"P2 (35/13/83): {prio_counts['P2']} | OUT: {prio_counts['OUT']}")
 
     save_deals(existing)
 
     if all_new:
         print(f"\n🆕 New opportunities today:")
-        for d in sorted(all_new, key=lambda x: x["source"]):
+        for d in sorted(all_new, key=lambda x: (x.get("region_priority", "Z"), x["source"])):
             ca_str = d["ca"] if d["ca"] != "NC" else "CA?"
-            print(f"  [{d['source']:15s}] {d['title'][:50]:50s} | "
-                  f"{d['region']:15s} | {ca_str}")
+            prio = d.get("region_priority", "?")
+            print(f"  [{prio}] [{d['source'][:18]:18s}] {d['title'][:45]:45s} | "
+                  f"{d['region'][:15]:15s} | {ca_str}")
 
     return 0
 

@@ -448,6 +448,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-ao-confirm:hover{background:#15803d}
 .btn-ao-cancel{background:#0d1e15;color:#94a3b8;border:1px solid #1a3a1a;border-radius:6px;padding:8px 14px;font-size:12px;cursor:pointer}
 
+/* ──────── REFONTE 30/04/2026 ──────── */
+.agenda7-toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:10px 18px;background:#0f172a;border-bottom:1px solid #1e293b;align-items:center}
+.agenda7-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:14px 18px;height:calc(100vh - 200px);overflow-x:auto}
+.agenda-col{background:#0f172a;border:1px solid #1e293b;border-radius:8px;display:flex;flex-direction:column;min-width:140px}
+.agenda-col-today{border-color:#6366f1;box-shadow:0 0 0 1px #6366f180}
+.agenda-col-head{padding:8px 10px;border-bottom:1px solid #1e293b;color:#cbd5e1;font-size:12px;background:#1e293b;border-radius:8px 8px 0 0}
+.agenda-col-body{flex:1;padding:6px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.agenda-event{position:relative;background:#1e293b;border-radius:5px;padding:6px 8px;font-size:11px;color:#e2e8f0;cursor:pointer;transition:.15s}
+.agenda-event:hover{background:#334155}
+.agenda-event-time{font-weight:600;color:#94a3b8;font-size:10px}
+.agenda-event-title{margin-top:2px;line-height:1.3}
+.agenda-event-del{position:absolute;top:4px;right:4px;background:transparent;border:none;color:#64748b;cursor:pointer;font-size:11px;padding:2px 4px;display:none}
+.agenda-event:hover .agenda-event-del{display:block}
+.agenda-event-del:hover{color:#ef4444}
+.agenda-empty{font-size:10px;color:#475569;text-align:center;padding:8px;font-style:italic}
+.agenda-col-add{background:transparent;border:1px dashed #334155;color:#64748b;padding:5px;font-size:10px;cursor:pointer;border-radius:5px;margin:6px}
+.agenda-col-add:hover{background:#1e293b;color:#cbd5e1}
+
+/* Badges & filter btn shared with agenda7 */
+[data-axis].active{background:#6366f1;color:#fff;border-color:#6366f1}
+
+/* Job opportunities kanban dot extras */
+.k-col-dot.dot-4{background:#22c55e}
+.k-col-dot.dot-x{background:#ef4444}
+
 </style>
 </head>
 <body>
@@ -499,19 +524,14 @@ function authCheck(){
   </div>
 
   <div class="sb-divider"></div>
-  <div class="sb-label">Pipeline</div>
+  <div class="sb-label">Pipeline Reprise</div>
   <div class="sb-item active" id="nav-pipeline" onclick="goTo('pipeline')">
     <span class="si">🎯</span> Acquisitions
     <span class="sb-badge" id="badge-pipeline">0</span>
   </div>
   <div class="sb-item" id="nav-contacts" onclick="goTo('contacts')">
-    <span class="si">🔗</span> Contacts Indirects
+    <span class="si">🔗</span> Contact Indirect
     <span class="sb-badge" id="badge-contacts">0</span>
-  </div>
-
-  <div class="sb-item" id="nav-project" onclick="goTo('project')">
-    <span class="si">📌</span> Projet
-    <span class="sb-badge" id="badge-project">0</span>
   </div>
   <div class="sb-item" id="nav-interm" onclick="goTo('interm')">
     <span class="si">🤝</span> Intermédiaires
@@ -519,14 +539,25 @@ function authCheck(){
   </div>
 
   <div class="sb-divider"></div>
-  <div class="sb-label">Journée</div>
-  <div class="sb-item" id="nav-today" onclick="goTo('today')">
-    <span class="si">📋</span> Aujourd'hui
-    <span class="sb-badge" id="badge-today">-</span>
+  <div class="sb-label">Pipeline Job</div>
+  <div class="sb-item" id="nav-jobs" onclick="goTo('jobs')">
+    <span class="si">💼</span> Job Opportunities
+    <span class="sb-badge" id="badge-jobs">0</span>
   </div>
+  <div class="sb-item" id="nav-consulting" onclick="goTo('consulting')">
+    <span class="si">🎓</span> Consulting Opportunities
+    <span class="sb-badge" id="badge-consulting">0</span>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-label">Planning</div>
   <div class="sb-item" id="nav-advisors" onclick="goTo('advisors')">
     <span class="si">🤝</span> Advisors
     <span class="sb-badge" id="badge-advisors">0</span>
+  </div>
+  <div class="sb-item" id="nav-agenda7" onclick="goTo('agenda7')">
+    <span class="si">📅</span> Agenda +7 jours
+    <span class="sb-badge" id="badge-agenda7">0</span>
   </div>
 
   <div class="sb-divider"></div>
@@ -535,17 +566,17 @@ function authCheck(){
     <span class="si">🔍</span> Deal Flow
     <span class="sb-badge" id="badge-dealflow"></span>
   </div>
+  <div class="sb-item" id="nav-jobflow" onclick="goTo('jobflow')">
+    <span class="si">💼</span> Job Flow
+    <span class="sb-badge" id="badge-jobflow"></span>
+  </div>
 
-  
+  <div class="sb-divider"></div>
+  <div class="sb-label">Autre</div>
   <div class="sb-item" id="nav-radar" onclick="goTo('radar')">
-    📡 Radar AO
+    <span class="si">📡</span> Radar AO
     <span class="sb-badge" id="badge-radar"></span>
   </div>
-  <div class="sb-item" id="nav-ao-pipeline" onclick="goTo('ao-pipeline')">
-    📋 AO Pipeline
-    <span class="sb-badge" id="badge-ao-pipeline" style="display:none"></span>
-  </div>
-  <div class="sb-divider"></div>
   <div class="sb-item" id="nav-archives" onclick="goTo('archives')">
     <span class="si">📦</span> Archives
     <span class="sb-badge" id="badge-archives"></span>
@@ -812,27 +843,18 @@ function authCheck(){
     </table></div>
   </div>
 
-  <!-- TODAY PAGE -->
-  <div class="page" id="page-today">
-    <div class="ph"><h2>📋 Aujourd'hui</h2><p id="ph-today-date"></p></div>
-    <div class="ph-divider"></div>
-    <div class="today-scroll">
-      <div id="relances-panel"></div>
-      <div class="time-blocks">
-        <div class="tb" id="tb-matin"><label>☀️ Matin — intentions</label><textarea id="block-matin" placeholder="Ce que je veux accomplir ce matin…" oninput="save()"></textarea></div>
-        <div class="tb" id="tb-midi"> <label>🌤 Midi — bilan</label>      <textarea id="block-midi"  placeholder="Où j'en suis, ajustements…" oninput="save()"></textarea></div>
-        <div class="tb" id="tb-soir"><label>🌙 Soir — clôture</label>     <textarea id="block-soir" placeholder="Ce qui est fait, demain…" oninput="save()"></textarea></div>
-      </div>
-      <div class="todo-panel">
-        <div class="todo-ph"><h3>Tâches du jour</h3><span id="todo-count">0 / 0</span></div>
-        <div class="todo-row">
-          <input class="todo-in" id="todo-in" placeholder="Ajouter une tâche…" onkeydown="if(event.key==='Enter')addTodo()"/>
-          <button class="todo-add" onclick="addTodo()">+ Ajouter</button>
-        </div>
-        <div class="todo-items" id="todo-items"><div class="ti-empty">Aucune tâche pour aujourd'hui</div></div>
-      </div>
-    </div>
+  <!-- HIDDEN: legacy today data persistence (relances + todo + time-blocks) -->
+  <div style="display:none">
+    <div id="relances-panel"></div>
+    <textarea id="block-matin"></textarea>
+    <textarea id="block-midi"></textarea>
+    <textarea id="block-soir"></textarea>
+    <input id="todo-in"/>
+    <span id="todo-count"></span>
+    <div id="todo-items"></div>
+    <span id="ph-today-date"></span>
   </div>
+
 
   <!-- ADVISORS PAGE -->
   <div class="page" id="page-advisors">
@@ -865,18 +887,99 @@ function authCheck(){
     </div>
   </div>
 
-  <!-- PROJET PAGE -->
-  <div class="page" id="page-project">
-    <div class="ph"><h2>📌 Projet Reprise</h2><p>Backlog de toutes les actions — de la thèse au closing</p></div>
+  <!-- HIDDEN: legacy project elements (deleted from UI, kept for compat) -->
+  <div style="display:none">
+    <button id="pfilt-all"></button>
+    <button id="pfilt-todo"></button>
+    <button id="pfilt-done"></button>
+    <input id="proj-search"/>
+    <div id="proj-stats"></div>
+    <div id="proj-scroll"></div>
+  </div>
+
+  <!-- ═════════ PIPELINE JOB — JOB OPPORTUNITIES PAGE ═════════ -->
+  <div class="page" id="page-jobs">
+    <div class="stats-bar" id="stats-bar-jobs"></div>
+    <div class="pipe-scroll"><div class="kanban" id="kanban-jobs"></div></div>
+  </div>
+
+  <!-- ═════════ PIPELINE JOB — CONSULTING OPPORTUNITIES PAGE ═════════ -->
+  <div class="page" id="page-consulting">
+    <div class="ph"><h2>🎓 Consulting Opportunities</h2><p>Missions de conseil et expertise (ex. Fragola/Özler, autres clients)</p></div>
     <div class="ph-divider"></div>
-    <div class="proj-toolbar">
-      <button class="proj-filter-btn active" id="pfilt-all"   onclick="setProjFilter('all')">Tout</button>
-      <button class="proj-filter-btn"        id="pfilt-todo"  onclick="setProjFilter('todo')">À faire</button>
-      <button class="proj-filter-btn"        id="pfilt-done"  onclick="setProjFilter('done')">Fait</button>
-      <input class="proj-search" id="proj-search" placeholder="🔍 Rechercher…" oninput="renderProject()"/>
+    <div class="contacts-toolbar">
+      <input class="search-input" id="consulting-search" placeholder="🔍  Rechercher une mission, un client…" oninput="filterConsulting()"/>
+      <select class="filter-select" id="consulting-filter" onchange="filterConsulting()">
+        <option value="">Tous les statuts</option>
+        <option>Prospect</option><option>À contacter</option><option>Contacté</option>
+        <option>RDV cadrage</option><option>Proposition envoyée</option><option>En cours</option><option>Livré</option><option>Perdu</option>
+      </select>
+      <span class="ct-count" id="consulting-count"></span>
+      <button class="add-contact-btn" onclick="addConsultingCard()">+ Ajouter</button>
     </div>
-    <div class="proj-stats-row" id="proj-stats"></div>
-    <div class="proj-scroll" id="proj-scroll"></div>
+    <div class="contacts-list"><table class="contact-table">
+      <thead><tr>
+        <th style="width:22%">Client / Société</th>
+        <th style="width:18%">Contact</th>
+        <th style="width:14%">Scope mission</th>
+        <th style="width:10%">Budget</th>
+        <th style="width:10%">Deadline</th>
+        <th style="width:14%">Statut</th>
+        <th>Prochaines étapes</th>
+      </tr></thead>
+      <tbody id="consulting-tbody"></tbody>
+    </table></div>
+  </div>
+
+  <!-- ═════════ PLANNING — AGENDA +7 JOURS PAGE ═════════ -->
+  <div class="page" id="page-agenda7">
+    <div class="ph">
+      <h2>📅 Agenda +7 jours</h2>
+      <p>Planification glissante sur 7 jours — par axe (Reprise / Job / Ufrost / Fragola / Perso)</p>
+    </div>
+    <div class="ph-divider"></div>
+    <div class="agenda7-toolbar">
+      <button class="proj-filter-btn active" data-axis="all" onclick="setAgendaFilter('all')">Tous axes</button>
+      <button class="proj-filter-btn" data-axis="reprise" onclick="setAgendaFilter('reprise')">🎯 Reprise</button>
+      <button class="proj-filter-btn" data-axis="job" onclick="setAgendaFilter('job')">💼 Job</button>
+      <button class="proj-filter-btn" data-axis="ufrost" onclick="setAgendaFilter('ufrost')">❄️ Ufrost</button>
+      <button class="proj-filter-btn" data-axis="fragola" onclick="setAgendaFilter('fragola')">🍓 Fragola</button>
+      <button class="proj-filter-btn" data-axis="perso" onclick="setAgendaFilter('perso')">👤 Perso</button>
+      <button class="add-contact-btn" style="margin-left:auto" onclick="addAgendaEvent()">+ Événement</button>
+    </div>
+    <div class="agenda7-grid" id="agenda7-grid"></div>
+  </div>
+
+  <!-- ═════════ SOURCING — JOB FLOW PAGE ═════════ -->
+  <div class="page" id="page-jobflow">
+    <div class="ph">
+      <h2>💼 Job Flow</h2>
+      <p>Offres détectées automatiquement — Direction Achats · Industrie · Dépt 13/68/67/25 <span id="jf-last-upd" style="color:#9ca3af"></span></p>
+    </div>
+    <div class="ph-divider"></div>
+    <div class="df-toolbar">
+      <input class="search-input" id="jf-search" placeholder="🔎 Rechercher..." oninput="renderJobFlow()" style="width:220px"/>
+      <select class="filter-select" id="jf-source" onchange="renderJobFlow()">
+        <option value="">Toutes les sources</option>
+        <option>LinkedIn</option>
+        <option>HelloWork</option>
+        <option>Indeed</option>
+        <option>Web</option>
+      </select>
+      <select class="filter-select" id="jf-dept" onchange="renderJobFlow()">
+        <option value="">Tous départements</option>
+        <option>13</option>
+        <option>68</option>
+        <option>67</option>
+        <option>25</option>
+      </select>
+      <button class="proj-filter-btn" id="jf-new-btn" onclick="toggleJfNew()" style="flex-shrink:0">🆕 Nouvelles</button>
+      <span class="ct-count" id="jf-count" style="margin-left:auto"></span>
+      <button class="add-contact-btn" onclick="loadJobsJson(true)" style="flex-shrink:0">🔄 Actualiser</button>
+    </div>
+    <div class="df-page-scroll">
+      <div id="jf-list"><div class="df-empty"><div class="df-empty-icon">💼</div><div class="df-empty-title">Chargement...</div></div></div>
+    </div>
   </div>
 
   <!-- DEAL FLOW PAGE -->
@@ -962,15 +1065,9 @@ function authCheck(){
 </div>
 
 
-<!-- AO PIPELINE PAGE -->
-<div class="page" id="page-ao-pipeline">
-  <div class="aopipe-wrap">
-    <div class="aopipe-header">
-      <h2 style="font-size:18px;font-weight:700;color:#e2e8f0;margin:0">📋 Pipeline Appels d’Offres</h2>
-      <button onclick="aoPipelineClear()" style="margin-left:auto;background:#0d1e15;border:1px solid #1a3a1a;color:#64748b;border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer">🧹 Retirer gagnés/perdus</button>
-    </div>
-    <div class="aopipe-kanban" id="aopipe-kanban"><div class="aopipe-empty" style="width:100%;color:#334155;font-size:12px">Aucun AO dans le pipeline. Utilisez "GO Pipeline" depuis le Radar AO pour ajouter des déals.</div></div>
-  </div>
+<!-- HIDDEN: legacy AO pipeline (deleted from UI, kept for compat) -->
+<div style="display:none">
+  <div id="aopipe-kanban"></div>
 </div>
 
 <!-- AO MODAL -->
@@ -1016,12 +1113,34 @@ const ISC_MAP = {
   'En cours':'crm-3','Converti':'crm-4','Abandonné':'crm-x'
 };
 
-let cardCtr=0, todoCtr=0, rowCtr=0;
+let cardCtr=0, todoCtr=0, rowCtr=0, jobCtr=0, consultCtr=0, agendaCtr=0;
 const directData  ={};  // id -> {...fields, activities:[{type,text,ts}]}
 const indirectData={};  // id -> {...fields}
-const activeCard  ={direct:null,indirect:null};
+const jobsData    ={};  // id -> {...fields, activities:[{type,text,ts}]}  Pipeline Job — Job Opportunities
+const consultingData={};// id -> {...fields}                                Pipeline Job — Consulting Opportunities
+const agendaData  ={};  // id -> {date, time, title, axis, notes}           Planning — Agenda +7 jours events
+const activeCard  ={direct:null,indirect:null,job:null,consulting:null};
 let qlCardId=null, qlType='call', actType='call';
 let contactFilter={q:'',status:''};
+let consultingFilter={q:'',status:''};
+let agendaFilter='all'; // 'all' | 'reprise' | 'job' | 'ufrost' | 'fragola' | 'perso'
+
+// Job Opportunities kanban columns (parallèle au Pipeline Reprise)
+const J_COLS = ['Identified','Applied','Phone screen','Interview','Offer','Closed lost'];
+const J_DOTS = ['dot-0','dot-1','dot-2','dot-3','dot-4','dot-x'];
+const JOB_MAP = {
+  'Identified':'crm-0','Applied':'crm-1','Phone screen':'crm-2',
+  'Interview':'crm-3','Offer':'crm-4','Closed lost':'crm-x'
+};
+
+// Axes pour Agenda
+const AGENDA_AXES = {
+  reprise: {label:'🎯 Reprise', color:'#10b981'},
+  job:     {label:'💼 Job',     color:'#6366f1'},
+  ufrost:  {label:'❄️ Ufrost',  color:'#06b6d4'},
+  fragola: {label:'🍓 Fragola', color:'#ec4899'},
+  perso:   {label:'👤 Perso',   color:'#94a3b8'}
+};
 
 // ════════════════════════════════════════════════════
 // UTILS
@@ -1095,11 +1214,13 @@ function goTo(id){
   if(id==='contacts')renderContactTable();
   if(id==='pipeline')renderStatsBar();
   if(id==='archives')renderArchives();
-  if(id==='project')renderProject();
   if(id==='dealflow')loadDealsJson();
-      if(id==='radar')radarInit();
-      if(id==='ao-pipeline'){aoPipelineRender();aoPipelineUpdateBadge();}
-  if(id==='today')renderRelances();
+  if(id==='radar')radarInit();
+  // === New routes (refonte 30/04/2026) ===
+  if(id==='jobs')renderJobsPipeline();
+  if(id==='consulting')renderConsultingTable();
+  if(id==='agenda7')renderAgenda7();
+  if(id==='jobflow')loadJobsJson();
 }
 
 // ════════════════════════════════════════════════════
@@ -1669,6 +1790,9 @@ function _save(){
   data.todos=[];document.querySelectorAll('.ti').forEach(i=>{data.todos.push({label:i.querySelector('.ti-label')?.innerText||'',done:i.querySelector('input')?.checked||false});});
   data.directCards=Object.entries(directData).map(([id,d])=>({id,...d}));
   data.indirectCards=Object.entries(indirectData).map(([id,d])=>({id,...d}));
+  data.jobsCards=Object.entries(jobsData).map(([id,d])=>({id,...d}));
+  data.consultingCards=Object.entries(consultingData).map(([id,d])=>({id,...d}));
+  data.agendaEvents=Object.entries(agendaData).map(([id,d])=>({id,...d}));
   data.advisors=[];document.querySelectorAll('#tbody-advisors tr').forEach(tr=>{const i=tr.querySelectorAll('input'),s=tr.querySelector('select');data.advisors.push({f0:i[0]?.value||'',f1:i[1]?.value||'',status:s?.value||'À faire',f3:i[2]?.value||'',f4:i[3]?.value||'',f5:i[4]?.value||'',archived:tr.dataset.archived==='true'});});
   const ot=document.getElementById('otter-notes');if(ot)data.otter=ot.value;
   data.projectCats=projectCats.map(c=>({...c}));
@@ -1702,6 +1826,29 @@ function load(){
 
   if((data.advisors||[]).length){data.advisors.forEach(r=>addAdvisorRow(r.f0,r.f1,r.status,r.f3,r.f4,r.f5,r.archived||false));}
   else{loadDefaultAdvisors();}
+
+  // === New collections (refonte 30/04/2026) ===
+  if((data.jobsCards||[]).length){
+    data.jobsCards.forEach(d=>{
+      const{id,col,...f}=d;jobCtr++;const nid=id||'job-ld-'+jobCtr;
+      jobsData[nid]=Object.assign(emptyJob(),f,{col:col||0,activities:f.activities||[]});
+    });
+    updateJobsBadge();
+  }
+  if((data.consultingCards||[]).length){
+    data.consultingCards.forEach(d=>{
+      const{id,...f}=d;consultCtr++;const nid=id||'cons-ld-'+consultCtr;
+      consultingData[nid]=Object.assign(emptyConsulting(),f);
+    });
+    const b=document.getElementById('badge-consulting');if(b)b.textContent=Object.values(consultingData).filter(d=>!d.archived).length;
+  }
+  if((data.agendaEvents||[]).length){
+    data.agendaEvents.forEach(d=>{
+      const{id,...f}=d;agendaCtr++;const nid=id||'ev-ld-'+agendaCtr;
+      agendaData[nid]={...f};
+    });
+    updateAgendaBadge();
+  }
 
   const ot=document.getElementById('otter-notes');if(ot&&data.otter)ot.value=data.otter;
 
@@ -2930,6 +3077,337 @@ function delIC(id){if(!confirm("Supprimer ?"))return;delete intermData[id];rend
 function addIC(col){var org=prompt("Organisme :");if(!org)return;var ct=prompt("Contact :")||"";var id="ic"+Date.now();intermData[id]={id:id,col:col,organisme:org,contact:ct,categorie:"",relance:"",activities:[]};renderIntermPipeline();}
 (function(){var _og=goTo;goTo=function(id){_og(id);if(id==="interm")renderIntermPipeline();};})();
 _initInterm();
+
+// ════════════════════════════════════════════════════
+// REFONTE 30/04/2026 — JOBS / CONSULTING / AGENDA / JOBFLOW
+// ════════════════════════════════════════════════════
+
+// ──────────── JOB OPPORTUNITIES (kanban, parallèle Acquisitions) ────────────
+function emptyJob(){return{col:0,societe:'',poste:'',localisation:'',source:'',url:'',salaire:'',contact:'',notes:'',statutCRM:'Identified',next:'',activities:[]};}
+
+function initJobsKanban(){
+  const el=document.getElementById('kanban-jobs');if(!el)return;
+  el.innerHTML='';
+  J_COLS.forEach((col,ci)=>{
+    const d=document.createElement('div');d.className='k-col';
+    d.innerHTML=`
+      <div class="k-col-head">
+        <div class="k-col-head-left"><div class="k-col-dot ${J_DOTS[ci]}"></div><span class="k-col-name">${col}</span></div>
+        <span class="k-col-count" id="kc-jobs-${ci}">0</span>
+      </div>
+      <div class="k-cards" id="kcards-jobs-${ci}"></div>
+      <button class="k-add" onclick="addJobCard(${ci})">+ Ajouter une offre</button>`;
+    el.appendChild(d);
+  });
+}
+
+function buildJobCard(id,j,ci){
+  const el=document.createElement('div');
+  el.className='dc';el.id=id;el.dataset.col=ci;
+  const cls=JOB_MAP[j.statutCRM]||'crm-0';
+  const chips=[
+    j.localisation?`<span class="chip chip-green">${escH(j.localisation)}</span>`:'',
+    j.salaire     ?`<span class="chip chip-ca">${escH(j.salaire)}</span>`:'',
+    j.source      ?`<span class="chip chip-gray">${escH(j.source)}</span>`:'',
+  ].join('');
+  const lA=ci>0              ?`<button class="btn-mv" onclick="event.stopPropagation();moveJobCard('${id}',-1)">←</button>`:'';
+  const rA=ci<J_COLS.length-1?`<button class="btn-mv" onclick="event.stopPropagation();moveJobCard('${id}',1)">→</button>`:'';
+  el.innerHTML=`
+    <div class="dc-top"><div class="dc-name">${escH(j.societe)||'<span style="color:#d1d5db">Nouvelle offre</span>'}</div></div>
+    <div class="dc-contact">${escH(j.poste)||''}</div>
+    <div class="dc-chips">${chips}<span class="crm-badge ${cls}">${escH(j.statutCRM)}</span></div>
+    <div class="dc-footer">
+      <span class="dc-age-label">${j.next?'📅 '+escH(j.next):''}</span>
+      <div class="dc-actions">${lA}${rA}<button class="btn-del" onclick="event.stopPropagation();delJobCard('${id}')">✕</button></div>
+    </div>`;
+  el.addEventListener('click',()=>openJobDrawer(id));
+  return el;
+}
+
+function addJobCard(ci,data){
+  jobCtr++;
+  const id='job-'+Date.now()+'-'+jobCtr;
+  jobsData[id]=Object.assign(emptyJob(),data||{},{col:ci,activities:data?.activities||[]});
+  const c=document.getElementById('kcards-jobs-'+ci);
+  if(c)c.appendChild(buildJobCard(id,jobsData[id],ci));
+  updateJobsBadge();save();return id;
+}
+
+function moveJobCard(id,dir){
+  const j=jobsData[id];if(!j)return;
+  const nc=j.col+dir;if(nc<0||nc>=J_COLS.length)return;
+  const old=document.getElementById(id);if(old)old.remove();
+  j.col=nc;
+  const c=document.getElementById('kcards-jobs-'+nc);
+  if(c)c.appendChild(buildJobCard(id,j,nc));
+  updateJobsBadge();save();
+}
+
+function delJobCard(id){
+  if(!confirm('Supprimer cette offre ?'))return;
+  delete jobsData[id];
+  const el=document.getElementById(id);if(el)el.remove();
+  updateJobsBadge();save();
+}
+
+function updateJobsBadge(){
+  let t=0;J_COLS.forEach((_,ci)=>{const c=document.getElementById('kcards-jobs-'+ci);const n=c?c.children.length:0;const cnt=document.getElementById('kc-jobs-'+ci);if(cnt)cnt.textContent=n;t+=n;});
+  const b=document.getElementById('badge-jobs');if(b)b.textContent=t;
+}
+
+function openJobDrawer(id){
+  const j=jobsData[id];if(!j)return;
+  // Simple inline edit prompt for v1 — to be replaced with proper drawer in v2
+  const newSociete=prompt('Société :',j.societe||'');if(newSociete===null)return;
+  const newPoste=prompt('Poste :',j.poste||'');
+  const newLoc=prompt('Localisation :',j.localisation||'');
+  const newSrc=prompt('Source (LinkedIn/HelloWork/Indeed/Web) :',j.source||'');
+  const newUrl=prompt('URL :',j.url||'');
+  const newSal=prompt('Salaire :',j.salaire||'');
+  const newNext=prompt('Prochaine action (date YYYY-MM-DD) :',j.next||'');
+  Object.assign(j,{societe:newSociete||j.societe,poste:newPoste||j.poste,localisation:newLoc||j.localisation,source:newSrc||j.source,url:newUrl||j.url,salaire:newSal||j.salaire,next:newNext||j.next});
+  const old=document.getElementById(id);if(old)old.replaceWith(buildJobCard(id,j,j.col));
+  save();
+}
+
+function renderJobsPipeline(){
+  if(!document.getElementById('kcards-jobs-0'))initJobsKanban();
+  J_COLS.forEach((_,ci)=>{
+    const c=document.getElementById('kcards-jobs-'+ci);if(!c)return;
+    c.innerHTML='';
+  });
+  Object.entries(jobsData).forEach(([id,j])=>{
+    if(j.archived)return;
+    const c=document.getElementById('kcards-jobs-'+(j.col||0));
+    if(c)c.appendChild(buildJobCard(id,j,j.col||0));
+  });
+  updateJobsBadge();
+}
+
+// ──────────── CONSULTING OPPORTUNITIES (table, parallèle Contacts Indirects) ────────────
+function emptyConsulting(){return{client:'',contact:'',scope:'',budget:'',deadline:'',statut:'Prospect',localisation:'',email:'',tel:'',notes:'',next:'',archived:false,activities:[]};}
+
+function addConsultingCard(data){
+  consultCtr++;
+  const id='cons-'+Date.now()+'-'+consultCtr;
+  consultingData[id]=Object.assign(emptyConsulting(),data||{});
+  renderConsultingTable();save();return id;
+}
+
+function delConsultingCard(id){
+  if(!confirm('Supprimer cette mission ?'))return;
+  delete consultingData[id];
+  renderConsultingTable();save();
+}
+
+function filterConsulting(){
+  consultingFilter.q=document.getElementById('consulting-search')?.value||'';
+  consultingFilter.status=document.getElementById('consulting-filter')?.value||'';
+  renderConsultingTable();
+}
+
+function renderConsultingTable(){
+  const tb=document.getElementById('consulting-tbody');if(!tb)return;
+  const q=consultingFilter.q.toLowerCase();
+  const s=consultingFilter.status;
+  const rows=Object.entries(consultingData).filter(([id,d])=>{
+    if(d.archived)return false;
+    if(s&&d.statut!==s)return false;
+    if(q){
+      const blob=`${d.client} ${d.contact} ${d.scope} ${d.notes}`.toLowerCase();
+      if(!blob.includes(q))return false;
+    }
+    return true;
+  });
+  document.getElementById('consulting-count').textContent=rows.length+' mission'+(rows.length>1?'s':'');
+  document.getElementById('badge-consulting').textContent=Object.values(consultingData).filter(d=>!d.archived).length;
+  tb.innerHTML=rows.map(([id,d])=>{
+    const cls=ISC_MAP[d.statut]||'crm-0';
+    return `<tr onclick="openConsultingDrawer('${id}')" style="cursor:pointer">
+      <td><strong>${escH(d.client)||'—'}</strong></td>
+      <td>${escH(d.contact)||''}</td>
+      <td>${escH(d.scope)||''}</td>
+      <td>${escH(d.budget)||''}</td>
+      <td>${escH(d.deadline)||''}</td>
+      <td><span class="crm-badge ${cls}">${escH(d.statut)}</span></td>
+      <td>${escH(d.next)||''} <button class="btn-del" onclick="event.stopPropagation();delConsultingCard('${id}')" style="float:right">✕</button></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="7" style="text-align:center;color:#64748b;padding:20px">Aucune mission. Cliquez "+ Ajouter".</td></tr>`;
+}
+
+function openConsultingDrawer(id){
+  const d=consultingData[id];if(!d)return;
+  // Simple inline edit prompt for v1
+  const newClient=prompt('Client / Société :',d.client||'');if(newClient===null)return;
+  const newContact=prompt('Contact :',d.contact||'');
+  const newScope=prompt('Scope mission :',d.scope||'');
+  const newBudget=prompt('Budget (ex: 1500€/j) :',d.budget||'');
+  const newDeadline=prompt('Deadline (YYYY-MM-DD) :',d.deadline||'');
+  const newStatut=prompt('Statut (Prospect/À contacter/Contacté/RDV cadrage/Proposition envoyée/En cours/Livré/Perdu) :',d.statut||'Prospect');
+  const newNext=prompt('Prochaine étape :',d.next||'');
+  Object.assign(d,{client:newClient||d.client,contact:newContact||d.contact,scope:newScope||d.scope,budget:newBudget||d.budget,deadline:newDeadline||d.deadline,statut:newStatut||d.statut,next:newNext||d.next});
+  renderConsultingTable();save();
+}
+
+// ──────────── AGENDA +7 JOURS ────────────
+function setAgendaFilter(axis){
+  agendaFilter=axis;
+  document.querySelectorAll('[data-axis]').forEach(b=>b.classList.toggle('active',b.dataset.axis===axis));
+  renderAgenda7();
+}
+
+function addAgendaEvent(){
+  const date=prompt('Date (YYYY-MM-DD) :',new Date().toISOString().slice(0,10));if(!date)return;
+  const time=prompt('Heure (ex: 10:00) :','10:00');if(!time)return;
+  const title=prompt('Titre :');if(!title)return;
+  const axis=prompt('Axe (reprise/job/ufrost/fragola/perso) :','reprise');
+  const validAxis=['reprise','job','ufrost','fragola','perso'].includes(axis)?axis:'reprise';
+  agendaCtr++;
+  const id='ev-'+Date.now()+'-'+agendaCtr;
+  agendaData[id]={date,time,title,axis:validAxis,notes:''};
+  updateAgendaBadge();renderAgenda7();save();
+}
+
+function delAgendaEvent(id){
+  if(!confirm('Supprimer cet événement ?'))return;
+  delete agendaData[id];updateAgendaBadge();renderAgenda7();save();
+}
+
+function updateAgendaBadge(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const limit=new Date(today);limit.setDate(limit.getDate()+7);
+  const count=Object.values(agendaData).filter(e=>{
+    const d=new Date(e.date);d.setHours(0,0,0,0);
+    return d>=today&&d<limit;
+  }).length;
+  const b=document.getElementById('badge-agenda7');if(b)b.textContent=count;
+}
+
+function renderAgenda7(){
+  const grid=document.getElementById('agenda7-grid');if(!grid)return;
+  const today=new Date();today.setHours(0,0,0,0);
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(today);d.setDate(today.getDate()+i);days.push(d);}
+  const dayNames=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  grid.innerHTML=days.map(d=>{
+    const iso=d.toISOString().slice(0,10);
+    const dayLabel=dayNames[(d.getDay()+6)%7];
+    const dateLabel=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'});
+    const events=Object.entries(agendaData)
+      .filter(([id,e])=>e.date===iso&&(agendaFilter==='all'||e.axis===agendaFilter))
+      .sort((a,b)=>(a[1].time||'').localeCompare(b[1].time||''));
+    const evHtml=events.map(([id,e])=>{
+      const ax=AGENDA_AXES[e.axis]||AGENDA_AXES.reprise;
+      return `<div class="agenda-event" style="border-left:3px solid ${ax.color}" onclick="openAgendaEvent('${id}')" title="${escH(e.notes||e.title)}">
+        <div class="agenda-event-time">${escH(e.time||'')}</div>
+        <div class="agenda-event-title">${escH(e.title)}</div>
+        <button class="agenda-event-del" onclick="event.stopPropagation();delAgendaEvent('${id}')">✕</button>
+      </div>`;
+    }).join('')||'<div class="agenda-empty">—</div>';
+    const isToday=iso===today.toISOString().slice(0,10);
+    return `<div class="agenda-col ${isToday?'agenda-col-today':''}">
+      <div class="agenda-col-head"><strong>${dayLabel}</strong> ${dateLabel}</div>
+      <div class="agenda-col-body">${evHtml}</div>
+      <button class="agenda-col-add" onclick="addAgendaEventOnDate('${iso}')">+ Ajouter</button>
+    </div>`;
+  }).join('');
+}
+
+function addAgendaEventOnDate(date){
+  const time=prompt('Heure (ex: 10:00) :','10:00');if(!time)return;
+  const title=prompt('Titre :');if(!title)return;
+  const axis=prompt('Axe (reprise/job/ufrost/fragola/perso) :','reprise');
+  const validAxis=['reprise','job','ufrost','fragola','perso'].includes(axis)?axis:'reprise';
+  agendaCtr++;
+  const id='ev-'+Date.now()+'-'+agendaCtr;
+  agendaData[id]={date,time,title,axis:validAxis,notes:''};
+  updateAgendaBadge();renderAgenda7();save();
+}
+
+function openAgendaEvent(id){
+  const e=agendaData[id];if(!e)return;
+  const newTitle=prompt('Titre :',e.title);if(newTitle===null)return;
+  const newTime=prompt('Heure :',e.time);
+  const newAxis=prompt('Axe (reprise/job/ufrost/fragola/perso) :',e.axis);
+  const newNotes=prompt('Notes :',e.notes||'');
+  Object.assign(e,{title:newTitle||e.title,time:newTime||e.time,axis:['reprise','job','ufrost','fragola','perso'].includes(newAxis)?newAxis:e.axis,notes:newNotes!==null?newNotes:e.notes});
+  renderAgenda7();save();
+}
+
+// ──────────── JOB FLOW (sourcing — parallèle Deal Flow) ────────────
+let _jobsRaw=[];let _jfShowOnlyNew=false;
+
+function loadJobsJson(force){
+  const cont=document.getElementById('jf-list');if(!cont)return;
+  if(force)cont.innerHTML='<div class="df-empty"><div class="df-empty-icon">⏳</div><div class="df-empty-title">Actualisation...</div></div>';
+  fetch('jobs.json?t='+Date.now()).then(r=>r.ok?r.json():{jobs:[]}).then(data=>{
+    _jobsRaw=data.jobs||[];
+    const upd=document.getElementById('jf-last-upd');
+    if(upd&&data.last_updated)upd.textContent='— MAJ '+new Date(data.last_updated).toLocaleString('fr-FR');
+    renderJobFlow();
+  }).catch(()=>{
+    cont.innerHTML='<div class="df-empty"><div class="df-empty-icon">💼</div><div class="df-empty-title">Aucun job pour l\'instant</div><p style="color:#64748b">Le scraper alimentera ce flux automatiquement (LinkedIn / HelloWork / Indeed).</p></div>';
+  });
+}
+
+function toggleJfNew(){
+  _jfShowOnlyNew=!_jfShowOnlyNew;
+  document.getElementById('jf-new-btn').classList.toggle('active',_jfShowOnlyNew);
+  renderJobFlow();
+}
+
+function renderJobFlow(){
+  const cont=document.getElementById('jf-list');if(!cont)return;
+  const q=(document.getElementById('jf-search')?.value||'').toLowerCase();
+  const src=document.getElementById('jf-source')?.value||'';
+  const dept=document.getElementById('jf-dept')?.value||'';
+  let rows=_jobsRaw.filter(j=>{
+    if(localStorage.getItem('jf_nogo_'+j.id))return false;
+    if(_jfShowOnlyNew&&localStorage.getItem('jf_seen_'+j.id))return false;
+    if(src&&j.source!==src)return false;
+    if(dept&&!String(j.dept||'').includes(dept))return false;
+    if(q){
+      const blob=`${j.title} ${j.company} ${j.location}`.toLowerCase();
+      if(!blob.includes(q))return false;
+    }
+    return true;
+  });
+  document.getElementById('jf-count').textContent=rows.length+' offre'+(rows.length>1?'s':'');
+  cont.innerHTML=rows.length?rows.map(j=>`
+    <div class="df-card">
+      <div class="df-card-h"><strong>${escH(j.title)}</strong><span class="chip chip-gray">${escH(j.source)}</span></div>
+      <div class="df-card-b">
+        <div>${escH(j.company)} • ${escH(j.location)}${j.dept?' ('+escH(j.dept)+')':''}</div>
+        ${j.salary?'<div style="color:#94a3b8;font-size:11px">'+escH(j.salary)+'</div>':''}
+        ${j.summary?'<p style="margin-top:6px">'+escH(j.summary)+'</p>':''}
+      </div>
+      <div class="df-card-f">
+        <a href="${escH(j.url)}" target="_blank" rel="noopener">Voir l'offre →</a>
+        <button onclick="addJobFromFlow('${j.id}')">+ Pipeline</button>
+        <button onclick="markJfNoGo('${j.id}')" style="color:#94a3b8">✕ NO-GO</button>
+      </div>
+    </div>`).join(''):
+    '<div class="df-empty"><div class="df-empty-icon">💼</div><div class="df-empty-title">Aucune offre correspondant aux filtres</div></div>';
+}
+
+function addJobFromFlow(id){
+  const j=_jobsRaw.find(x=>x.id===id);if(!j)return;
+  const newId=addJobCard(0,{societe:j.company,poste:j.title,localisation:j.location+(j.dept?' ('+j.dept+')':''),source:j.source,url:j.url,salaire:j.salary||'',notes:j.summary||''});
+  localStorage.setItem('jf_seen_'+id,'1');
+  renderJobFlow();
+  alert('Offre ajoutée dans Pipeline Job → Identified');
+}
+
+function markJfNoGo(id){
+  localStorage.setItem('jf_nogo_'+id,'1');
+  renderJobFlow();
+}
+
+// ──────────── INIT NEW SECTIONS ────────────
+(function(){
+  // Init kanban Jobs after DOM ready
+  setTimeout(()=>{initJobsKanban();renderJobsPipeline();renderConsultingTable();renderAgenda7();},100);
+})();
 
 window.addEventListener('beforeunload',function(){if(!_loading)_save();});
 </script>
