@@ -1,41 +1,6 @@
 {
-  "last_updated": "2026-08-12T17:26:51Z",
-  "count": 2,
+  "last_updated": "2026-08-13T08:04:08Z",
+  "count": 0,
   "new_today": 0,
-  "deals": [
-    {
-      "id": "929b83991764",
-      "title": "Boucherie multisites dans les Landes (40)",
-      "url": "https://reprise-entreprise.bpifrance.fr/annonce/magasin-alimentation-landes-620903",
-      "source": "BPI France",
-      "region": "",
-      "region_priority": "P2",
-      "ca": "40",
-      "ca_value": 9000000,
-      "description": "Boucherie multisites dans les Landes (40) 13/05/2026 Département : 40 Landes Simuler votre financement 9 000 k€ NC 2 180 k€ Consulter sur...",
-      "date_pub": "13/05/2026",
-      "date_scraped": "2026-05-14",
-      "date_scraped_iso": "2026-05-14T09:17:16Z",
-      "seen": false,
-      "added_to_crm": false,
-      "verticale": "Sous-traitance industrielle"
-    },
-    {
-      "id": "b9ef933b5ae0",
-      "title": "Boucherie - traiteur multi-rayons dans les Landes (40)",
-      "url": "https://reprise-entreprise.bpifrance.fr/annonce/boucherie-charcuterie-landes-624108",
-      "source": "BPI France",
-      "region": "",
-      "region_priority": "P2",
-      "ca": "40",
-      "ca_value": 9000000,
-      "description": "Boucherie - traiteur multi-rayons dans les Landes (40) 13/05/2026 Département : 40 Landes Simuler votre financement 9 000 k€ NC 2 180 k€ Consulter sur...",
-      "date_pub": "13/05/2026",
-      "date_scraped": "2026-05-14",
-      "date_scraped_iso": "2026-05-14T09:17:16Z",
-      "seen": false,
-      "added_to_crm": false,
-      "verticale": "Sous-traitance industrielle"
-    }
-  ]
+  "deals": []
 }
